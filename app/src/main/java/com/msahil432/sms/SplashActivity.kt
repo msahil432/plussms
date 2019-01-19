@@ -1,5 +1,6 @@
 package com.msahil432.sms
 
+import android.app.Activity
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -14,6 +15,8 @@ import io.fabric.sdk.android.Fabric
 
 class SplashActivity : AppCompatActivity() {
   var prefs : BasicPrefs? = null
+  val INTRO_CODE = 1504
+
   override fun onCreate(savedInstanceState: Bundle?) {
     Fabric.with(this, Crashlytics())
 
@@ -21,7 +24,7 @@ class SplashActivity : AppCompatActivity() {
     if(prefs!!.darkMode())
       delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     else
-      delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+      delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
 
     super.onCreate(savedInstanceState)
 
@@ -34,11 +37,22 @@ class SplashActivity : AppCompatActivity() {
     super.onPostResume()
     Handler().postDelayed({
       if(prefs!!.firstRun()){
-        startActivity(Intent(applicationContext, WelcomeActivity::class.java))
+        startActivityForResult(Intent(applicationContext, WelcomeActivity::class.java), INTRO_CODE)
       } else{
+        startActivity(Intent(applicationContext, HomeActivity::class.java))
+        finish()
+      }
+    }, 400)
+  }
+
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    super.onActivityResult(requestCode, resultCode, data)
+    if(requestCode == INTRO_CODE){
+      if(resultCode == Activity.RESULT_OK){
+        prefs!!.setFirstRun()
         startActivity(Intent(applicationContext, HomeActivity::class.java))
       }
       finish()
-    }, 400)
+    }
   }
 }

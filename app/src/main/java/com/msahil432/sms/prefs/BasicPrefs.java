@@ -20,11 +20,11 @@ public class BasicPrefs {
   }
 
   public boolean firstRun(){
-    return prefs.getBoolean("firstRunDone", true);
+    return prefs.getBoolean("isItFirstRun", true);
   }
 
   public void setFirstRun(){
-    prefs.edit().putBoolean("firstRunDone", true).apply();
+    prefs.edit().putBoolean("isItFirstRun", false).apply();
   }
 
   public boolean darkMode(){

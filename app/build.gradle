@@ -52,4 +52,8 @@ dependencies {
 
     // For Welcome Screen
     implementation 'com.heinrichreimersoftware:material-intro:1.6'
+
+    // For Setup Activity
+    implementation 'com.github.transferwise:sequence-layout:1.0.7'
+    implementation 'com.github.florent37:android-slidr:1.0.3'
 }

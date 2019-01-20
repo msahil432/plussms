@@ -27,6 +27,14 @@ public class BasicPrefs {
     prefs.edit().putBoolean("isItFirstRun", false).apply();
   }
 
+  public boolean setupDone(){
+    return prefs.getBoolean("isItFirstRun", false);
+  }
+
+  public void setSetup(){
+    prefs.edit().putBoolean("isItFirstRun", true).apply();
+  }
+
   public boolean darkMode(){
     return prefs.getBoolean("darkMode", false);
   }

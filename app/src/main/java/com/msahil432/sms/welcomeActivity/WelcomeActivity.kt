@@ -35,7 +35,7 @@ class WelcomeActivity : IntroActivity() {
         .background(R.color.white_shaded)
 //        .backgroundDark(R.color.colorPrimaryDark)
         .scrollable(true)
-        .permission(Manifest.permission.SEND_SMS)
+        .permission(Manifest.permission.READ_SMS)
         .build())
 
     addSlide(

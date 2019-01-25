@@ -2,10 +2,10 @@ package com.msahil432.sms
 
 import android.app.Activity
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate
 import android.view.View
 import com.crashlytics.android.Crashlytics
 import com.msahil432.sms.homeActivity.HomeActivity
@@ -17,35 +17,34 @@ import io.fabric.sdk.android.Fabric
 class SplashActivity : AppCompatActivity() {
   var prefs : BasicPrefs? = null
   val INTRO_CODE = 1504
+  val SETUP_CODE = 1404
 
   override fun onCreate(savedInstanceState: Bundle?) {
-//    Fabric.with(this, Crashlytics())
+    Fabric.with(this, Crashlytics())
 
     prefs = BasicPrefs.getInstance(applicationContext)
     if(prefs!!.darkMode())
       delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     else
       delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
-    prefs!!.setDarkMode(true)
+    prefs!!.setDarkMode(false)
     super.onCreate(savedInstanceState)
 
     window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
        or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_FULLSCREEN)
     setContentView(R.layout.activity_splash)
-  }
 
-  override fun onPostResume() {
-    super.onPostResume()
     Handler().postDelayed({
       if(prefs!!.firstRun()){
         startActivityForResult(Intent(applicationContext, WelcomeActivity::class.java), INTRO_CODE)
       } else if(!prefs!!.setupDone()){
-        startActivity(Intent(applicationContext, SetupActivity::class.java))
+        startActivityForResult(Intent(applicationContext, SetupActivity::class.java), SETUP_CODE)
       } else{
         startActivity(Intent(applicationContext, HomeActivity::class.java))
         finish()
       }
-    }, 400)
+    }, 800)
+
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -53,7 +52,13 @@ class SplashActivity : AppCompatActivity() {
     if(requestCode == INTRO_CODE){
       if(resultCode == Activity.RESULT_OK){
         prefs!!.setFirstRun()
-        startActivity(Intent(applicationContext, HomeActivity::class.java))
+        startActivityForResult(Intent(applicationContext, SetupActivity::class.java), SETUP_CODE)
+      }else
+        finish()
+    }else if (requestCode == SETUP_CODE){
+      if(resultCode == Activity.RESULT_OK) {
+        prefs!!.setSetup()
+        startActivity(Intent(this, HomeActivity::class.java))
       }
       finish()
     }

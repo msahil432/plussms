@@ -28,11 +28,11 @@ public class BasicPrefs {
   }
 
   public boolean setupDone(){
-    return prefs.getBoolean("isItFirstRun", false);
+    return prefs.getBoolean("setupDone", false);
   }
 
   public void setSetup(){
-    prefs.edit().putBoolean("isItFirstRun", true).apply();
+    prefs.edit().putBoolean("setupDone", true).apply();
   }
 
   public boolean darkMode(){

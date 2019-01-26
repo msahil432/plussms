@@ -1,5 +1,6 @@
 package com.msahil432.sms.common
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -31,4 +32,14 @@ public open class BaseViewModel : ViewModel(){
     super.onCleared()
     cancelTasks()
   }
+
+
+  protected fun log(what: String){
+    Log.e("msahil432", what)
+  }
+
+  protected fun log(what: String, e: Exception){
+    Log.e("msahil432", what, e)
+  }
+
 }

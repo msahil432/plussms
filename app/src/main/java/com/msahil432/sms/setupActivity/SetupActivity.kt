@@ -3,6 +3,7 @@ package com.msahil432.sms.setupActivity
 import android.app.Activity
 import android.graphics.Color
 import android.os.Handler
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
@@ -71,7 +72,6 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
   override fun attachViewModelListeners(viewModel: SetupViewModel) {
     viewModel.getTotalSMS().observe(this, Observer<Float> { t ->
       totalSMS = t!!
-//      progressBar.max = totalSMS+0f
       smsCollected()
       progressBar.invalidate()
     })
@@ -95,6 +95,10 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
       others = t!!
       updateProgress()
     })
+  }
+
+  override fun onBackPressed() {
+    Toast.makeText(this, R.string.dont_exit_setup, Toast.LENGTH_LONG).show()
   }
 
   override fun doWork() {
@@ -122,49 +126,45 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
 
     val entries = ArrayList<PieEntry>()
     val colors = ArrayList<Int>()
-    val doneSMS = (updates+others+promo+pers)
+    val doneSMS = (updates+others+promo+pers+money)
 
     if(pers>1){
       if(pers/totalSMS < 0.03)
         entries.add(PieEntry(pers, ""))
       else
         entries.add(PieEntry(pers, getString(R.string.personal_sms)))
-//      colors.add()
+      colors.add(ColorTemplate.PASTEL_COLORS[0])
     }
     if(money>1){
       if(money/totalSMS < 0.03)
         entries.add(PieEntry(money, ""))
       else
         entries.add(PieEntry(money, getString(R.string.money_sms)))
+      colors.add(ColorTemplate.PASTEL_COLORS[1])
     }
     if(updates>1){
       if(updates/totalSMS < 0.03)
         entries.add(PieEntry(updates, ""))
       else
         entries.add(PieEntry(updates, getString(R.string.updates_sms)))
+      colors.add(ColorTemplate.PASTEL_COLORS[2])
     }
     if(promo>1){
       if(promo/totalSMS < 0.03)
         entries.add(PieEntry(promo, ""))
       else
         entries.add(PieEntry(promo, getString(R.string.promotion_sms)))
+      colors.add(ColorTemplate.PASTEL_COLORS[3])
     }
     if(others>1){
       if(others/totalSMS < 0.03)
         entries.add(PieEntry(others, ""))
       else
         entries.add(PieEntry(others, getString(R.string.other_sms)))
-    }
-    if(doneSMS<totalSMS){
-      if(doneSMS/totalSMS < 0.03)
-        entries.add(PieEntry(pers, ""))
-      else
-        entries.add(PieEntry(totalSMS-doneSMS, "Remaining"))
+      colors.add(ColorTemplate.PASTEL_COLORS[4])
     }
 
-    for (c in ColorTemplate.PASTEL_COLORS)
-      colors.add(c)
-
+    entries.add(PieEntry(totalSMS-doneSMS, "Remaining"))
     colors.add(ColorTemplate.getHoloBlue())
 
     val dataSet = PieDataSet(entries, "SMS Classes")
@@ -185,6 +185,7 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
 
     // undo all highlights
     progressBar.highlightValues(null)
+    progressBar.invalidate()
 
     if(doneSMS == totalSMS) {
       setResult(Activity.RESULT_OK)
@@ -193,13 +194,19 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
       doneStep.setActive(true)
       doneStep.setAnchor(getString(R.string.now))
 
-      Handler().postDelayed({ finish() }, 10000)
+      Toast.makeText(this, R.string.we_are_done, Toast.LENGTH_LONG).show()
+
+      Handler().postDelayed({ finish() }, 2000)
     }
   }
 
   private fun getTime() : String{
     val c = Calendar.getInstance()
-    return ""+c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE)
+    val m = c.get(Calendar.MINUTE).toString()
+    return if(m.length == 1)
+      c.get(Calendar.HOUR_OF_DAY).toString() + ":" + "0"+m
+    else
+      c.get(Calendar.HOUR_OF_DAY).toString() + ":" + m
   }
 
 }

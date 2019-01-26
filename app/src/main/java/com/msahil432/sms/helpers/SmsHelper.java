@@ -222,4 +222,34 @@ public class SmsHelper {
     return snippet;
   }
 
+  public static String GetPhone(Context context, String threadId){
+    if(threadId == null || threadId.isEmpty())
+      return null;
+    try {
+      Uri uri = Uri.parse("content://sms/");
+      Cursor cursor = context.getContentResolver().query(uri, new String[]{SmsHelper.COLUMN_ADDRESS},
+          SmsHelper.COLUMN_THREAD_ID, new String[]{threadId}, "date DESC");
+      String t = cursor.getString(0);
+      cursor.close();
+      return t;
+    }catch (Exception e){
+      return null;
+    }
+  }
+
+  public static int GetMessageStatus(Context context, String messageId){
+    if(messageId == null || messageId.isEmpty())
+      return SmsHelper.READ;
+    try {
+      Uri uri = Uri.parse("content://sms/");
+      Cursor cursor = context.getContentResolver().query(uri, new String[]{SmsHelper.COLUMN_STATUS},
+          SmsHelper.COLUMN_ID, new String[]{messageId}, "date DESC");
+      int t = cursor.getInt(0);
+      cursor.close();
+      return t;
+    }catch (Exception e){
+      return SmsHelper.READ;
+    }
+  }
+
 }

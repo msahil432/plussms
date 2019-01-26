@@ -46,7 +46,7 @@ abstract class BaseActivity<VM : ViewModel> : AppCompatActivity() {
 
   protected abstract fun doWork()
 
-  protected abstract fun setViewModelClass(): Class<VM>
+  protected abstract fun setViewModelClass(): Class<VM>?
 
   protected abstract fun attachViewModelListeners(viewModel: VM)
 
@@ -62,12 +62,12 @@ abstract class BaseActivity<VM : ViewModel> : AppCompatActivity() {
           R.anim.slide_in_right, R.anim.slide_out_left,
           R.anim.slide_in_left, R.anim.slide_out_right
         )
-        .add(R.id.container, fragment!!, "initial")
+        .add(R.id.container, fragment, "initial")
         .commit()
 
     val t = setViewModelClass()
     if (t != null) {
-      viewModel = ViewModelProviders.of(this).get(setViewModelClass())
+      viewModel = ViewModelProviders.of(this).get(setViewModelClass()!!)
       attachViewModelListeners(viewModel)
     }
   }
@@ -84,12 +84,11 @@ abstract class BaseActivity<VM : ViewModel> : AppCompatActivity() {
     } catch (e: Exception) {
       Log.e("BaseActivity", "Error with EventBus Subscription")
     }
-
     doWork()
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    if (item.getItemId() == android.R.id.home) {
+    if (item.itemId == android.R.id.home) {
       onBackPressed()
       return true
     }
@@ -103,7 +102,7 @@ abstract class BaseActivity<VM : ViewModel> : AppCompatActivity() {
 
   protected fun setupActionBar(title: String?, homeAsUp: Boolean) {
     if (supportActionBar == null) return
-    if (title != null) supportActionBar!!.setTitle(title)
+    if (title != null) supportActionBar!!.title = title
     supportActionBar!!.setDisplayHomeAsUpEnabled(homeAsUp)
   }
 
@@ -156,6 +155,15 @@ abstract class BaseActivity<VM : ViewModel> : AppCompatActivity() {
   protected fun <T : View> AppCompatActivity.bind(@IdRes res : Int) : Lazy<T> {
     @Suppress("UNCHECKED_CAST")
     return lazy { findViewById<T>(res) }
+  }
+
+
+  protected fun log(what: String){
+    Log.e("msahil432", what)
+  }
+
+  protected fun log(what: String, e: Exception){
+    Log.e("msahil432", what, e)
   }
 
 }

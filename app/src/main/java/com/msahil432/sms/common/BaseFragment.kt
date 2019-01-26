@@ -2,6 +2,7 @@ package com.msahil432.sms.common
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import org.greenrobot.eventbus.EventBus
 import android.view.ViewGroup
 import android.view.LayoutInflater
@@ -53,9 +54,7 @@ abstract class BaseFragment<VM : ViewModel> : Fragment() {
     super.onViewCreated(view, savedInstanceState)
     try {
       EventBus.getDefault().register(this)
-    } catch (e: Exception) {
-
-    }
+    } catch (e: Exception) { }
     doWork()
   }
 
@@ -79,6 +78,14 @@ abstract class BaseFragment<VM : ViewModel> : Fragment() {
   protected fun <T : View> AppCompatActivity.bind(@IdRes res : Int) : Lazy<T> {
     @Suppress("UNCHECKED_CAST")
     return lazy { findViewById<T>(res) }
+  }
+
+  protected fun log(what: String){
+    Log.e("msahil432", what)
+  }
+
+  protected fun log(what: String, e: Exception){
+    Log.e("msahil432", what, e)
   }
 
 }

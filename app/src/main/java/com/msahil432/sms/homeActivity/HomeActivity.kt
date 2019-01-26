@@ -12,6 +12,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.msahil432.sms.R
+import com.msahil432.sms.SmsApplication
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
 
@@ -21,6 +22,13 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_home)
     setSupportActionBar(toolbar)
+
+    if(!SmsApplication.AmIDefaultApp(applicationContext))
+      Snackbar.make(findViewById(R.id.fab),
+        getString(R.string.deletion_and_sending_unavailable), Snackbar.LENGTH_LONG)
+          .setAction(getString(R.string.fix_this)) {
+            startActivity(SmsApplication.MakeDefaultApp())
+          }.show()
 
     fab.setOnClickListener { view ->
       Snackbar.make(view, "To be implemented", Snackbar.LENGTH_LONG)

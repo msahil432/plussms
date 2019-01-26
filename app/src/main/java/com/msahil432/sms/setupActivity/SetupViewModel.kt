@@ -8,19 +8,14 @@ import androidx.lifecycle.MutableLiveData
 import com.msahil432.sms.common.BaseViewModel
 import com.msahil432.sms.database.SMS
 import com.msahil432.sms.database.SmsDatabase
-import com.msahil432.sms.helpers.JsonHelper
 import com.msahil432.sms.helpers.SmsHelper
+import com.msahil432.sms.helpers.SmsHelper.*
 import com.msahil432.sms.models.ServerMessage
 import com.msahil432.sms.models.ServerModel
-import com.msahil432.sms.models.ServerModel2
-import org.json.JSONArray
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.lang.Exception
 
 /**
- * Created by msahil432 on
+ * Created by msahil432
  **/
 
 class SetupViewModel : BaseViewModel() {
@@ -83,38 +78,71 @@ class SetupViewModel : BaseViewModel() {
     totalSMS.postValue(cursor.count.toFloat())
     cursor.close()
 
-    for (i in 0 until collectedSms.size) {
+    var pers = 0f
+    var money = 0f
+    var updates = 0f
+    var promo = 0f
+    var others = 0f
+
+    for(i in 0 .. collectedSms.size/50){
       val tem2 = ServerModel()
       tem2.texts = ArrayList<ServerMessage>()
-      tem2.texts.add(collectedSms[i])
+
+      for(a in 0 until 50){
+        tem2.texts.add(collectedSms[(i*50)+a])
+        if((i*50)+a+1 == collectedSms.size)
+          break
+      }
 
       val call = retrofit.categorizeSMS(tem2).execute()
-      Log.e("success", call.body().toString())
-      Log.e("success", call.body()!!.text.cat)
-      val t = call.body()!!.text
-      when (t.cat){
-        "PROMOTIONAL", "PROMO" -> {
-          database.userDao().insertAll(SMS(t.id, "PROMOTIONAL"))
-          promoSMS.postValue(promoSMS.value!! + 1)
-        }
-        "PERSONAL", "URGENT" -> {
-          database.userDao().insertAll(SMS(t.id, "PERSONAL"))
-          personalSMS.postValue(personalSMS.value!! + 1)
-        }
-        "MONEY", "OTP", "BANK" -> {
-          database.userDao().insertAll(SMS(t.id, "MONEY"))
-          moneySMS.postValue(moneySMS.value!! + 1)
-        }
-        "UPDATES", "WALLET/APP", "ORDER" -> {
-          database.userDao().insertAll(SMS(t.id, "UPDATES"))
-          updateSMS.postValue(updateSMS.value!! + 1)
-        }
-        else -> {
-          database.userDao().insertAll(SMS(t.id, "OTHERS"))
-          otherSMS.postValue(otherSMS.value!! + 1)
+      val v = call.body()!!
+      Log.e("SetupViewModel", "classified "+v.texts.size)
+      for(t in v.texts) {
+        val threadId = t.id.substring(1, t.id.indexOf('m'))
+        val mId = t.id.substring(t.id.indexOf('m') + 1)
+        val phone = GetPhone(context, threadId)
+        val read = GetMessageStatus(context, mId)
+        val sms = SMS(t.id, "OTHERS", threadId, mId, phone, read)
+
+        try {
+          when (t.cat) {
+            "PROMOTIONAL", "PROMO" -> {
+              promo++
+              promoSMS.postValue(promo)
+              sms.cat = "PROMOTIONAL"
+              database.userDao().insertAll(sms)
+            }
+            "PERSONAL", "URGENT" -> {
+              pers++
+              personalSMS.postValue(pers)
+              sms.cat = "PERSONAL"
+              database.userDao().insertAll(sms)
+            }
+            "MONEY", "OTP", "BANK" -> {
+              money++
+              moneySMS.postValue(money)
+              sms.cat = "MONEY"
+              database.userDao().insertAll(sms)
+            }
+            "UPDATES", "WALLET/APP", "ORDER" -> {
+              updates++
+              updateSMS.postValue(updates)
+              sms.cat = "UPDATES"
+              database.userDao().insertAll(sms)
+            }
+            else -> {
+              others++
+              otherSMS.postValue(others)
+              database.userDao().insertAll(sms)
+            }
+          }
+        }catch (e: Exception){
+          log("SetupViewModel - error", e)
         }
       }
+
     }
+
   }
 
 }

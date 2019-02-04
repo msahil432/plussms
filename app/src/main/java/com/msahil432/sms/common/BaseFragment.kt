@@ -46,7 +46,6 @@ abstract class BaseFragment<VM : ViewModel> : Fragment() {
                             container: ViewGroup?,
                             savedInstanceState: Bundle?): View? {
     val v = inflater.inflate(setLayout(), container, false)
-
     return v
   }
 

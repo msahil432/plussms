@@ -132,6 +132,7 @@ class SetupViewModel : BaseViewModel() {
             }
             else -> {
               others++
+              sms.cat = "OTHERS"
               otherSMS.postValue(others)
               database.userDao().insertAll(sms)
             }

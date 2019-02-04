@@ -3,6 +3,7 @@ package com.msahil432.sms.setupActivity
 import android.app.Activity
 import android.graphics.Color
 import android.os.Handler
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.github.mikephil.charting.animation.Easing
@@ -35,7 +36,11 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
   private var others = 0f
   private var pers = 0f
 
-  override fun setLayout(): Int { return R.layout.activity_setup  }
+  override fun setLayout(): Int {
+    window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
+       or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_FULLSCREEN)
+    return R.layout.activity_setup
+  }
 
   override fun setViewModelClass(): Class<SetupViewModel> {
     startingStep.setActive(true)

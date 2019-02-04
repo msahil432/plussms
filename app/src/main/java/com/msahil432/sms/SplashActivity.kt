@@ -20,7 +20,7 @@ class SplashActivity : AppCompatActivity() {
   val SETUP_CODE = 1404
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    Fabric.with(this, Crashlytics())
+//    Fabric.with(this, Crashlytics())
 
     prefs = BasicPrefs.getInstance(applicationContext)
     if(prefs!!.darkMode())

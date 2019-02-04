@@ -10,27 +10,33 @@
          android:title="@string/home"
          android:checked="true"/>
     <item
-         android:id="@+id/nav_banking"
+         android:id="@+id/nav_personal"
          android:icon="@drawable/ic_menu_camera"
-         android:title="@string/banking"
+         android:title="@string/personal_sms"
          app:actionLayout="@layout/menu_count_layout"
          app:showAsAction="always"/>
     <item
-         android:id="@+id/nav_gallery"
+         android:id="@+id/nav_money"
          android:icon="@drawable/ic_menu_gallery"
-         android:title="Gallery"
+         android:title="@string/money_sms"
          app:actionLayout="@layout/menu_count_layout"
          app:showAsAction="always"/>
     <item
-         android:id="@+id/nav_slideshow"
+         android:id="@+id/nav_updates"
          android:icon="@drawable/ic_menu_slideshow"
-         android:title="Slideshow"
+         android:title="@string/updates_sms"
          app:actionLayout="@layout/menu_count_layout"
          app:showAsAction="always"/>
     <item
-         android:id="@+id/nav_manage"
+         android:id="@+id/nav_ads"
+         android:icon="@drawable/ic_menu_slideshow"
+         android:title="@string/promotion_sms"
+         app:actionLayout="@layout/menu_count_layout"
+         app:showAsAction="always"/>
+    <item
+         android:id="@+id/nav_others"
          android:icon="@drawable/ic_menu_manage"
-         android:title="Tools"
+         android:title="@string/other_sms"
          app:actionLayout="@layout/menu_count_layout"
          app:showAsAction="always"/>
   </group>

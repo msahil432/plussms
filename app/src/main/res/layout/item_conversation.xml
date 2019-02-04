@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:padding="4dp"
+     xmlns:app="http://schemas.android.com/apk/res-auto">
+  <androidx.appcompat.widget.AppCompatImageView
+       android:id="@+id/thumbnail"
+       android:layout_margin="6dp"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toTopOf="parent"
+       app:layout_constraintBottom_toBottomOf="@id/convo_time"
+       android:src="@drawable/icon"
+       android:layout_width="52dp"
+       android:layout_height="52dp"/>
+  <androidx.appcompat.widget.AppCompatTextView
+       android:id="@+id/convo_name"
+       android:text="+91 9585456010"
+       android:layout_marginTop="8dp"
+       android:layout_marginStart="8dp"
+       android:textSize="16sp"
+       android:textColor="@color/black"
+       app:layout_constraintTop_toTopOf="parent"
+       app:layout_constraintStart_toEndOf="@id/thumbnail"
+       app:layout_constraintEnd_toEndOf="parent"
+       android:layout_width="0dp"
+       android:layout_height="wrap_content"/>
+  <androidx.appcompat.widget.AppCompatTextView
+       android:id="@+id/snippet"
+       android:text="Hey there how are you doing, all right bud? Is everything ok there?"
+       android:maxLines="1"
+       android:layout_marginStart="12dp"
+       android:layout_marginEnd="10dp"
+       android:ellipsize="end"
+       android:textSize="14sp"
+       app:layout_constraintTop_toBottomOf="@id/convo_name"
+       app:layout_constraintStart_toEndOf="@id/thumbnail"
+       app:layout_constraintEnd_toEndOf="parent"
+       android:layout_width="0dp"
+       android:layout_height="wrap_content"/>
+  <androidx.appcompat.widget.AppCompatTextView
+       android:id="@+id/convo_time"
+       android:text="8:00 PM"
+       android:maxLines="1"
+       android:layout_marginStart="12dp"
+       android:layout_marginEnd="10dp"
+       android:ellipsize="end"
+       android:textSize="13sp"
+       app:layout_constraintTop_toBottomOf="@id/snippet"
+       app:layout_constraintStart_toEndOf="@id/thumbnail"
+       app:layout_constraintEnd_toEndOf="parent"
+       android:layout_width="0dp"
+       android:layout_height="wrap_content"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

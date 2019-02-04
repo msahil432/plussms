@@ -29,4 +29,13 @@
   <string name="deletion_and_sending_unavailable">SMS Deletion and Sending Capabilities are not available!</string>
   <string name="fix_this">Fix This!</string>
   <string name="copied">Copied!</string>
+  <string name="share_using">Share Using</string>
+  <string name="invite_msg">Hey there, I have found this new amazing application which helps me better manage my text
+    messages, by categorizing them into various categories.\nTry it out now, by signing up @
+    https://play.google.com/apps/testing/com.msahil432.sms
+  </string>
+  
+  <!-- TODO: Remove or change this placeholder text -->
+  <string name="hello_blank_fragment">Hello blank fragment</string>
+  <string name="search">Search</string>
 </resources>

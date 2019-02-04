@@ -106,7 +106,7 @@ abstract class BaseActivity<VM : ViewModel> : AppCompatActivity() {
     supportActionBar!!.setDisplayHomeAsUpEnabled(homeAsUp)
   }
 
-  protected fun initialFragment(): Fragment? {
+  protected open fun initialFragment(): Fragment? {
     return null
   }
 

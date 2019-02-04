@@ -77,4 +77,7 @@ dependencies {
     implementation 'com.github.transferwise:sequence-layout:1.0.7'
     implementation 'com.github.florent37:android-slidr:1.0.3'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
+
+    // For AppBar Search
+    implementation 'com.github.arimorty:floatingsearchview:2.1.1'
 }

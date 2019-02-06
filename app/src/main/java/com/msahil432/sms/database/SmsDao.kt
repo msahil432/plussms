@@ -12,7 +12,7 @@ interface UserDao {
   @Query("SELECT * FROM sms")
   fun getAll(): List<SMS>
 
-  @Query("select distinct(threadId), id, mId, phone, status, cat from sms where cat =:cat order by mId")
+  @Query("select * from sms where cat = :cat group by threadId order by max (mId)")
   fun getForCat(cat: String): DataSource.Factory<Int, SMS>
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)

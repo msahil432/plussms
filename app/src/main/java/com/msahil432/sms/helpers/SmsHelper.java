@@ -3,6 +3,7 @@ package com.msahil432.sms.helpers;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.Telephony;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -226,13 +227,15 @@ public class SmsHelper {
     if(threadId == null || threadId.isEmpty())
       return null;
     try {
-      Uri uri = Uri.parse("content://sms/");
-      Cursor cursor = context.getContentResolver().query(uri, new String[]{SmsHelper.COLUMN_ADDRESS},
-          SmsHelper.COLUMN_THREAD_ID, new String[]{threadId}, "date DESC");
-      String t = cursor.getString(0);
+      Cursor cursor = context.getContentResolver().query(Uri.parse("content://sms/"), null,
+          Telephony.Sms.THREAD_ID +"="+threadId, null, null);
+      assert cursor != null;
+      cursor.moveToFirst();
+      String t = cursor.getString(cursor.getColumnIndex(Telephony.Sms.ADDRESS));
       cursor.close();
       return t;
     }catch (Exception e){
+      e.printStackTrace();
       return null;
     }
   }

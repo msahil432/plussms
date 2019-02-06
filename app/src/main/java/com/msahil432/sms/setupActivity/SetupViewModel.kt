@@ -103,7 +103,7 @@ class SetupViewModel : BaseViewModel() {
         val phone = GetPhone(context, threadId)
         val read = GetMessageStatus(context, mId)
         val sms = SMS(t.id, "OTHERS", threadId, mId, phone, read)
-
+        log("sms: "+sms.id +" p:"+phone)
         try {
           when (t.cat) {
             "PROMOTIONAL", "PROMO" -> {
@@ -141,9 +141,7 @@ class SetupViewModel : BaseViewModel() {
           log("SetupViewModel - error", e)
         }
       }
-
     }
-
   }
 
 }

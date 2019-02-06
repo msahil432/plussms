@@ -1,4 +1,4 @@
-package com.msahil432.sms.prefs;
+package com.msahil432.sms.settingsActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,7 +16,7 @@ public class BasicPrefs {
   private SharedPreferences prefs;
 
   private BasicPrefs(Context context){
-    prefs = context.getSharedPreferences("basics", Context.MODE_PRIVATE);
+    prefs = context.getSharedPreferences("com.msahil432.sms_preferences", Context.MODE_PRIVATE);
   }
 
   public boolean firstRun(){
@@ -36,11 +36,7 @@ public class BasicPrefs {
   }
 
   public boolean darkMode(){
-    return prefs.getBoolean("darkMode", false);
-  }
-
-  public void setDarkMode(boolean b){
-    prefs.edit().putBoolean("darkMode", b).apply();
+    return prefs.getBoolean("dark_mode", false);
   }
 
 }

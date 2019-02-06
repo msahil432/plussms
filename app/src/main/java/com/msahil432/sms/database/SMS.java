@@ -1,5 +1,7 @@
 package com.msahil432.sms.database;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -17,6 +19,11 @@ public class SMS {
   public String mId;
   public String phone;
   public int status;
+
+  @Ignore public String timeAgo;
+  @Ignore public String body;
+  @Ignore public Bitmap thumbnail;
+  @Ignore public String name;
 
   public SMS(@NonNull String id, String cat, String threadId,
              String mId, String phone, int status) {

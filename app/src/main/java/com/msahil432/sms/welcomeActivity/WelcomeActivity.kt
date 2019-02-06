@@ -35,7 +35,10 @@ class WelcomeActivity : IntroActivity() {
         .background(R.color.white_shaded)
 //        .backgroundDark(R.color.colorPrimaryDark)
         .scrollable(true)
-        .permission(Manifest.permission.READ_SMS)
+        .permissions(arrayOf(
+          Manifest.permission.READ_SMS,
+          Manifest.permission.RECEIVE_SMS,
+          Manifest.permission.SEND_SMS))
         .build())
 
     addSlide(
@@ -46,7 +49,9 @@ class WelcomeActivity : IntroActivity() {
         .background(R.color.white_shaded)
 //        .backgroundDark(R.color.colorPrimaryDark)
         .scrollable(true)
-        .permission(Manifest.permission.READ_CONTACTS)
+        .permissions(arrayOf(
+          Manifest.permission.READ_CONTACTS,
+          Manifest.permission.WRITE_CONTACTS))
         .build())
 
     addSlide(

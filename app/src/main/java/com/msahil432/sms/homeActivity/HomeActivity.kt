@@ -15,11 +15,10 @@ import com.msahil432.sms.homeActivity.mainFragment.HomeFragment
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
 import android.content.Intent
-import android.os.Parcel
 import com.msahil432.sms.common.Event
 import com.msahil432.sms.homeActivity.convoFragment.ConvoFragment
+import com.msahil432.sms.settingsActivity.SettingsActivity
 import org.greenrobot.eventbus.EventBus
-import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion
 
 class HomeActivity : BaseActivity<HomeViewModel>(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -29,13 +28,6 @@ class HomeActivity : BaseActivity<HomeViewModel>(), NavigationView.OnNavigationI
   override fun setLayout(): Int { return R.layout.activity_home }
 
   override fun setViewModelClass(): Class<HomeViewModel>? {
-//    setSupportActionBar(toolbar)
-//    val toggle = ActionBarDrawerToggle(
-//      this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
-//    )
-//    drawer_layout.addDrawerListener(toggle)
-//    toggle.syncState()
-
     search_view.attachNavigationDrawerToMenuButton(drawer_layout)
     nav_view.setNavigationItemSelectedListener(this)
 
@@ -71,7 +63,7 @@ class HomeActivity : BaseActivity<HomeViewModel>(), NavigationView.OnNavigationI
       drawer_layout.closeDrawer(GravityCompat.START)
     } else if(isConvo){
       replaceFragment(HomeFragment(), "home", false)
-      title = getString(R.string.home)
+      search_view.setSearchHint(getString(R.string.search))
       isConvo=false
     }else {
       super.onBackPressed()
@@ -94,25 +86,28 @@ class HomeActivity : BaseActivity<HomeViewModel>(), NavigationView.OnNavigationI
 
   override fun onNavigationItemSelected(item: MenuItem): Boolean {
     when (item.itemId) {
+      R.id.nav_home ->{
+        onBackPressed()
+      }
       R.id.nav_money -> {
         loadConvoFor("MONEY")
-        search_view.setSearchHint(getString(R.string.money_sms))
+        search_view.setSearchHint(getString(R.string.search_in)+getString(R.string.money_sms))
       }
       R.id.nav_personal -> {
         loadConvoFor("PERSONAL")
-        title = getString(R.string.personal_sms)
+        search_view.setSearchHint(getString(R.string.search_in)+getString(R.string.personal_sms))
       }
       R.id.nav_updates -> {
         loadConvoFor("UPDATES")
-        title = getString(R.string.updates_sms)
+        search_view.setSearchHint(getString(R.string.search_in)+getString(R.string.updates_sms))
       }
       R.id.nav_others -> {
         loadConvoFor("OTHERS")
-        title = getString(R.string.other_sms)
+        search_view.setSearchHint(getString(R.string.search_in)+getString(R.string.other_sms))
       }
       R.id.nav_ads -> {
         loadConvoFor("PROMOTIONAL")
-        title = getString(R.string.promotion_sms)
+        search_view.setSearchHint(getString(R.string.search_in)+getString(R.string.promotion_sms))
       }
       R.id.nav_share -> {
         val shareBody = getString(R.string.invite_msg)
@@ -123,7 +118,7 @@ class HomeActivity : BaseActivity<HomeViewModel>(), NavigationView.OnNavigationI
         startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_using)))
       }
       R.id.nav_settings -> {
-        Toast.makeText(applicationContext, "Coming Soon!", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(this, SettingsActivity::class.java))
       }
     }
 

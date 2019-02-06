@@ -47,15 +47,15 @@ public class SmsApplication extends Application {
     return intent;
   }
 
-  public static boolean copyToClipboard(Context context, String text){
-    try{
+  public static boolean copyToClipboard(Context context, String text) {
+    try {
       ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
       ClipData clip = ClipData.newPlainText("OTP", text);
       assert clipboard != null;
       clipboard.setPrimaryClip(clip);
-      Toast.makeText(context, text+context.getString(R.string.copied), Toast.LENGTH_SHORT).show();
+      Toast.makeText(context, text + context.getString(R.string.copied), Toast.LENGTH_SHORT).show();
       return true;
-    }catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
       return false;
     }

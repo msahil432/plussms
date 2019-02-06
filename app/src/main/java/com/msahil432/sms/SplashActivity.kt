@@ -7,12 +7,10 @@ import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatDelegate
 import android.view.View
-import com.crashlytics.android.Crashlytics
 import com.msahil432.sms.homeActivity.HomeActivity
-import com.msahil432.sms.prefs.BasicPrefs
+import com.msahil432.sms.settingsActivity.BasicPrefs
 import com.msahil432.sms.setupActivity.SetupActivity
 import com.msahil432.sms.welcomeActivity.WelcomeActivity
-import io.fabric.sdk.android.Fabric
 
 class SplashActivity : AppCompatActivity() {
   var prefs : BasicPrefs? = null
@@ -27,7 +25,6 @@ class SplashActivity : AppCompatActivity() {
       delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     else
       delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
-    prefs!!.setDarkMode(false)
     super.onCreate(savedInstanceState)
 
     window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE

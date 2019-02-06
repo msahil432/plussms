@@ -62,7 +62,7 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
     progressBar.isHighlightPerTapEnabled = true
 //    progressBar.setOnChartValueSelectedListener(this);
     progressBar.animateY(1200, Easing.EaseInOutQuad)
-    progressBar.spin(2000, 0f, 360f, Easing.EaseInOutQuad)
+    progressBar.spin(2000, 0f, 270f, Easing.EaseInOutQuad)
 
     val l = progressBar.legend
     l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
@@ -193,15 +193,14 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
     progressBar.invalidate()
 
     if(doneSMS == totalSMS) {
-      setResult(Activity.RESULT_OK)
       categorizingSmsStep.setAnchor(getTime())
       categorizingSmsStep.setActive(false)
       doneStep.setActive(true)
       doneStep.setAnchor(getString(R.string.now))
 
       Toast.makeText(this, R.string.we_are_done, Toast.LENGTH_LONG).show()
-
-      Handler().postDelayed({ finish() }, 2000)
+      setResult(Activity.RESULT_OK)
+      Handler().postDelayed({ finish() }, 2500)
     }
   }
 

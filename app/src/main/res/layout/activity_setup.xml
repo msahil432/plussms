@@ -15,7 +15,7 @@
        app:layout_constraintTop_toTopOf="parent"
        android:text="@string/please_wait_n_processing_sms_for_first_run"
        android:textAppearance="@style/Text.Title"
-       android:autoSizeTextType="uniform"
+       app:autoSizeTextType="uniform"
        android:id="@+id/setup_text"/>
   <com.transferwise.sequencelayout.SequenceLayout
        android:id="@+id/setup_sequence"
@@ -59,6 +59,11 @@
          android:id="@+id/setup_done"
          app:anchor="@string/then"
          app:title="@string/we_are_done"/>
+    <com.transferwise.sequencelayout.SequenceStep
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:id="@+id/setup_dummy_step"
+         app:title=""/>
   </com.transferwise.sequencelayout.SequenceLayout>
   <com.github.mikephil.charting.charts.PieChart
        android:id="@+id/setup_progress"
@@ -66,15 +71,4 @@
        android:layout_margin="8dp"
        android:layout_height="260dp"
        app:layout_constraintBottom_toBottomOf="parent"/>
-  <!--<com.github.florent37.androidslidr.Slidr-->
-       <!--android:id="@+id/setup_progress"-->
-       <!--android:layout_width="match_parent"-->
-       <!--android:layout_height="wrap_content"-->
-       <!--android:layout_margin="16dp"-->
-       <!--android:paddingBottom="32dp"-->
-       <!--app:slidr_regions_centerText="true"-->
-       <!--app:slidr_region_leftColor="#4CAF50"-->
-       <!--android:layout_marginBottom="32dp"-->
-       <!--app:layout_constraintTop_toBottomOf="@id/setup_sequence"-->
-       <!--app:layout_constraintBottom_toBottomOf="parent"/>-->
 </androidx.constraintlayout.widget.ConstraintLayout>

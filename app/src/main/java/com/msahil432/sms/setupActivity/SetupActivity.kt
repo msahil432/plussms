@@ -190,7 +190,7 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
 
     // undo all highlights
     progressBar.highlightValues(null)
-    progressBar.invalidate()
+    progressBar.notifyDataSetChanged()
 
     if(doneSMS == totalSMS) {
       categorizingSmsStep.setAnchor(getTime())

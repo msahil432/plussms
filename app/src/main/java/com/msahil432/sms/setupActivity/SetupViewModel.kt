@@ -2,6 +2,7 @@ package com.msahil432.sms.setupActivity
 
 import android.content.Context
 import android.net.Uri
+import android.provider.Telephony
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -101,42 +102,42 @@ class SetupViewModel : BaseViewModel() {
         val threadId = t.id.substring(1, t.id.indexOf('m'))
         val mId = t.id.substring(t.id.indexOf('m') + 1)
         val phone = GetPhone(context, threadId)
-        val read = GetMessageStatus(context, mId)
-        val sms = SMS(t.id, "OTHERS", threadId, mId, phone, read)
-        log("sms: "+sms.id +" p:"+phone)
+        val cur2 = context.contentResolver.query(Telephony.Sms.CONTENT_URI,
+          arrayOf(Telephony.Sms.STATUS, Telephony.Sms.DATE, Telephony.Sms._ID),
+          Telephony.Sms._ID + "=" + mId, null, null)!!
+        cur2.moveToFirst()
+        val read = cur2.getInt(0)
+        val timestamp = cur2.getLong(1)
+        cur2.close()
+        val sms = SMS(t.id, "OTHERS", threadId, mId, phone, read, timestamp)
         try {
           when (t.cat) {
             "PROMOTIONAL", "PROMO" -> {
               promo++
               promoSMS.postValue(promo)
-              sms.cat = "PROMOTIONAL"
-              database.userDao().insertAll(sms)
+              sms.cat = "ADS"
             }
             "PERSONAL", "URGENT" -> {
               pers++
               personalSMS.postValue(pers)
               sms.cat = "PERSONAL"
-              database.userDao().insertAll(sms)
             }
             "MONEY", "OTP", "BANK" -> {
               money++
               moneySMS.postValue(money)
               sms.cat = "MONEY"
-              database.userDao().insertAll(sms)
             }
             "UPDATES", "WALLET/APP", "ORDER" -> {
               updates++
               updateSMS.postValue(updates)
               sms.cat = "UPDATES"
-              database.userDao().insertAll(sms)
             }
             else -> {
               others++
-              sms.cat = "OTHERS"
               otherSMS.postValue(others)
-              database.userDao().insertAll(sms)
             }
           }
+          database.userDao().insertAll(sms)
         }catch (e: Exception){
           log("SetupViewModel - error", e)
         }

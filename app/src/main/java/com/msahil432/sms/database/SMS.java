@@ -19,6 +19,7 @@ public class SMS {
   public String mId;
   public String phone;
   public int status;
+  public long timestamp;
 
   @Ignore public String timeAgo;
   @Ignore public String body;
@@ -26,13 +27,14 @@ public class SMS {
   @Ignore public String name;
 
   public SMS(@NonNull String id, String cat, String threadId,
-             String mId, String phone, int status) {
+             String mId, String phone, int status, long timestamp) {
     this.id = id;
     this.cat = cat;
     this.threadId = threadId;
     this.mId = mId;
     this.phone = phone;
     this.status = status;
+    this.timestamp = timestamp;
   }
 
   @Ignore

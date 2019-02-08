@@ -1,7 +1,6 @@
 package com.msahil432.sms.homeActivity.convoFragment
 
 import android.content.Context
-import android.net.Uri
 import android.provider.Telephony.Sms
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,10 +21,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.lang.Exception
 
-import java.text.SimpleDateFormat
-import java.util.*
-
-
 /**
  * Created by msahil432
  **/
@@ -39,22 +34,14 @@ class PagedRecyclerAdapter(val context: Context) : PagedListAdapter<SMS, PagedRe
 
   override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
     try {
-//      BaseViewModel.WorkThread.execute {
         val sms = getItem(position)!!
         if(sms.body == null || sms.timeAgo == null) {
           val cursor = context.contentResolver.query(Sms.CONTENT_URI,
-              arrayOf(Sms.Inbox.BODY, Sms.DATE, Sms._ID),
+              arrayOf(Sms.Inbox.BODY, Sms._ID),
             Sms._ID + "=" + sms.mId, null, null)!!
           cursor.moveToFirst()
-
-          val formatter = SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS")
-          val calendar = Calendar.getInstance()
-          val now = cursor.getLong(1)
-          calendar.timeInMillis = now
-          Log.e("time", "time" + formatter.format(calendar.getTime()))
-          Log.e("Paged Adapter", "time"+(System.currentTimeMillis()-cursor.getLong(1)))
           sms.body = cursor.getString(0)
-          sms.timeAgo = TimeHelper.TimeAgo(System.currentTimeMillis() -cursor.getLong(1))
+          sms.timeAgo = TimeHelper.TimeAgo(System.currentTimeMillis()-sms.timestamp)
           cursor.close()
           getItem(position)!!.body = sms.body
           getItem(position)!!.timeAgo = sms.timeAgo
@@ -68,7 +55,6 @@ class PagedRecyclerAdapter(val context: Context) : PagedListAdapter<SMS, PagedRe
           getItem(position)!!.thumbnail = sms.thumbnail
         }
         holder.bind(getItem(position)!!)
-//      }
     }catch (e : Exception){
       Log.e("Paged Adapter", "bindViewHolder", e)
     }
@@ -79,10 +65,10 @@ class PagedRecyclerAdapter(val context: Context) : PagedListAdapter<SMS, PagedRe
       EventBus.getDefault().register(this)
     }
 
-    var thumbnail = view.findViewById<AppCompatImageView>(R.id.thumbnail)!!
-    var name = view.findViewById<AppCompatTextView>(R.id.convo_name)!!
-    var snippet = view.findViewById<AppCompatTextView>(R.id.snippet)!!
-    var convoTime = view.findViewById<AppCompatTextView>(R.id.convo_time)!!
+    private var thumbnail = view.findViewById<AppCompatImageView>(R.id.thumbnail)!!
+    private var name = view.findViewById<AppCompatTextView>(R.id.convo_name)!!
+    private var snippet = view.findViewById<AppCompatTextView>(R.id.snippet)!!
+    private var convoTime = view.findViewById<AppCompatTextView>(R.id.convo_time)!!
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun bind(sms: SMS){

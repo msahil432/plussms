@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
  * Created by msahil432
  **/
 
-@Database(entities = arrayOf(SMS::class), version = 2)
+@Database(entities = [SMS::class], version = 3)
 abstract class SmsDatabase : RoomDatabase() {
   abstract fun userDao(): UserDao
 }

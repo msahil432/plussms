@@ -12,16 +12,30 @@ import com.msahil432.sms.database.SmsDatabase
  * Created by msahil432
  **/
 
-public class HomeViewModel : BaseViewModel(){
+class HomeViewModel : BaseViewModel(){
 
   private lateinit var smsList : LiveData<PagedList<SMS>>
 
-  public fun loadSms(smsDatabase: SmsDatabase, cat: String){
+  lateinit var adsUnread : LiveData<List<String>>
+  lateinit var personalUnread : LiveData<List<String>>
+  lateinit var othersUnread : LiveData<List<String>>
+  lateinit var moneyUnread : LiveData<List<String>>
+  lateinit var updatesUnread : LiveData<List<String>>
+
+  fun loadSms(smsDatabase: SmsDatabase, cat: String){
     val factory: DataSource.Factory<Int, SMS> = smsDatabase.userDao().getForCat(cat)
     val pagedListBuilder= LivePagedListBuilder<Int, SMS>(factory,25)
     smsList = pagedListBuilder.build()
   }
 
-  public fun getSMS() = smsList
+  fun getSMS() = smsList
+
+  fun loadUnreads(smsDatabase: SmsDatabase){
+    adsUnread = smsDatabase.userDao().getUnreadCount("PROMOTIONAL")
+    personalUnread = smsDatabase.userDao().getUnreadCount("PERSONAL")
+    othersUnread = smsDatabase.userDao().getUnreadCount("OTHERS")
+    moneyUnread = smsDatabase.userDao().getUnreadCount("MONEY")
+    updatesUnread = smsDatabase.userDao().getUnreadCount("UPDATES")
+  }
 
 }

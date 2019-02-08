@@ -6,7 +6,6 @@ import androidx.core.view.GravityCompat
 import androidx.appcompat.widget.AppCompatTextView
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.msahil432.sms.R
 import com.msahil432.sms.SmsApplication
@@ -15,6 +14,8 @@ import com.msahil432.sms.homeActivity.mainFragment.HomeFragment
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
 import android.content.Intent
+import android.view.View
+import androidx.lifecycle.Observer
 import com.msahil432.sms.common.Event
 import com.msahil432.sms.homeActivity.convoFragment.ConvoFragment
 import com.msahil432.sms.settingsActivity.SettingsActivity
@@ -39,7 +40,9 @@ class HomeActivity : BaseActivity<HomeViewModel>(), NavigationView.OnNavigationI
     return HomeFragment()
   }
 
-  override fun attachViewModelListeners(viewModel: HomeViewModel) {  }
+  override fun attachViewModelListeners(viewModel: HomeViewModel) {
+
+  }
 
   override fun doWork() {
     if(!SmsApplication.AmIDefaultApp(applicationContext))
@@ -59,21 +62,56 @@ class HomeActivity : BaseActivity<HomeViewModel>(), NavigationView.OnNavigationI
   }
 
   override fun onBackPressed() {
-    if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-      drawer_layout.closeDrawer(GravityCompat.START)
-    } else if(isConvo){
-      replaceFragment(HomeFragment(), "home", false)
-      search_view.setSearchHint(getString(R.string.search))
-      isConvo=false
-    }else {
-      super.onBackPressed()
+    when {
+      drawer_layout.isDrawerOpen(GravityCompat.START) ->
+        drawer_layout.closeDrawer(GravityCompat.START)
+      isConvo -> {
+        replaceFragment(HomeFragment(), "home", false)
+        search_view.setSearchHint(getString(R.string.search))
+        isConvo=false
+      }
+      else -> super.onBackPressed()
     }
   }
 
   private fun setupMenuBadges(menu: Menu){
-    val banking = menu.findItem(R.id.nav_money).actionView
-    banking.findViewById<AppCompatTextView>(R.id.menu_count_text).text = "1"
-//    banking.visibility = View.GONE
+    viewModel.loadUnreads(getSmsDb()!!)
+
+    viewModel.updatesUnread.observe(this, Observer {
+      val t = menu.findItem(R.id.nav_updates).actionView
+      if(it.isEmpty())
+        t.visibility = View.GONE
+      else
+        t.findViewById<AppCompatTextView>(R.id.menu_count_text).text = it.size.toString()
+    })
+    viewModel.adsUnread.observe(this, Observer {
+      val t = menu.findItem(R.id.nav_ads).actionView
+      if(it.isEmpty())
+        t.visibility = View.GONE
+      else
+        t.findViewById<AppCompatTextView>(R.id.menu_count_text).text = it.size.toString()
+    })
+    viewModel.moneyUnread.observe(this, Observer {
+      val t = menu.findItem(R.id.nav_money).actionView
+      if(it.isEmpty())
+        t.visibility = View.GONE
+      else
+        t.findViewById<AppCompatTextView>(R.id.menu_count_text).text = it.size.toString()
+    })
+    viewModel.othersUnread.observe(this, Observer {
+      val t = menu.findItem(R.id.nav_others).actionView
+      if(it.isEmpty())
+        t.visibility = View.GONE
+      else
+        t.findViewById<AppCompatTextView>(R.id.menu_count_text).text = it.size.toString()
+    })
+    viewModel.personalUnread.observe(this, Observer {
+      val t = menu.findItem(R.id.nav_personal).actionView
+      if(it.isEmpty())
+        t.visibility = View.GONE
+      else
+        t.findViewById<AppCompatTextView>(R.id.menu_count_text).text = it.size.toString()
+    })
   }
 
   private fun loadConvoFor(cat: String){
@@ -106,7 +144,7 @@ class HomeActivity : BaseActivity<HomeViewModel>(), NavigationView.OnNavigationI
         search_view.setSearchHint(getString(R.string.search_in)+getString(R.string.other_sms))
       }
       R.id.nav_ads -> {
-        loadConvoFor("PROMOTIONAL")
+        loadConvoFor("ADS")
         search_view.setSearchHint(getString(R.string.search_in)+getString(R.string.promotion_sms))
       }
       R.id.nav_share -> {

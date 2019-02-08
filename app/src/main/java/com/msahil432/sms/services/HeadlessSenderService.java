@@ -1,4 +1,4 @@
-package com.msahil432.sms.receivers;
+package com.msahil432.sms.services;
 
 import android.app.Service;
 import android.content.Intent;

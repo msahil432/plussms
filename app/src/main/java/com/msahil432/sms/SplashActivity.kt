@@ -8,6 +8,7 @@ import android.os.Handler
 import androidx.appcompat.app.AppCompatDelegate
 import android.view.View
 import com.msahil432.sms.homeActivity.HomeActivity
+import com.msahil432.sms.services.BackgroundCategorizationService
 import com.msahil432.sms.settingsActivity.BasicPrefs
 import com.msahil432.sms.setupActivity.SetupActivity
 import com.msahil432.sms.welcomeActivity.WelcomeActivity
@@ -41,7 +42,9 @@ class SplashActivity : AppCompatActivity() {
         finish()
       }
     }, 800)
-
+    val i = Intent(applicationContext, BackgroundCategorizationService::class.java)
+    i.putExtra(BackgroundCategorizationService.PARAM_TIMESTAMP, -1L)
+    applicationContext.startService(i)
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

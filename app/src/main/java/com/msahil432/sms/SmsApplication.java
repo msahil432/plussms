@@ -8,8 +8,13 @@ import android.content.Intent;
 import android.provider.Telephony;
 import android.util.Log;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.room.Room;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.msahil432.sms.database.SmsDatabase;
+import com.msahil432.sms.settingsActivity.BasicPrefs;
+import com.msahil432.sms.setupActivity.SetupActivity;
 
 public class SmsApplication extends Application {
 

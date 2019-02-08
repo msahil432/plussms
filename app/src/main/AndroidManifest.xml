@@ -74,14 +74,17 @@
     
     <meta-data
          android:name="io.fabric.ApiKey"
-         android:value="a7efd9c0a3285e089ff9ae29fd130fd15cb05fa8"/> <!-- BroadcastReceiver that listens for incoming SMS messages -->
+         android:value="a7efd9c0a3285e089ff9ae29fd130fd15cb05fa8"/>
+    <!-- BroadcastReceiver that listens for incoming SMS messages -->
     <receiver
          android:name=".receivers.SmsReceiver"
          android:permission="android.permission.BROADCAST_SMS">
       <intent-filter>
+        <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
         <action android:name="android.provider.Telephony.SMS_DELIVER"/>
       </intent-filter>
-    </receiver> <!-- BroadcastReceiver that listens for incoming MMS messages -->
+    </receiver>
+    <!-- BroadcastReceiver that listens for incoming MMS messages -->
     <receiver
          android:name=".receivers.MmsReceiver"
          android:permission="android.permission.BROADCAST_WAP_PUSH">
@@ -90,9 +93,10 @@
         
         <data android:mimeType="application/vnd.wap.mms-message"/>
       </intent-filter>
-    </receiver> <!-- Service that delivers messages from the phone "quick response" -->
+    </receiver>
+    <!-- Service that delivers messages from the phone "quick response" -->
     <service
-         android:name=".receivers.HeadlessSenderService"
+         android:name=".services.HeadlessSenderService"
          android:exported="true"
          android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE">
       <intent-filter>
@@ -106,6 +110,7 @@
         <data android:scheme="mmsto"/>
       </intent-filter>
     </service>
+    <service android:name=".services.BackgroundCategorizationService"/>
   </application>
 
 </manifest>

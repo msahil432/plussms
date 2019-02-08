@@ -41,6 +41,8 @@ class PagedRecyclerAdapter(val context: Context) : PagedListAdapter<SMS, PagedRe
             Sms._ID + "=" + sms.mId, null, null)!!
           cursor.moveToFirst()
           sms.body = cursor.getString(0)
+          while(sms.body.contains("\n"))
+            sms.body.replace("\n", " ")
           sms.timeAgo = TimeHelper.TimeAgo(System.currentTimeMillis()-sms.timestamp)
           cursor.close()
           getItem(position)!!.body = sms.body

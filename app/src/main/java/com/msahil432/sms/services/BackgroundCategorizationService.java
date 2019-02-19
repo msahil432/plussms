@@ -11,12 +11,16 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import com.msahil432.sms.SmsApplication;
 import com.msahil432.sms.common.BaseViewModel;
+import com.msahil432.sms.common.RetroFit;
 import com.msahil432.sms.database.SMS;
 import com.msahil432.sms.database.SmsDatabase;
 import com.msahil432.sms.models.ServerMessage;
 import com.msahil432.sms.models.ServerModel;
+import com.msahil432.sms.settingsActivity.BasicPrefs;
 import retrofit2.Response;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,10 +41,16 @@ public class BackgroundCategorizationService extends IntentService {
 
   @Override
   protected void onHandleIntent(@Nullable Intent intent) {
+    if(!BasicPrefs.getInstance(getApplicationContext()).setupDone())
+      return;
+
+    pingServer();
+
     if(prefs==null)
       prefs = getSharedPreferences("bg-service", Context.MODE_PRIVATE);
     if(smsDb == null)
-      smsDb = ((SmsApplication)getApplication()).getSmsDatabase();
+      smsDb = ((SmsApplication) getApplication()).getSmsDatabase();
+
     Set<String> set = prefs.getStringSet("uncat", new HashSet<String>());
     try{
       if(intent!=null) {
@@ -57,9 +67,9 @@ public class BackgroundCategorizationService extends IntentService {
           return;
         else{
           set = findNonCats();
-          Log.e(TAG, "Cat SMS are not all!");
-          if(set==null)
+          if(set==null||set.size()==0)
             return;
+          Log.e(TAG, "Cat SMS are not all! "+set.size());
         }
       }
       Log.e(TAG, "Set Size: "+set.size());
@@ -184,6 +194,28 @@ public class BackgroundCategorizationService extends IntentService {
       Log.e(TAG, e.getMessage(), e);
     }
     return null;
+  }
+
+  public static void StartService(Context context){
+    Intent i = new Intent(context, BackgroundCategorizationService.class);
+    i.putExtra(PARAM_TIMESTAMP, -1L);
+    context.startService(i);
+  }
+
+  public static void pingServer(){
+    try{
+      URL url = new URL(RetroFit.hostUrl);
+      HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
+      urlc.setRequestProperty("Connection", "close");
+      urlc.setConnectTimeout(1000 * 30);
+      urlc.connect();
+
+      if (urlc.getResponseCode() == 200) {
+        Log.i(TAG, "Ping Successful to Server");
+      }
+    }catch (Exception e){
+      Log.i(TAG, "Ping unsuccessful to Server");
+    }
   }
 
 }

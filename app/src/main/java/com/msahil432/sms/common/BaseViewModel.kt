@@ -17,11 +17,10 @@ public open class BaseViewModel : ViewModel(){
     var workQueue = LinkedBlockingQueue<Runnable>()
     var WorkThread: Executor = Executors.newSingleThreadExecutor()
     var DownloadThread: Executor = Executors.newSingleThreadExecutor()
-    var DbThread: Executor = Executors.newSingleThreadExecutor()
     val retrofit = Retrofit.Builder()
       .addConverterFactory(GsonConverterFactory.create())
-      .baseUrl("https://glacial-hamlet-87000.herokuapp.com")
-      .build().create(RetroFit::class.java)
+      .baseUrl(RetroFit.hostUrl)
+      .build().create(RetroFit::class.java)!!
   }
 
   protected fun cancelTasks(){

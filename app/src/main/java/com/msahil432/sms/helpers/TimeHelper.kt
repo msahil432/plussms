@@ -28,7 +28,7 @@ class TimeHelper{
           "1 Hour Ago"
 
         in 2*60*60 .. 23*60*60 ->
-          "${(millis/(1000*60)).toInt()} Hours Ago"
+          "${(millis/(1000*60*60)).toInt()} Hours Ago"
 
         in 24*60*60 until 2*24*60*60 ->
           "Yesterday ${SimpleDateFormat("hh:mm a").format(System.currentTimeMillis()-millis)}"

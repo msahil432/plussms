@@ -1,20 +1,15 @@
 package com.msahil432.sms;
 
 import android.app.Application;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
 import android.provider.Telephony;
 import android.util.Log;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
 import androidx.room.Room;
-import androidx.room.migration.Migration;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.msahil432.sms.database.SmsDatabase;
-import com.msahil432.sms.settingsActivity.BasicPrefs;
-import com.msahil432.sms.setupActivity.SetupActivity;
+import com.msahil432.sms.notifications.NotificationHelper;
+import com.msahil432.sms.receivers.BootCompletedReceiver;
+import com.msahil432.sms.services.BackgroundCategorizationService;
 
 public class SmsApplication extends Application {
 
@@ -26,6 +21,10 @@ public class SmsApplication extends Application {
     smsDatabase = Room.databaseBuilder(getApplicationContext(), SmsDatabase.class, "database-sms")
         .fallbackToDestructiveMigration()
         .build();
+    NotificationHelper.Companion.CreateChannels(getApplicationContext());
+    BackgroundCategorizationService.StartService(getApplicationContext());
+    IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+    getApplicationContext().registerReceiver(new BootCompletedReceiver(), filter);
   }
 
   public SmsDatabase getSmsDatabase() {
@@ -52,7 +51,7 @@ public class SmsApplication extends Application {
     return intent;
   }
 
-  public static boolean copyToClipboard(Context context, String text) {
+  public static boolean copyOTP(Context context, String text) {
     try {
       ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
       ClipData clip = ClipData.newPlainText("OTP", text);

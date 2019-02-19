@@ -4,9 +4,10 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
-apply plugin: 'io.fabric'
-
 apply plugin: 'kotlin-kapt'
+
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.firebase-perf'
 
 android {
     compileSdkVersion 28
@@ -15,8 +16,8 @@ android {
         applicationId "com.msahil432.sms"
         minSdkVersion 25
         targetSdkVersion 28
-        versionCode 31
-        versionName "0.3.0"
+        versionCode 40
+        versionName "0.4.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -38,7 +39,7 @@ repositories {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
     implementation 'com.google.android.material:material:1.1.0-alpha03'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0-alpha01'
@@ -84,6 +85,6 @@ dependencies {
     // For Text as Image
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 
-    implementation 'androidx.preference:preference:1.1.0-alpha02'
-
+    implementation 'com.google.firebase:firebase-core:16.0.7'
+    implementation 'com.google.firebase:firebase-perf:16.2.3'
 }

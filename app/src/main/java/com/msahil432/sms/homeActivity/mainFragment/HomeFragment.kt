@@ -16,8 +16,6 @@ import com.msahil432.sms.homeActivity.HomeViewModel
 import kotlinx.android.synthetic.main.fragment_home.*
 import java.util.ArrayList
 import android.content.Intent
-import androidx.annotation.ColorInt
-import android.util.TypedValue
 import com.msahil432.sms.setupActivity.SetupActivity
 
 
@@ -49,11 +47,11 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
     cat_diversity.isHighlightPerTapEnabled = true
 //  Todo:   cat_diversity.maxAngle = 180f
 
-    val typedValue = TypedValue()
-    val theme = context!!.theme
-    theme.resolveAttribute(R.color.primary_text_default_material_light, typedValue, true)
-    @ColorInt val color = typedValue.data
-    cat_diversity.setEntryLabelColor(color)
+//    val typedValue = TypedValue()
+//    val theme = context!!.theme
+//    theme.resolveAttribute(R.color.white, typedValue, true)
+//    @ColorInt val color = typedValue.data
+//    cat_diversity.setEntryLabelColor(color)
 
     cat_diversity.animateY(1200, Easing.EaseInOutQuad)
     cat_diversity.spin(2000, 0f, 270f, Easing.EaseInOutQuad)
@@ -116,7 +114,7 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
 
     if(pers>1){
       if(pers/totalSMS < 0.03)
-        entries.add(PieEntry(pers))
+        entries.add(PieEntry(pers, ""))
       else
         entries.add(PieEntry(pers, getString(R.string.personal_sms)))
       colors.add(ColorTemplate.PASTEL_COLORS[0])
@@ -139,7 +137,7 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
       if(ads/totalSMS < 0.03)
         entries.add(PieEntry(ads, ""))
       else
-        entries.add(PieEntry(ads, getString(R.string.promotion_sms)))
+        entries.add(PieEntry(ads, getString(R.string.ads_sms)))
       colors.add(ColorTemplate.PASTEL_COLORS[3])
     }
     if(others>1){

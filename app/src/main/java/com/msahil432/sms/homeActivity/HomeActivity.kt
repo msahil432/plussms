@@ -68,6 +68,7 @@ class HomeActivity : BaseActivity<HomeViewModel>(), NavigationView.OnNavigationI
       isConvo -> {
         replaceFragment(HomeFragment(), "home", false)
         search_view.setSearchHint(getString(R.string.search))
+        nav_view.setCheckedItem(R.id.nav_home)
         isConvo=false
       }
       else -> super.onBackPressed()
@@ -125,7 +126,11 @@ class HomeActivity : BaseActivity<HomeViewModel>(), NavigationView.OnNavigationI
   override fun onNavigationItemSelected(item: MenuItem): Boolean {
     when (item.itemId) {
       R.id.nav_home ->{
-        onBackPressed()
+        if(!isConvo)
+          return true
+        replaceFragment(HomeFragment(), "home", false)
+        search_view.setSearchHint(getString(R.string.search))
+        isConvo=false
       }
       R.id.nav_money -> {
         loadConvoFor("MONEY")
@@ -145,7 +150,7 @@ class HomeActivity : BaseActivity<HomeViewModel>(), NavigationView.OnNavigationI
       }
       R.id.nav_ads -> {
         loadConvoFor("ADS")
-        search_view.setSearchHint(getString(R.string.search_in)+getString(R.string.promotion_sms))
+        search_view.setSearchHint(getString(R.string.search_in)+getString(R.string.ads_sms))
       }
       R.id.nav_share -> {
         val shareBody = getString(R.string.invite_msg)

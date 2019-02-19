@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
@@ -17,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,8 +43,7 @@ public class ContactHelper {
         address = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
       cursor.close();
     } catch (Exception e) {
-      Log.d(TAG, "Failed to find name for address " + address);
-      e.printStackTrace();
+      Log.e(TAG, "Failed to find name for address " + address, e);
     }
     return address;
   }
@@ -122,13 +119,12 @@ public class ContactHelper {
                   MediaStore.Images.Media.getBitmap(
                       context.getContentResolver(), image_uri ) );
     } catch (Exception e) {
-      Log.e(TAG, address+" GetThumbnail: "+e.getMessage());
       return ImageHelper.getBitmapFromDrawable(
-          ImageHelper.getAlphabet(name.charAt(0), generator.getColor(name)  )   );
+          ImageHelper.getAlphabet(name.charAt(0), colorGenerator.getColor(name)  )   );
     }
   }
 
-  private static ColorGenerator generator = ColorGenerator.MATERIAL;
+  public static ColorGenerator colorGenerator = ColorGenerator.MATERIAL;
   public static  Bitmap getContactsPhoto(Context context, String address, String name) {
     String selection = ContactsContract.CommonDataKinds.Phone.NUMBER + " = '" + address + "'";
     Cursor phones = context.getContentResolver().query(
@@ -152,7 +148,7 @@ public class ContactHelper {
     if (phones != null) {
       phones.close();
     }
-    int color = generator.getColor(address);
+    int color = colorGenerator.getColor(address);
     if(address.equalsIgnoreCase(name) && address.indexOf("-")==2){
       return ImageHelper.getBitmapFromDrawable(ImageHelper.getAlphabet(address.charAt(3), color));
     }else{

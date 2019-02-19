@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ xmlns:app="http://schemas.android.com/apk/res-auto"
+ android:layout_margin="8dp"
+ android:layout_width="match_parent"
+ android:layout_height="wrap_content">
+  <androidx.cardview.widget.CardView
+       app:layout_constraintTop_toTopOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintEnd_toEndOf="parent"
+       android:id="@+id/text"
+       android:elevation="8dp"
+       android:background="@drawable/rounded_bg"
+       android:layout_width="wrap_content"
+       android:layout_height="match_parent">
+    <androidx.appcompat.widget.AppCompatTextView
+         android:id="@+id/text_body"
+         android:textSize="16sp"
+         android:padding="8dp"
+         android:text="Hey how are you doing this is a demo"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"/>
+  </androidx.cardview.widget.CardView>
+  
+</androidx.constraintlayout.widget.ConstraintLayout>

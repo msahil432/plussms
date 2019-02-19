@@ -30,6 +30,7 @@
        android:id="@+id/snippet"
        android:text="Hey there how are you doing, all right bud? Is everything ok there?"
        android:maxLines="1"
+       android:textStyle="bold"
        android:layout_marginStart="12dp"
        android:layout_marginEnd="10dp"
        android:ellipsize="end"

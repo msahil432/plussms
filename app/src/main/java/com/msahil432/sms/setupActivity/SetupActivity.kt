@@ -30,7 +30,7 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
   private val progressBar by bind<PieChart>(R.id.setup_progress)
 
   private var totalSMS = 100f
-  private var promo = 0f
+  private var ads = 0f
   private var money = 0f
   private var updates = 0f
   private var others = 0f
@@ -80,16 +80,16 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
       smsCollected()
       progressBar.invalidate()
     })
-    viewModel.getPersonalSMS().observe(this, Observer<Float> { t ->
-      pers = t!!
+    viewModel.getPersonalSMS().observe(this, Observer<Int> { t ->
+      pers = t!!.toFloat()
       updateProgress()
     })
     viewModel.getMoneySMS().observe(this, Observer<Float> { t ->
       money = t!!
       updateProgress()
     })
-    viewModel.getPromoSMS().observe(this, Observer<Float> { t ->
-      promo = t!!
+    viewModel.getAdsSMS().observe(this, Observer<Float> { t ->
+      ads = t!!
       updateProgress()
     })
     viewModel.getUpdateSMS().observe(this, Observer<Float> { t ->
@@ -99,6 +99,13 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
     viewModel.getOtherSMS().observe(this, Observer<Float> { t->
       others = t!!
       updateProgress()
+    })
+    viewModel.networkOk.observe(this, Observer {
+      if(it){
+        hideLoading()
+      }else{
+        showLoading(getString(R.string.wait_for_net))
+      }
     })
   }
 
@@ -131,7 +138,7 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
 
     val entries = ArrayList<PieEntry>()
     val colors = ArrayList<Int>()
-    val doneSMS = (updates+others+promo+pers+money)
+    val doneSMS = (updates+others+ads+pers+money)
 
     if(pers>1){
       if(pers/totalSMS < 0.03)
@@ -154,11 +161,11 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
         entries.add(PieEntry(updates, getString(R.string.updates_sms)))
       colors.add(ColorTemplate.PASTEL_COLORS[2])
     }
-    if(promo>1){
-      if(promo/totalSMS < 0.03)
-        entries.add(PieEntry(promo, ""))
+    if(ads>1){
+      if(ads/totalSMS < 0.03)
+        entries.add(PieEntry(ads, ""))
       else
-        entries.add(PieEntry(promo, getString(R.string.promotion_sms)))
+        entries.add(PieEntry(ads, getString(R.string.ads_sms)))
       colors.add(ColorTemplate.PASTEL_COLORS[3])
     }
     if(others>1){

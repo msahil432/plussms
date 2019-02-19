@@ -97,7 +97,11 @@ abstract class BaseActivity<VM : ViewModel> : AppCompatActivity() {
 
   override fun onDestroy() {
     super.onDestroy()
-    EventBus.getDefault().unregister(this)
+    try {
+      EventBus.getDefault().unregister(this)
+    }catch (e: Exception){
+      Log.e("BaseActivity", "Error with EventBus Subscription")
+    }
   }
 
   protected fun setupActionBar(title: String?, homeAsUp: Boolean) {
@@ -135,7 +139,7 @@ abstract class BaseActivity<VM : ViewModel> : AppCompatActivity() {
   }
 
   protected fun showLoading(text: String = getString(R.string.loading)) {
-    if (progressDialog == null)
+    if (!::progressDialog.isInitialized)
       progressDialog = ProgressDialog(this)
     progressDialog.setMessage(text)
     progressDialog.setCancelable(false)
@@ -143,7 +147,8 @@ abstract class BaseActivity<VM : ViewModel> : AppCompatActivity() {
   }
 
   protected fun hideLoading() {
-    progressDialog.hide()
+    if (::progressDialog.isInitialized)
+      progressDialog.hide()
   }
 
   protected fun getSmsDb() : SmsDatabase?{

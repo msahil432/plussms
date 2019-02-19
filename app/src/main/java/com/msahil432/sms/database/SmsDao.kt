@@ -34,6 +34,15 @@ interface UserDao {
   @Query("select cat from sms where timestamp = :timestamp")
   fun getCat(timestamp: Long) : List<String>
 
+  @Query("select cat from sms where id = :uid")
+  fun getCat(uid: String) : List<String>
+
+  @Query("select mId from sms where threadId= :tId order by mId desc")
+  fun getMessagesForThread(tId: String) : List<String>
+
+  @Query("select mId from sms where threadId= :tId and cat= :cat order by mId desc")
+  fun getMessagesForThread(tId: String, cat: String) : List<String>
+
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   fun insertAll(vararg users: SMS)
 

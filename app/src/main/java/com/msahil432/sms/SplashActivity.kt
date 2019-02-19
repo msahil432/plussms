@@ -8,26 +8,24 @@ import android.os.Handler
 import androidx.appcompat.app.AppCompatDelegate
 import android.view.View
 import com.msahil432.sms.homeActivity.HomeActivity
-import com.msahil432.sms.services.BackgroundCategorizationService
+import com.msahil432.sms.notifications.NotificationHelper
 import com.msahil432.sms.settingsActivity.BasicPrefs
 import com.msahil432.sms.setupActivity.SetupActivity
 import com.msahil432.sms.welcomeActivity.WelcomeActivity
 
+
 class SplashActivity : AppCompatActivity() {
-  var prefs : BasicPrefs? = null
-  val INTRO_CODE = 1504
-  val SETUP_CODE = 1404
+  private var prefs : BasicPrefs? = null
+  private val INTRO_CODE = 1504
+  private val SETUP_CODE = 1404
 
   override fun onCreate(savedInstanceState: Bundle?) {
-//    Fabric.with(this, Crashlytics())
-
     prefs = BasicPrefs.getInstance(applicationContext)
     if(prefs!!.darkMode())
       delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     else
       delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
     super.onCreate(savedInstanceState)
-
     window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
        or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_FULLSCREEN)
     setContentView(R.layout.activity_splash)
@@ -42,9 +40,10 @@ class SplashActivity : AppCompatActivity() {
         finish()
       }
     }, 800)
-    val i = Intent(applicationContext, BackgroundCategorizationService::class.java)
-    i.putExtra(BackgroundCategorizationService.PARAM_TIMESTAMP, -1L)
-    applicationContext.startService(i)
+    NotificationHelper.createPersonalNotification(applicationContext,
+      "Sahil", "Sahil Malik", getString(R.string.invite_msg))
+    NotificationHelper.createPersonalNotification(applicationContext,
+      "Sahil", "SAhil Malik", getString(R.string.invite_msg))
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -63,4 +62,5 @@ class SplashActivity : AppCompatActivity() {
       finish()
     }
   }
+
 }

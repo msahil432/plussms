@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "595016670056",
+    "firebase_url": "https://com-msahil432-sms.firebaseio.com",
+    "project_id": "com-msahil432-sms",
+    "storage_bucket": "com-msahil432-sms.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:595016670056:android:ac3fb2a5ddc9431d",
+        "android_client_info": {
+          "package_name": "com.msahil432.sms"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "595016670056-k2ornjv2imvt5pdoht9difeh2jdv4et2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_JRuRPUozL36j8sMpNilUk7ZO40Bcduc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

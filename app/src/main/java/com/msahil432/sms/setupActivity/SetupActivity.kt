@@ -29,7 +29,7 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
 
   private val progressBar by bind<PieChart>(R.id.setup_progress)
 
-  private var totalSMS = 100f
+  private var totalSMS = 3000f
   private var ads = 0f
   private var money = 0f
   private var updates = 0f
@@ -78,26 +78,28 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
     viewModel.getTotalSMS().observe(this, Observer<Float> { t ->
       totalSMS = t!!
       smsCollected()
-      progressBar.invalidate()
+      updateProgress()
     })
-    viewModel.getPersonalSMS().observe(this, Observer<Int> { t ->
+    val dao = getSmsDb()!!.userDao()
+    dao.getCount("PERSONAL").observe(this, Observer<Int> { t ->
       pers = t!!.toFloat()
       updateProgress()
     })
-    viewModel.getMoneySMS().observe(this, Observer<Float> { t ->
-      money = t!!
+    dao.getCount("MONEY").observe(this, Observer<Int> { t ->
+      money = t!!.toFloat()
       updateProgress()
     })
-    viewModel.getAdsSMS().observe(this, Observer<Float> { t ->
-      ads = t!!
+    dao.getCount("ADS").observe(this, Observer<Int> { t ->
+      ads = t!!.toFloat()
       updateProgress()
     })
-    viewModel.getUpdateSMS().observe(this, Observer<Float> { t ->
-      updates = t!!
+    dao.getCount("UPDATES").observe(this, Observer<Int> { t ->
+      calledFinish=false
+      updates = t!!.toFloat()
       updateProgress()
     })
-    viewModel.getOtherSMS().observe(this, Observer<Float> { t->
-      others = t!!
+    dao.getCount("OTHERS").observe(this, Observer<Int> { t ->
+      others = t!!.toFloat()
       updateProgress()
     })
     viewModel.networkOk.observe(this, Observer {
@@ -166,18 +168,20 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
         entries.add(PieEntry(ads, ""))
       else
         entries.add(PieEntry(ads, getString(R.string.ads_sms)))
-      colors.add(ColorTemplate.PASTEL_COLORS[3])
+      colors.add(ColorTemplate.PASTEL_COLORS[4])
     }
     if(others>1){
       if(others/totalSMS < 0.03)
         entries.add(PieEntry(others, ""))
       else
         entries.add(PieEntry(others, getString(R.string.other_sms)))
-      colors.add(ColorTemplate.PASTEL_COLORS[4])
+      colors.add(ColorTemplate.PASTEL_COLORS[3])
     }
 
-    entries.add(PieEntry(totalSMS-doneSMS, "Remaining"))
-    colors.add(ColorTemplate.getHoloBlue())
+    if(totalSMS-doneSMS>1) {
+      entries.add(PieEntry(totalSMS - doneSMS, "Remaining"))
+      colors.add(ColorTemplate.getHoloBlue())
+    }
 
     val dataSet = PieDataSet(entries, "SMS Classes")
     dataSet.sliceSpace = 3f
@@ -199,7 +203,8 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
     progressBar.highlightValues(null)
     progressBar.notifyDataSetChanged()
 
-    if(doneSMS == totalSMS) {
+    if(doneSMS >= totalSMS && !calledFinish) {
+      calledFinish = true
       categorizingSmsStep.setAnchor(getTime())
       categorizingSmsStep.setActive(false)
       doneStep.setActive(true)
@@ -207,9 +212,11 @@ class SetupActivity : BaseActivity<SetupViewModel>() {
 
       Toast.makeText(this, R.string.we_are_done, Toast.LENGTH_LONG).show()
       setResult(Activity.RESULT_OK)
-      Handler().postDelayed({ finish() }, 2500)
+      Handler().postDelayed({ finish() }, 1000)
     }
   }
+
+  var calledFinish = true
 
   private fun getTime() : String{
     val c = Calendar.getInstance()

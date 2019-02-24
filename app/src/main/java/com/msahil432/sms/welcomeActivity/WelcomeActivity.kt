@@ -18,21 +18,20 @@ class WelcomeActivity : IntroActivity() {
 
     addSlide(
       SimpleSlide.Builder()
-        .title("Plus SMS")
-        .description("Welcome")
+        .title(R.string.welcome)
+        .description(R.string.welcome_description)
         .image(R.drawable.icon)
         .background(R.color.white)
 //        .backgroundDark(R.color.colorPrimaryDark)
         .scrollable(true)
-//        .permission(Manifest.permission.CAMERA)
         .build())
 
     addSlide(
       SimpleSlide.Builder()
-        .title("Plus SMS")
-        .description("SMS Permission")
+        .title(R.string.sms_permission)
+        .description(R.string.sms_description)
         .image(R.drawable.icon)
-        .background(R.color.white_shaded)
+        .background(R.color.white)
 //        .backgroundDark(R.color.colorPrimaryDark)
         .scrollable(true)
         .permissions(arrayOf(
@@ -43,21 +42,19 @@ class WelcomeActivity : IntroActivity() {
 
     addSlide(
       SimpleSlide.Builder()
-        .title("Plus SMS")
-        .description("Contacts Permission")
+        .title(R.string.contacts_permission)
+        .description(R.string.contacts_description)
         .image(R.drawable.icon)
-        .background(R.color.white_shaded)
+        .background(R.color.white)
 //        .backgroundDark(R.color.colorPrimaryDark)
         .scrollable(true)
-        .permissions(arrayOf(
-          Manifest.permission.READ_CONTACTS,
-          Manifest.permission.WRITE_CONTACTS))
+        .permission(Manifest.permission.READ_CONTACTS)
         .build())
 
     addSlide(
       SimpleSlide.Builder()
         .title("Plus SMS")
-        .description("All Done! Let's Go.")
+        .description(getString(R.string.lets_go))
         .image(R.drawable.icon)
         .background(R.color.white)
 //        .backgroundDark(R.color.colorPrimaryDark)

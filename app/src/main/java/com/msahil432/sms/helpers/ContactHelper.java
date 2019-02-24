@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.provider.Telephony;
 import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -23,6 +24,23 @@ import java.util.regex.Pattern;
 public class ContactHelper {
 
   public static final String TAG = "ContactHelper";
+
+  public static String GetPhone(Context context, String threadId){
+    if(threadId == null || threadId.isEmpty())
+      return null;
+    try {
+      Cursor cursor = context.getContentResolver().query(Telephony.Sms.CONTENT_URI, null,
+          Telephony.Sms.THREAD_ID +"="+threadId, null, null);
+      assert cursor != null;
+      cursor.moveToFirst();
+      String t = cursor.getString(cursor.getColumnIndex(Telephony.Sms.ADDRESS));
+      cursor.close();
+      return t;
+    }catch (Exception e){
+      e.printStackTrace();
+      return null;
+    }
+  }
 
   public static String getName(Context context, String address) {
     if (address == null || address.isEmpty() || validateEmail(address))

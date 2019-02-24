@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.msahil432.sms.helpers.SmsHelper.GetPhone;
+import static com.msahil432.sms.helpers.ContactHelper.GetPhone;
 
 public class BackgroundCategorizationService extends IntentService {
 
@@ -49,7 +49,7 @@ public class BackgroundCategorizationService extends IntentService {
     if(prefs==null)
       prefs = getSharedPreferences("bg-service", Context.MODE_PRIVATE);
     if(smsDb == null)
-      smsDb = ((SmsApplication) getApplication()).getSmsDatabase();
+      smsDb = SmsApplication.getSmsDatabase(getApplicationContext());
 
     Set<String> set = prefs.getStringSet("uncat", new HashSet<String>());
     try{
@@ -113,11 +113,20 @@ public class BackgroundCategorizationService extends IntentService {
 
   private ServerMessage createInitialMessage(String timestamp){
     try {
-      Cursor c = getContentResolver().query(Uri.parse("content://sms/"),
-          new String[]{Telephony.Sms.THREAD_ID, Telephony.Sms.BODY, Telephony.Sms._ID, Telephony.Sms.DATE},
-          Telephony.Sms.DATE + "=" + timestamp, null, null);
-      if(c==null || !c.moveToFirst())
-        return null;
+      Cursor c = getContentResolver().query(Telephony.Sms.Inbox.CONTENT_URI,
+          new String[]{Telephony.Sms.Inbox.THREAD_ID, Telephony.Sms.Inbox.BODY, Telephony.Sms.Inbox._ID,
+              Telephony.Sms.Inbox.DATE}, Telephony.Sms.Inbox.DATE + "=" + timestamp,
+          null, null);
+      if(c==null || !c.moveToFirst()) {
+        // Try in Sent SMS
+        c = getContentResolver().query(Telephony.Sms.Sent.CONTENT_URI,
+            new String[]{Telephony.Sms.Sent.THREAD_ID, Telephony.Sms.Sent.BODY, Telephony.Sms.Sent._ID,
+                Telephony.Sms.Sent.DATE}, Telephony.Sms.Sent.DATE_SENT + "=" + timestamp,
+            null, null);
+        if(c==null || !c.moveToFirst()) {
+          return null;
+        }
+      }
       ServerMessage s = new ServerMessage();
       s.setId("t"+c.getInt(0)+"m"+c.getInt(2));
       s.setTextMessage(c.getString(1));
@@ -142,7 +151,7 @@ public class BackgroundCategorizationService extends IntentService {
       int read = cur2.getInt(0);
       long timestamp = cur2.getLong(1);
       cur2.close();
-      SMS sms = new SMS(t.getId(), "OTHERS", threadId, mId, phone, read, timestamp);
+      SMS sms = new SMS(t.getId(), "OTHERS", t.getTextMessage(), threadId, mId, phone, read, timestamp);
       switch (sms.cat){
         case "PROMOTIONAL": case "PROMO" : {
           sms.cat = "ADS";
@@ -176,16 +185,23 @@ public class BackgroundCategorizationService extends IntentService {
 
   private Set<String> findNonCats(){
     try {
-      Cursor c = getContentResolver().query(Uri.parse("content://sms/"),
+      Cursor c = getContentResolver().query(Telephony.Sms.CONTENT_URI,
           null, "body IS NOT NULL", null, null);
       if (c == null || !c.moveToFirst())
         return null;
       int tsIndex = c.getColumnIndex(Telephony.Sms.DATE);
+      int tsSIndex = c.getColumnIndex(Telephony.Sms.DATE_SENT);
       HashSet<String> set = new HashSet<>();
       do{
-        long ts = c.getLong(tsIndex);
-        if(smsDb.userDao().getCat(ts).isEmpty()){
-          set.add(ts+"");
+        try {
+          long ts = c.getLong(tsIndex);
+          if(ts==0)
+            ts = c.getLong(tsSIndex);
+          if (smsDb.userDao().getCat(ts).isEmpty()) {
+            set.add(ts + "");
+          }
+        }catch (Exception e){
+          Log.e(TAG, e.getMessage(), e);
         }
       }while (c.moveToNext());
       c.close();

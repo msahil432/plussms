@@ -10,6 +10,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
+import androidx.paging.DataSource
+import androidx.paging.LivePagedListBuilder
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.msahil432.sms.R
@@ -29,8 +31,6 @@ class ConversationActivity : BaseActivity<ConversationViewModel>(), SearchView.O
   private lateinit var threadId: String
   private var isPhone = false
 
-  private lateinit var adapter: TextsListAdapter
-
   override fun setLayout(): Int = R.layout.activity_conversation
 
   override fun setViewModelClass(): Class<ConversationViewModel>? {
@@ -42,22 +42,20 @@ class ConversationActivity : BaseActivity<ConversationViewModel>(), SearchView.O
 
     texts_list.layoutManager = LinearLayoutManager(applicationContext,
       RecyclerView.VERTICAL, true)
-    adapter = TextsListAdapter(ArrayList(), 0)
-    texts_list.adapter = adapter
+
+    val t = PagedRecyclerAdapter(applicationContext, address, personName)
+    texts_list.adapter = t
+    val factory: DataSource.Factory<Int, SMS> = getSmsDb()!!.userDao().getSmsForThread(threadId)
+    val pagedListBuilder= LivePagedListBuilder<Int, SMS>(factory,25)
+    pagedListBuilder.build().observe(this, Observer {
+      if(it!=null)  t.submitList(it)
+    })
+
     return ConversationViewModel::class.java
   }
 
   override fun attachViewModelListeners(viewModel: ConversationViewModel) {
-    viewModel.loadSms(getSmsDb()!!, threadId, category)
 
-    viewModel.totalSms.observe(this, Observer {
-      adapter.setTotalSize(it)
-      viewModel.add50Texts(applicationContext)
-    })
-    viewModel.smsList.observe(this, Observer {
-      if(it.size>1)
-        adapter.setList(it)
-    })
   }
 
   override fun doWork() {
@@ -76,10 +74,9 @@ class ConversationActivity : BaseActivity<ConversationViewModel>(), SearchView.O
   @Subscribe(threadMode = ThreadMode.MAIN)
   fun newMessageArrived(event: Event){
     if(event==Event.NEW_SMS_RECEIVED) {
-      viewModel.loadSms(getSmsDb()!!, threadId, category)
+
     }else if(event==Event.LOAD_MORE_TEXTS){
-      if(!viewModel.loading)
-        viewModel.add50Texts(applicationContext)
+
     }
   }
 
@@ -105,7 +102,7 @@ class ConversationActivity : BaseActivity<ConversationViewModel>(), SearchView.O
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     when(item.itemId){
       R.id.convo_call ->{
-        startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:${address}")))
+        startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:$address")))
       }
       R.id.convo_open_contact ->{
         ContactHelper.viewContact(applicationContext, address)
@@ -136,14 +133,16 @@ class ConversationActivity : BaseActivity<ConversationViewModel>(), SearchView.O
   companion object {
 
     fun OpenThread(threadId : String, cat: String, name: String,
-                          address: String, context: Context) : Intent{
+                          address: String, context: Context){
       val i = Intent(context, ConversationActivity::class.java)
       i.putExtra("cat", cat)
       i.putExtra("threadId", threadId)
       i.putExtra("address", address)
       i.putExtra("name", name)
-      return i
+      i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+      context.startActivity(i)
     }
+
   }
 
 }

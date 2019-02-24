@@ -74,16 +74,16 @@ abstract class BaseActivity<VM : ViewModel> : AppCompatActivity() {
 
   override fun onPostResume() {
     super.onPostResume()
-    attachViewModelListeners(viewModel)
+    if (::viewModel.isInitialized) {
+      attachViewModelListeners(viewModel)
+    }
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {
     super.onPostCreate(savedInstanceState)
     try {
       EventBus.getDefault().register(this)
-    } catch (e: Exception) {
-      Log.e("BaseActivity", "Error with EventBus Subscription")
-    }
+    } catch (e: Exception) { }
     doWork()
   }
 
@@ -153,7 +153,7 @@ abstract class BaseActivity<VM : ViewModel> : AppCompatActivity() {
 
   protected fun getSmsDb() : SmsDatabase?{
     if(application is SmsApplication)
-      return (application as SmsApplication).smsDatabase
+      return SmsApplication.getSmsDatabase(applicationContext)
     return null
   }
 

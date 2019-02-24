@@ -1,10 +1,8 @@
 package com.msahil432.sms.database
 
-import android.provider.Telephony
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.*
-import com.msahil432.sms.helpers.SmsHelper
 
 /**
  * Created by msahil432
@@ -22,11 +20,17 @@ interface UserDao {
   @Query("select count(id) from sms where cat = :cat")
   fun getCount(cat: String): LiveData<Int>
 
-  @Query("select mId from sms where status = ${SmsHelper.UNREAD}")
-  fun getUnreadCount(): LiveData<List<String>>
+  @Query("select mId from sms where status =0")
+  fun getUnreadCount(): List<String>
 
-  @Query("select mId from sms where cat = :cat and status = ${SmsHelper.UNREAD}")
-  fun getUnreadCount(cat: String): LiveData<List<String>>
+  @Query("select mId from sms where cat = :cat and status = 0")
+  fun getUnreadCount(cat: String):List<String>
+
+  @Query("select mId from sms where status =0")
+  fun getLiveUnreadCount(): LiveData<List<String>>
+
+  @Query("select mId from sms where cat = :cat and status = 0")
+  fun getLiveUnreadCount(cat: String): LiveData<List<String>>
 
   @Query("select * from sms where cat = :cat group by threadId order by max (timestamp) desc")
   fun getForCat(cat: String): DataSource.Factory<Int, SMS>
@@ -42,6 +46,9 @@ interface UserDao {
 
   @Query("select mId from sms where threadId= :tId and cat= :cat order by mId desc")
   fun getMessagesForThread(tId: String, cat: String) : List<String>
+
+  @Query("select * from sms where threadId= :tId order by mId desc")
+  fun getSmsForThread(tId: String) : DataSource.Factory<Int, SMS>
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   fun insertAll(vararg users: SMS)

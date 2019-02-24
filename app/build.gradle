@@ -16,8 +16,8 @@ android {
         applicationId "com.msahil432.sms"
         minSdkVersion 25
         targetSdkVersion 28
-        versionCode 40
-        versionName "0.4.0"
+        versionCode 52
+        versionName "0.5.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -76,7 +76,6 @@ dependencies {
 
     // For Setup Activity
     implementation 'com.github.transferwise:sequence-layout:1.0.7'
-    implementation 'com.github.florent37:android-slidr:1.0.3'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
 
     // For AppBar Search
@@ -87,4 +86,11 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-core:16.0.7'
     implementation 'com.google.firebase:firebase-perf:16.2.3'
+
+    // Contact Picker
+    implementation 'com.codinguser.android:contactpicker:3.0.0@aar'
+
+    implementation 'com.google.android:flexbox:1.1.0'
+
+    implementation 'com.github.stfalcon:chatkit:0.3.3'
 }

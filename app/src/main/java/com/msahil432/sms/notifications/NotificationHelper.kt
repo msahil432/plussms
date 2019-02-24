@@ -14,8 +14,11 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
 import androidx.core.graphics.drawable.IconCompat
 import com.msahil432.sms.R
+import com.msahil432.sms.SmsApplication
 import com.msahil432.sms.SplashActivity
 import com.msahil432.sms.helpers.ContactHelper
+import com.msahil432.sms.homeActivity.HomeActivity
+import java.lang.Exception
 
 /**
  * Created by msahil432
@@ -103,5 +106,126 @@ class NotificationHelper{
       }
 
     }
+
+    fun showSummary(context: Context) {
+      try {
+        val SUMMARY_ID = 1011
+        val SUMMARY_GROUP_ID = "com.msahil432.sms.SUMMARY"
+
+        val dao = SmsApplication.getSmsDatabase(context).userDao()
+
+        val notiService = NotificationManagerCompat.from(context)
+
+        val adsUnread = dao.getUnreadCount("ADS").size
+        if(adsUnread>0){
+          val noti = NotificationCompat.Builder(context, OTHERS_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_delete_sweep_black_24dp)
+            .setContentTitle(context.getString(R.string.ads_sms))
+            .setContentText("$adsUnread ${context.getString(R.string.unread_sms)}")
+            .setContentIntent(
+              PendingIntent.getActivity(
+                context, 0,
+                HomeActivity.openCat(context, HomeActivity.Companion.CAT.ADS), 0
+              )
+            )
+            .setGroup(SUMMARY_GROUP_ID)
+            .setAutoCancel(true)
+            .build()
+          notiService.notify(2, noti)
+        }
+
+        val othersUnread = dao.getUnreadCount("OTHERS").size
+        if(othersUnread>0){
+          val noti = NotificationCompat.Builder(context, OTHERS_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_speaker_notes_black_24dp)
+            .setContentTitle(context.getString(R.string.other_sms))
+            .setContentText("$othersUnread ${context.getString(R.string.unread_sms)}")
+            .setContentIntent(
+              PendingIntent.getActivity(
+                context, 0,
+                HomeActivity.openCat(context, HomeActivity.Companion.CAT.OTHERS), 0
+              )
+            )
+            .setGroup(SUMMARY_GROUP_ID)
+            .setAutoCancel(true)
+            .build()
+          notiService.notify(5, noti)
+        }
+
+        val updatesUnread = dao.getUnreadCount("UPDATES").size
+        if(updatesUnread>0){
+          val noti = NotificationCompat.Builder(context, OTHERS_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_info_black_24dp)
+            .setContentTitle(context.getString(R.string.updates_sms))
+            .setContentText("$updatesUnread ${context.getString(R.string.unread_sms)}")
+            .setContentIntent(
+              PendingIntent.getActivity(
+                context, 0,
+                HomeActivity.openCat(context, HomeActivity.Companion.CAT.UPDATES), 0
+              )
+            )
+            .setGroup(SUMMARY_GROUP_ID)
+            .setAutoCancel(true)
+            .build()
+          notiService.notify(4, noti)
+        }
+
+        val moneyUnread = dao.getUnreadCount("MONEY").size
+        if(moneyUnread>0){
+          val noti = NotificationCompat.Builder(context, OTHERS_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_attach_money_black_24dp)
+            .setContentTitle(context.getString(R.string.money_sms))
+            .setContentText("$moneyUnread ${context.getString(R.string.unread_sms)}")
+            .setContentIntent(
+              PendingIntent.getActivity(
+                context, 0,
+                HomeActivity.openCat(context, HomeActivity.Companion.CAT.MONEY), 0
+              )
+            )
+            .setGroup(SUMMARY_GROUP_ID)
+            .setAutoCancel(true)
+            .build()
+          notiService.notify(3, noti)
+        }
+
+        val persUnread = dao.getUnreadCount("PERSONAL").size
+        if(persUnread>0){
+          val personalNoti = NotificationCompat.Builder(context, OTHERS_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_person_pin_black_24dp)
+            .setContentTitle(context.getString(R.string.personal_sms))
+            .setContentText("$persUnread ${context.getString(R.string.unread_sms)}")
+            .setContentIntent(
+              PendingIntent.getActivity(
+                context, 0,
+                HomeActivity.openCat(context, HomeActivity.Companion.CAT.PERSONAL), 0
+              )
+            )
+            .setGroup(SUMMARY_GROUP_ID)
+            .setAutoCancel(true)
+            .build()
+          notiService.notify(1, personalNoti)
+        }
+
+        val totalUnread = persUnread+moneyUnread+adsUnread+othersUnread+updatesUnread
+
+        val summaryNotification = NotificationCompat.Builder(context, OTHERS_CHANNEL_ID)
+          .setContentTitle(context.getString(R.string.app_name_summary))
+          .setContentText("$totalUnread ${context.getString(R.string.unread_sms)}")
+          .setSmallIcon(R.drawable.icon)
+          .setStyle(NotificationCompat.InboxStyle()
+            .setBigContentTitle("$totalUnread ${context.getString(R.string.unread_sms)}")
+            .setSummaryText("$totalUnread ${context.getString(R.string.unread_sms)}"))
+          .setGroup(SUMMARY_GROUP_ID)
+          .setAutoCancel(true)
+          .setGroupSummary(true)
+          .build()
+
+        notiService.notify(SUMMARY_ID, summaryNotification)
+
+      }catch (e: Exception){
+        Log.e("Notification Helper", e.message, e)
+      }
+    }
+
   }
 }

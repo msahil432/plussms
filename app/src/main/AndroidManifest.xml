@@ -3,8 +3,7 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="com.msahil432.sms">
   
-  <uses-permission
-       android:name="android.permission.BROADCAST_SMS"
+  <uses-permission android:name="android.permission.BROADCAST_SMS"
        tools:ignore="ProtectedPermissions"/>
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.READ_CONTACTS"/>
@@ -15,8 +14,7 @@
   <uses-permission android:name="android.permission.SEND_SMS"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="android.permission.RECEIVE_MMS"/>
-  <uses-permission
-       android:name="android.permission.BROADCAST_WAP_PUSH"
+  <uses-permission android:name="android.permission.BROADCAST_WAP_PUSH"
        tools:ignore="ProtectedPermissions"/>
   <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH"/>
   <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
@@ -32,8 +30,7 @@
        android:roundIcon="@mipmap/ic_launcher_round"
        android:supportsRtl="true"
        android:theme="@style/AppTheme">
-    <activity android:name=".conversationActivity.ConversationActivity">
-    </activity>
+    <activity android:name=".conversationActivity.ConversationActivity"/>
     <activity
          android:name=".settingsActivity.SettingsActivity"
          android:label="@string/title_activity_settings">
@@ -49,6 +46,7 @@
     <activity
          android:name=".homeActivity.HomeActivity"
          android:label="@string/title_activity_home"
+         android:launchMode="singleTask"
          android:theme="@style/AppTheme.NoActionBar">
       <intent-filter>
         <action android:name="android.intent.action.SEND"/>
@@ -108,16 +106,21 @@
         <data android:scheme="mmsto"/>
       </intent-filter>
     </service>
-    <service android:name=".services.BackgroundCategorizationService" android:exported="true"/>
+    <service
+         android:name=".services.BackgroundCategorizationService"
+         android:exported="true"/>
+    
     <receiver
          android:name=".receivers.BootCompletedReceiver"
          android:enabled="true"
-         android:permission="android.permission.RECEIVE_BOOT_COMPLETED" >
+         android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
       <intent-filter>
-        <action android:name="android.intent.action.BOOT_COMPLETED" />
-        <category android:name="android.intent.category.DEFAULT" />
+        <action android:name="android.intent.action.BOOT_COMPLETED"/>
+        
+        <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </receiver>
+    
     <meta-data
          android:name="io.fabric.ApiKey"
          android:value="a7efd9c0a3285e089ff9ae29fd130fd15cb05fa8"/>

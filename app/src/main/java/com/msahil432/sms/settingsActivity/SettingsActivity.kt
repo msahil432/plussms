@@ -22,6 +22,7 @@ import com.msahil432.sms.common.Event
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import android.app.ActivityManager
 
 /**
  * A [PreferenceActivity] that presents a set of application settings. On
@@ -68,7 +69,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
       val mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId,
         mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT)
       val mgr = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-      mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 123, mPendingIntent)
+      mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 800, mPendingIntent)
       finishAffinity()
     }
   }
@@ -195,10 +196,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
       // updated to reflect the new value, per the Android Design
       // guidelines.
 
-      SettingsActivity.bindPreferenceSummaryToValue(findPreference("example_text"))
-      SettingsActivity.bindPreferenceSummaryToValue(findPreference("example_list"))
-
-      findPreference("dark_mode").setOnPreferenceClickListener {
+      findPreference("dark_theme").setOnPreferenceChangeListener { _, _ ->
         EventBus.getDefault().post(Event.EXIT_APPLICATION)
         true
       }
@@ -206,6 +204,8 @@ class SettingsActivity : AppCompatPreferenceActivity() {
       findPreference("clear_data").setOnPreferenceClickListener {
         it.context.getSharedPreferences("com.msahil432.sms_preferences",
           Context.MODE_PRIVATE).edit().clear().apply()
+        (it.context.getSystemService(ACTIVITY_SERVICE) as ActivityManager)
+          .clearApplicationUserData()
         EventBus.getDefault().post(Event.EXIT_APPLICATION)
         true
       }

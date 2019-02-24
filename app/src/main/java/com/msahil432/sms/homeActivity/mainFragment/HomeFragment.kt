@@ -68,7 +68,7 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
 
   override fun attachViewModelListeners(viewModel: HomeViewModel) {
     if(activity!!.application is SmsApplication){
-      val db = (activity!!.application as SmsApplication).smsDatabase
+      val db = SmsApplication.getSmsDatabase(context)
 
       db.userDao().getCount().observe(this, Observer {
         totalSMS = it!!.toFloat()
@@ -99,7 +99,6 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
         others = it!!.toFloat()
         refreshDiversity()
       })
-
 
     }
   }

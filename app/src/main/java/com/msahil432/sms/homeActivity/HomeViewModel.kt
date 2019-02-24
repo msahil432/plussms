@@ -31,11 +31,11 @@ class HomeViewModel : BaseViewModel(){
   fun getSMS() = smsList
 
   fun loadUnreads(smsDatabase: SmsDatabase){
-    adsUnread = smsDatabase.userDao().getUnreadCount("PROMOTIONAL")
-    personalUnread = smsDatabase.userDao().getUnreadCount("PERSONAL")
-    othersUnread = smsDatabase.userDao().getUnreadCount("OTHERS")
-    moneyUnread = smsDatabase.userDao().getUnreadCount("MONEY")
-    updatesUnread = smsDatabase.userDao().getUnreadCount("UPDATES")
+    adsUnread = smsDatabase.userDao().getLiveUnreadCount("PROMOTIONAL")
+    personalUnread = smsDatabase.userDao().getLiveUnreadCount("PERSONAL")
+    othersUnread = smsDatabase.userDao().getLiveUnreadCount("OTHERS")
+    moneyUnread = smsDatabase.userDao().getLiveUnreadCount("MONEY")
+    updatesUnread = smsDatabase.userDao().getLiveUnreadCount("UPDATES")
   }
 
 }

@@ -5,8 +5,6 @@
   <string name="title_activity_home">HomeActivity</string>
   <string name="navigation_drawer_open">Open navigation drawer</string>
   <string name="navigation_drawer_close">Close navigation drawer</string>
-  <string name="nav_header_title">Android Studio</string>
-  <string name="nav_header_subtitle">android.studio@android.com</string>
   <string name="nav_header_desc">Navigation header</string>
   <string name="action_settings">Settings</string>
   <string name="home">Home</string>
@@ -19,11 +17,13 @@
   <string name="loading">Loading...</string>
   <string name="please_wait_n_processing_sms_for_first_run">Please Wait… Processing SMS for First Run</string>
   <string name="we_are_done">We Are Done!</string>
+  <string name="app_name_summary">Unread Sms Summary - Plus Sms</string>
   <string name="other_sms">Others</string>
   <string name="ads_sms">Ads</string>
   <string name="updates_sms">Updates</string>
   <string name="money_sms">Money</string>
   <string name="personal_sms">Personal</string>
+  <string name="unread_sms">Unread SMS</string>
   <string name="then">Then</string>
   <string name="search_in">Search in&#160;</string>
   <string name="dont_exit_setup">Please Don\'t Exit from Setup while Processing!</string>
@@ -124,4 +124,20 @@
   <string name="delete">Delete</string>
   <string name="view_contact">View Contact</string>
   <string name="report_wrong_category">Report Wrong Category</string>
+  <string name="welcome">Welcome</string>
+  <string name="welcome_description">
+    <b>Plus Sms</b> \n\n <i>Making Short Messages Smarter</i>\n\n\n It automatically organizes all your SMS into
+    Personal, Updates, Money and Ads category to help you declutter your SMS Inbox so that you never miss any important
+    message. Switch to Plus SMS as your default SMS App to have the smart SMS inbox experience.
+  </string>
+  <string name="sms_permission">Please Grant SMS Permissions</string>
+  <string name="sms_description">This Application uses an online server to categorize your SMS, so your Inbox SMS are
+    sent to the server using secure HTTPS connection. In this process, only the Text Part of received SMS is sent to the
+    server. The sent SMS are not uploaded either.
+  </string>
+  <string name="contacts_permission">Please Grant Contacts Permissions</string>
+  <string name="contacts_description">It is required only to show Contact Names and some information inside Application.
+    \n\nNone of your Contacts, Phone Numbers are uploaded to server in any way.
+  </string>
+  <string name="lets_go">All Done! Let\'s Go.</string>
 </resources>

@@ -35,8 +35,8 @@ public class BasicPrefs {
     prefs.edit().putBoolean("setupDone", true).apply();
   }
 
-  public boolean darkMode(){
-    return prefs.getBoolean("dark_mode", false);
+  public String darkMode(){
+    return prefs.getString("dark_theme", null);
   }
 
 }

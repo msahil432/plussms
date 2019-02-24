@@ -11,9 +11,13 @@ import com.msahil432.sms.notifications.NotificationHelper;
 import com.msahil432.sms.receivers.BootCompletedReceiver;
 import com.msahil432.sms.services.BackgroundCategorizationService;
 
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class SmsApplication extends Application {
 
-  private SmsDatabase smsDatabase;
+  private static SmsDatabase smsDatabase;
 
   @Override
   public void onCreate() {
@@ -27,9 +31,9 @@ public class SmsApplication extends Application {
     getApplicationContext().registerReceiver(new BootCompletedReceiver(), filter);
   }
 
-  public SmsDatabase getSmsDatabase() {
+  public static SmsDatabase getSmsDatabase(Context context) {
     if(smsDatabase== null || !smsDatabase.isOpen())
-      Room.databaseBuilder(getApplicationContext(), SmsDatabase.class, "database-sms")
+      Room.databaseBuilder(context, SmsDatabase.class, "database-sms")
           .fallbackToDestructiveMigration().build();
     return smsDatabase;
   }
@@ -51,7 +55,7 @@ public class SmsApplication extends Application {
     return intent;
   }
 
-  public static boolean copyOTP(Context context, String text) {
+  public static boolean copyText(Context context, String text) {
     try {
       ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
       ClipData clip = ClipData.newPlainText("OTP", text);
@@ -63,6 +67,27 @@ public class SmsApplication extends Application {
       e.printStackTrace();
       return false;
     }
+  }
+
+  public static ArrayList<String> findOtp(String text){
+    try{
+      text = text.toLowerCase();
+      if( ! (text.contains("code") || text.contains("one time password")
+              || (text.contains("otp")) ))
+        return null;
+
+      ArrayList<String> codes = new ArrayList<>();
+      Pattern p = Pattern.compile("\\d{1,3}");
+      Matcher m = p.matcher(text);
+      if(! m.find())
+        return null;
+      for(int i =0; i<m.groupCount(); i++)
+        codes.add(m.group(i));
+      return codes;
+    }catch (Exception e){
+      Log.e("FindOtp", "findOtp: "+e.getMessage(), e);
+    }
+    return null;
   }
 
 }

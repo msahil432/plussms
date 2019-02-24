@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatDelegate
 import android.view.View
+import com.msahil432.sms.common.BaseViewModel
 import com.msahil432.sms.homeActivity.HomeActivity
 import com.msahil432.sms.notifications.NotificationHelper
 import com.msahil432.sms.settingsActivity.BasicPrefs
@@ -21,8 +22,10 @@ class SplashActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     prefs = BasicPrefs.getInstance(applicationContext)
-    if(prefs!!.darkMode())
+    if(prefs!!.darkMode()=="1")
       delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+    else if(prefs!!.darkMode()=="-1")
+      delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     else
       delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
     super.onCreate(savedInstanceState)
@@ -40,10 +43,6 @@ class SplashActivity : AppCompatActivity() {
         finish()
       }
     }, 800)
-    NotificationHelper.createPersonalNotification(applicationContext,
-      "Sahil", "Sahil Malik", getString(R.string.invite_msg))
-    NotificationHelper.createPersonalNotification(applicationContext,
-      "Sahil", "SAhil Malik", getString(R.string.invite_msg))
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -2,7 +2,6 @@ package com.msahil432.sms.homeActivity.convoFragment
 
 import android.content.Context
 import android.graphics.Typeface
-import android.provider.Telephony.Sms
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,6 @@ import com.msahil432.sms.R
 import com.msahil432.sms.conversationActivity.ConversationActivity
 import com.msahil432.sms.database.SMS
 import com.msahil432.sms.helpers.ContactHelper
-import com.msahil432.sms.helpers.SmsHelper
 import com.msahil432.sms.helpers.TimeHelper
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -41,17 +39,6 @@ class PagedRecyclerAdapter(val context: Context) : PagedListAdapter<SMS, PagedRe
         if(sms.timeAgo == null) {
           sms.timeAgo = TimeHelper.TimeAgo(System.currentTimeMillis()-sms.timestamp)
           getItem(position)!!.timeAgo = sms.timeAgo
-        }
-        if(sms.body == null || sms.timeAgo == null) {
-          val cursor = context.contentResolver.query(Sms.CONTENT_URI,
-              arrayOf(Sms.Inbox.BODY, Sms._ID),
-            Sms._ID + "=" + sms.mId, null, null)!!
-          cursor.moveToFirst()
-          sms.body = cursor.getString(0)
-          while(sms.body.contains("\n"))
-            sms.body = sms.body.replace("\n", " ")
-          cursor.close()
-          getItem(position)!!.body = sms.body
         }
         if(sms.name == null) {
           sms.name = ContactHelper.getName(context, sms.phone)
@@ -79,23 +66,23 @@ class PagedRecyclerAdapter(val context: Context) : PagedListAdapter<SMS, PagedRe
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun bind(sms: SMS){
-      if(sms.status == SmsHelper.UNREAD.toInt()) {
-        name.setTypeface(name.typeface, Typeface.BOLD_ITALIC)
+      if(sms.status == 0) {
+        name.setTypeface(name.typeface, Typeface.BOLD)
         snippet.setTypeface(snippet.typeface, Typeface.BOLD)
         snippet.maxLines = 3
       }else{
-        name.setTypeface(name.typeface, Typeface.BOLD)
         snippet.typeface = Typeface.DEFAULT
         snippet.maxLines = 1
       }
+      while(sms.text.contains("\n"))
+        sms.text = sms.text.replace("\n", " ")
       thumbnail.setImageBitmap(sms.thumbnail)
-      snippet.text = sms.body
+      snippet.text = sms.text
       convoTime.text = sms.timeAgo
       name.text = sms.name
       super.itemView.setOnClickListener {
         Log.e("PagedRecycler "+sms.id, sms.name)
-        val i = ConversationActivity.OpenThread(sms.threadId, sms.cat, sms.name, sms.phone, it.context)
-        it.context.startActivity(i)
+        ConversationActivity.OpenThread(sms.threadId, sms.cat, sms.name, sms.phone, it.context)
       }
     }
 
@@ -107,7 +94,7 @@ class PagedRecyclerAdapter(val context: Context) : PagedListAdapter<SMS, PagedRe
     }
 
     override fun areContentsTheSame(oldItem: SMS, newItem: SMS): Boolean {
-      return oldItem.name==newItem.name && oldItem.body==newItem.body && oldItem.timeAgo==newItem.timeAgo
+      return oldItem.name==newItem.name && oldItem.text==newItem.text && oldItem.timeAgo==newItem.timeAgo
     }
   }
 

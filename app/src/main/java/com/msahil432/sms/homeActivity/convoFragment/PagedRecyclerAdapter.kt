@@ -29,7 +29,7 @@ import java.lang.Exception
 class PagedRecyclerAdapter(val context: Context) : PagedListAdapter<SMS, PagedRecyclerAdapter.MyViewHolder>(SmsDiffCallback()){
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-    return MyViewHolder(LayoutInflater.from(context)
+    return MyViewHolder(LayoutInflater.from(parent.context)
       .inflate(R.layout.item_conversation, parent, false))
   }
 
@@ -82,7 +82,7 @@ class PagedRecyclerAdapter(val context: Context) : PagedListAdapter<SMS, PagedRe
       name.text = sms.name
       super.itemView.setOnClickListener {
         Log.e("PagedRecycler "+sms.id, sms.name)
-        ConversationActivity.OpenThread(sms.threadId, sms.cat, sms.name, sms.phone, it.context)
+        ConversationActivity.OpenThread(sms.threadId, sms.cat, sms.name, null, sms.phone, it.context)
       }
     }
 

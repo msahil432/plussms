@@ -22,6 +22,8 @@ class HomeViewModel : BaseViewModel(){
   lateinit var moneyUnread : LiveData<List<String>>
   lateinit var updatesUnread : LiveData<List<String>>
 
+  var textSent: String? = null
+
   fun loadSms(smsDatabase: SmsDatabase, cat: String){
     val factory: DataSource.Factory<Int, SMS> = smsDatabase.userDao().getForCat(cat)
     val pagedListBuilder= LivePagedListBuilder<Int, SMS>(factory,25)

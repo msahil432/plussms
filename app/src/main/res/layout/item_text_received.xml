@@ -4,11 +4,10 @@
  android:layout_margin="8dp"
  android:layout_width="match_parent"
  android:layout_height="wrap_content">
-  <androidx.cardview.widget.CardView
+  <RelativeLayout
        app:layout_constraintTop_toTopOf="parent"
        xmlns:android="http://schemas.android.com/apk/res/android"
        xmlns:app="http://schemas.android.com/apk/res-auto"
-       app:elevation="16dp"
        android:id="@+id/date_bubble"
        android:layout_width="match_parent"
        android:layout_height="wrap_content">
@@ -20,12 +19,13 @@
          android:paddingBottom="2dp"
          android:paddingStart="8dp"
          android:paddingEnd="8dp"
+         android:layout_centerInParent="true"
          android:background="@drawable/rounded_bg"
          android:backgroundTint="@color/white_shaded"
          android:text="Moinday. 29 Feb"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"/>
-  </androidx.cardview.widget.CardView>
+  </RelativeLayout>
   <androidx.appcompat.widget.AppCompatImageView
        android:layout_marginBottom="2dp"
        android:paddingStart="0dp"
@@ -43,6 +43,7 @@
        app:layout_constraintEnd_toEndOf="parent"
        android:backgroundTint="@color/white_shaded"
        android:background="@drawable/bubble_from_left"
+       android:textIsSelectable="true"
        android:padding="8dp"
        android:id="@+id/text_body"
        android:autoLink="all"
@@ -57,7 +58,6 @@
        android:textSize="11sp"
        android:text="04:00 PM"
        android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_gravity="bottom|end"/>
+       android:layout_height="wrap_content"/>
   
 </androidx.constraintlayout.widget.ConstraintLayout>

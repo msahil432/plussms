@@ -2,17 +2,20 @@ package com.msahil432.sms
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatDelegate
 import android.view.View
+import com.crashlytics.android.Crashlytics
 import com.msahil432.sms.common.BaseViewModel
 import com.msahil432.sms.homeActivity.HomeActivity
 import com.msahil432.sms.notifications.NotificationHelper
 import com.msahil432.sms.settingsActivity.BasicPrefs
 import com.msahil432.sms.setupActivity.SetupActivity
 import com.msahil432.sms.welcomeActivity.WelcomeActivity
+import io.fabric.sdk.android.Fabric
 
 
 class SplashActivity : AppCompatActivity() {
@@ -21,6 +24,7 @@ class SplashActivity : AppCompatActivity() {
   private val SETUP_CODE = 1404
 
   override fun onCreate(savedInstanceState: Bundle?) {
+
     prefs = BasicPrefs.getInstance(applicationContext)
     if(prefs!!.darkMode()=="1")
       delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -40,6 +44,9 @@ class SplashActivity : AppCompatActivity() {
         startActivityForResult(Intent(applicationContext, SetupActivity::class.java), SETUP_CODE)
       } else{
         startActivity(Intent(applicationContext, HomeActivity::class.java))
+        BaseViewModel.DownloadThread.execute {
+          NotificationHelper.showSummary(applicationContext)
+        }
         finish()
       }
     }, 800)

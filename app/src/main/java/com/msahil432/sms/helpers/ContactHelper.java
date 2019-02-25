@@ -42,6 +42,18 @@ public class ContactHelper {
     }
   }
 
+  public static String CleanPhone(String phone){
+    while(phone.contains("-"))
+      phone = phone.replace("-", "");
+    while(phone.contains(" "))
+      phone = phone.replace(" ", "");
+    while(phone.contains("("))
+      phone = phone.replace("(", "");
+    while(phone.contains(")"))
+      phone = phone.replace(")", "");
+    return phone;
+  }
+
   public static String getName(Context context, String address) {
     if (address == null || address.isEmpty() || validateEmail(address))
       return address;

@@ -4,9 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.cardview.widget.CardView
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.msahil432.sms.R
@@ -19,13 +19,13 @@ import java.util.*
  * Created by msahil432
  **/
 
-class PagedRecyclerAdapter(val context: Context, val address: String, val name : String) :
-    PagedListAdapter<SMS, PagedRecyclerAdapter.MyViewHolder>
+class ConvoPagedRecyclerAdapter(val context: Context, val address: String, val name : String) :
+    PagedListAdapter<SMS, ConvoPagedRecyclerAdapter.MyViewHolder>
       (com.msahil432.sms.homeActivity.convoFragment.PagedRecyclerAdapter.SmsDiffCallback()){
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
     return if(viewType<10)
-     MyViewHolder( LayoutInflater.from(context)
+     MyViewHolder( LayoutInflater.from(parent.context)
         .inflate(R.layout.item_text_received, parent, false) )
     else
       MyViewHolder( LayoutInflater.from(context)
@@ -63,7 +63,7 @@ class PagedRecyclerAdapter(val context: Context, val address: String, val name :
     val senderImage = itemView.findViewById<AppCompatImageView>(R.id.sender_image)
     val time = itemView.findViewById<AppCompatTextView>(R.id.messageTime)
 
-    val dateBubble = itemView.findViewById<CardView>(R.id.date_bubble)
+    val dateBubble = itemView.findViewById<RelativeLayout>(R.id.date_bubble)
     val textDate = itemView.findViewById<AppCompatTextView>(R.id.text_date)
   }
 

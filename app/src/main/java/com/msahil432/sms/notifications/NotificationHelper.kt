@@ -124,7 +124,7 @@ class NotificationHelper{
             .setContentText("$adsUnread ${context.getString(R.string.unread_sms)}")
             .setContentIntent(
               PendingIntent.getActivity(
-                context, 0,
+                context, 2,
                 HomeActivity.openCat(context, HomeActivity.Companion.CAT.ADS), 0
               )
             )
@@ -142,7 +142,7 @@ class NotificationHelper{
             .setContentText("$othersUnread ${context.getString(R.string.unread_sms)}")
             .setContentIntent(
               PendingIntent.getActivity(
-                context, 0,
+                context, 5,
                 HomeActivity.openCat(context, HomeActivity.Companion.CAT.OTHERS), 0
               )
             )
@@ -160,7 +160,7 @@ class NotificationHelper{
             .setContentText("$updatesUnread ${context.getString(R.string.unread_sms)}")
             .setContentIntent(
               PendingIntent.getActivity(
-                context, 0,
+                context, 4,
                 HomeActivity.openCat(context, HomeActivity.Companion.CAT.UPDATES), 0
               )
             )
@@ -178,7 +178,7 @@ class NotificationHelper{
             .setContentText("$moneyUnread ${context.getString(R.string.unread_sms)}")
             .setContentIntent(
               PendingIntent.getActivity(
-                context, 0,
+                context, 3,
                 HomeActivity.openCat(context, HomeActivity.Companion.CAT.MONEY), 0
               )
             )
@@ -196,7 +196,7 @@ class NotificationHelper{
             .setContentText("$persUnread ${context.getString(R.string.unread_sms)}")
             .setContentIntent(
               PendingIntent.getActivity(
-                context, 0,
+                context, 1,
                 HomeActivity.openCat(context, HomeActivity.Companion.CAT.PERSONAL), 0
               )
             )

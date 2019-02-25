@@ -20,10 +20,12 @@ import android.provider.ContactsContract
 import android.provider.Telephony
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.msahil432.sms.common.Event
 import com.msahil432.sms.conversationActivity.ConversationActivity
 import com.msahil432.sms.helpers.ContactHelper
+import com.msahil432.sms.helpers.ContactHelper.CleanPhone
 import com.msahil432.sms.homeActivity.convoFragment.ConvoFragment
 import com.msahil432.sms.settingsActivity.SettingsActivity
 import org.greenrobot.eventbus.EventBus
@@ -31,7 +33,7 @@ import java.lang.Exception
 
 class HomeActivity : BaseActivity<HomeViewModel>(), NavigationView.OnNavigationItemSelectedListener {
 
-  private lateinit var convoFragment: ConvoFragment
+  private var convoFragment= ConvoFragment()
   private var isConvo = false
 
   private val ContactPickerCode = 1997
@@ -51,13 +53,25 @@ class HomeActivity : BaseActivity<HomeViewModel>(), NavigationView.OnNavigationI
 
   override fun onNewIntent(intent: Intent?) {
     super.onNewIntent(intent)
-    resolveIntent()
+    resolveIntent(intent)
   }
 
-  private fun resolveIntent(){
-    Log.e("HomeActivity", "Handling Intent")
+  private fun resolveIntent(intent: Intent?){
+    log("HomeActivity - Handling Intent")
     try{
-      if(intent!!.hasExtra("CAT")){
+      if(intent!!.action == Intent.ACTION_SEND && "text/plain" == intent.type){
+        intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
+          viewModel.textSent=it
+          fab.performClick()
+          log("textSent ${viewModel.textSent}")
+        }
+      } else if(intent.action == Intent.ACTION_SENDTO){
+        var phone = intent.data!!.toString()
+        phone = CleanPhone(phone.substring(phone.indexOf(":")+1))
+        val body = intent.getStringExtra("sms_body")
+        ConversationActivity.OpenThread(getThreadId(phone), "PERSONAL",
+          ContactHelper.getName(applicationContext, phone), body, phone, applicationContext)
+      }else if(intent.hasExtra("CAT")){
         when (intent.getIntExtra("CAT", -1)){
           Companion.CAT.PERSONAL.type ->{
             nav_view.setCheckedItem(R.id.nav_personal)
@@ -86,9 +100,7 @@ class HomeActivity : BaseActivity<HomeViewModel>(), NavigationView.OnNavigationI
     }
   }
 
-  override fun attachViewModelListeners(viewModel: HomeViewModel) {
-    resolveIntent()
-  }
+  override fun attachViewModelListeners(viewModel: HomeViewModel) {}
 
   override fun doWork() {
     if(!SmsApplication.AmIDefaultApp(applicationContext))
@@ -106,6 +118,7 @@ class HomeActivity : BaseActivity<HomeViewModel>(), NavigationView.OnNavigationI
     setupMenuBadges(nav_view.menu)
 
     convoFragment = ConvoFragment()
+    resolveIntent(intent)
   }
 
 
@@ -226,32 +239,29 @@ class HomeActivity : BaseActivity<HomeViewModel>(), NavigationView.OnNavigationI
         return
       var phone = c.getString(0)
       c.close()
-      while(phone.contains("-"))
-        phone = phone.replace("-", "")
-      while(phone.contains(" "))
-        phone = phone.replace(" ", "")
-      while(phone.contains("("))
-        phone = phone.replace("(", "")
-      while(phone.contains(")"))
-        phone = phone.replace(")", "")
+      phone = CleanPhone(phone)
       log(phone)
       if(!ContactHelper.isPhoneNumber(phone))
         return
-      val cur = contentResolver.query(Telephony.Sms.CONTENT_URI, null,
-        "${Telephony.Sms.ADDRESS}=\"$phone\"", null, null)
-      var threadId = "-1"
-      if(cur != null && cur.moveToFirst()) {
-        threadId = cur.getInt(cur.getColumnIndex(Telephony.Sms.THREAD_ID)).toString()
-        cur.close()
-      }
-      log("threadId- $threadId")
-      ConversationActivity.OpenThread(threadId, "PERSONAL",
-        ContactHelper.getName(applicationContext, phone), phone, applicationContext)
+      log("textSent ${viewModel.textSent}")
+      ConversationActivity.OpenThread(getThreadId(phone), "PERSONAL",
+        ContactHelper.getName(applicationContext, phone),viewModel.textSent, phone, applicationContext)
+      viewModel.textSent = null
       return
     }
-
-
     super.onActivityResult(requestCode, resultCode, data)
+  }
+
+  private fun getThreadId(phone: String): String{
+    val cur = contentResolver.query(Telephony.Sms.CONTENT_URI, null,
+      "${Telephony.Sms.ADDRESS}=\"$phone\"", null, null)
+    var threadId = "-1"
+    if(cur != null && cur.moveToFirst()) {
+      threadId = cur.getInt(cur.getColumnIndex(Telephony.Sms.THREAD_ID)).toString()
+      cur.close()
+    }
+    log("threadId- $threadId")
+    return threadId
   }
 
   companion object {

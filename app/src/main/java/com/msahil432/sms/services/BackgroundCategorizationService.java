@@ -1,6 +1,7 @@
 package com.msahil432.sms.services;
 
 import android.app.IntentService;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,12 +17,14 @@ import com.msahil432.sms.database.SMS;
 import com.msahil432.sms.database.SmsDatabase;
 import com.msahil432.sms.models.ServerMessage;
 import com.msahil432.sms.models.ServerModel;
+import com.msahil432.sms.notifications.NotificationHelper;
 import com.msahil432.sms.settingsActivity.BasicPrefs;
 import retrofit2.Response;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,7 +46,6 @@ public class BackgroundCategorizationService extends IntentService {
   protected void onHandleIntent(@Nullable Intent intent) {
     if(!BasicPrefs.getInstance(getApplicationContext()).setupDone())
       return;
-
     pingServer();
 
     if(prefs==null)
@@ -85,9 +87,11 @@ public class BackgroundCategorizationService extends IntentService {
           ServerModel model = new ServerModel();
           model.setTexts(new ArrayList<ServerMessage>());
           for (int a = 0; a < 50; a++) {
-            model.getTexts().add(messages.get(i * 50 + a));
-            if ((i * 50) + a + 1 == messages.size())
+            if ((i * 50) + a == messages.size()) {
+              Log.e(TAG, "Stopping at "+((i*50)+a)+" from "+messages.size());
               break;
+            }
+            model.getTexts().add(messages.get(i * 50 + a));
           }
 
           Response<ServerModel> res = BaseViewModel.Companion.getRetrofit().categorizeSMS(model).execute();
@@ -99,6 +103,7 @@ public class BackgroundCategorizationService extends IntentService {
               smsDb.userDao().insertAll(sms);
               Log.e(TAG, "Categorized, ts:"+sms.timestamp);
               set.remove(sms.timestamp+"");
+              checkIfNotificationPresent(sms, s.getTextMessage());
             }
           }
         }catch (Exception e){
@@ -111,6 +116,20 @@ public class BackgroundCategorizationService extends IntentService {
     prefs.edit().putStringSet("uncat", set).apply();
   }
 
+  private void checkIfNotificationPresent(SMS sms, String body){
+    HashMap<String, ContentValues> activeNotifs =NotificationHelper.Companion.getActiveNonCatNotifications();
+    if(activeNotifs.isEmpty())
+      return;
+    for(ContentValues values : activeNotifs.values()){
+      String threadId = values.getAsString(Telephony.Sms.ADDRESS);
+      if(threadId.equals(sms.threadId)){
+        String text = values.getAsString(Telephony.Sms.BODY);
+        if(body.equals(text))
+          NotificationHelper.Companion.catFoundForNotification(getApplicationContext(), values);
+      }
+    }
+  }
+
   private ServerMessage createInitialMessage(String timestamp){
     try {
       Cursor c = getContentResolver().query(Telephony.Sms.Inbox.CONTENT_URI,
@@ -121,7 +140,7 @@ public class BackgroundCategorizationService extends IntentService {
         // Try in Sent SMS
         c = getContentResolver().query(Telephony.Sms.Sent.CONTENT_URI,
             new String[]{Telephony.Sms.Sent.THREAD_ID, Telephony.Sms.Sent.BODY, Telephony.Sms.Sent._ID,
-                Telephony.Sms.Sent.DATE}, Telephony.Sms.Sent.DATE_SENT + "=" + timestamp,
+                Telephony.Sms.Sent.DATE}, Telephony.Sms.Sent.DATE + "=" + timestamp,
             null, null);
         if(c==null || !c.moveToFirst()) {
           return null;
@@ -153,16 +172,16 @@ public class BackgroundCategorizationService extends IntentService {
       cur2.close();
       SMS sms = new SMS(t.getId(), "OTHERS", t.getTextMessage(), threadId, mId, phone, read, timestamp);
       switch (sms.cat){
-        case "PROMOTIONAL": case "PROMO" : {
+        case "PROMOTIONAL": case "PROMO" : case "ads": case "ADS": {
           sms.cat = "ADS";
         }
-        case "PERSONAL": case  "URGENT" : {
+        case "PERSONAL": case  "URGENT" : case "personal": {
           sms.cat = "PERSONAL";
         }
-        case "MONEY": case "OTP": case "BANK" : {
+        case "MONEY": case "OTP": case "BANK" : case "money":{
           sms.cat = "MONEY";
         }
-        case "UPDATES": case "WALLET/APP": case "ORDER" : {
+        case "UPDATES": case "WALLET/APP": case "ORDER" : case "update":{
           sms.cat = "UPDATES";
         }
       }
@@ -232,6 +251,20 @@ public class BackgroundCategorizationService extends IntentService {
     }catch (Exception e){
       Log.i(TAG, "Ping unsuccessful to Server");
     }
+  }
+
+  public static void removeTsFromNonCat(Context context, String ts){
+    SharedPreferences  prefs = context.getSharedPreferences("bg-service", Context.MODE_PRIVATE);
+    Set<String> set = prefs.getStringSet("uncat", new HashSet<String>());
+    if(set.isEmpty())
+      return;
+    set.remove(ts);
+    Log.e(TAG, "Removed ts from set: "+ts);
+    prefs.edit().putStringSet("uncat", set).apply();
+  }
+
+  public static String cleanPrivacy(String text){
+    return text.replaceAll("\\d", "");
   }
 
 }

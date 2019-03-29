@@ -3,7 +3,8 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="com.msahil432.sms">
   
-  <uses-permission android:name="android.permission.BROADCAST_SMS"
+  <uses-permission
+       android:name="android.permission.BROADCAST_SMS"
        tools:ignore="ProtectedPermissions"/>
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.READ_CONTACTS"/>
@@ -14,7 +15,8 @@
   <uses-permission android:name="android.permission.SEND_SMS"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="android.permission.RECEIVE_MMS"/>
-  <uses-permission android:name="android.permission.BROADCAST_WAP_PUSH"
+  <uses-permission
+       android:name="android.permission.BROADCAST_WAP_PUSH"
        tools:ignore="ProtectedPermissions"/>
   <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH"/>
   <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
@@ -30,6 +32,17 @@
        android:roundIcon="@mipmap/ic_launcher_round"
        android:supportsRtl="true"
        android:theme="@style/AppTheme">
+    <receiver
+         android:name=".notifications.NotificationActionReceiver"
+         android:enabled="true"
+         android:exported="true">
+    </receiver>
+    
+    <service
+         android:name=".notifications.NotificationManagerService"
+         android:exported="false">
+    </service>
+    
     <activity android:name=".conversationActivity.ConversationActivity"/>
     <activity
          android:name=".settingsActivity.SettingsActivity"
@@ -60,9 +73,11 @@
         <data android:scheme="mmsto"/>
       </intent-filter>
       <intent-filter>
-        <action android:name="android.intent.action.SEND" />
-        <category android:name="android.intent.category.DEFAULT" />
-        <data android:mimeType="text/plain" />
+        <action android:name="android.intent.action.SEND"/>
+        
+        <category android:name="android.intent.category.DEFAULT"/>
+        
+        <data android:mimeType="text/plain"/>
       </intent-filter>
     </activity>
     <activity
@@ -76,8 +91,7 @@
         
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
-    </activity>
-    <!-- BroadcastReceiver that listens for incoming SMS messages -->
+    </activity> <!-- BroadcastReceiver that listens for incoming SMS messages -->
     <receiver
          android:name=".receivers.SmsReceiver"
          android:permission="android.permission.BROADCAST_SMS">
@@ -120,6 +134,7 @@
          android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
       <intent-filter>
         <action android:name="android.intent.action.BOOT_COMPLETED"/>
+        <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
         
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>

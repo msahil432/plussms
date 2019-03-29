@@ -6,6 +6,7 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.ColorDrawable
 import android.inputmethodservice.InputMethodService
 import android.net.Uri
+import android.telephony.SmsManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -56,13 +57,11 @@ class ConversationActivity : BaseActivity<ConversationViewModel>(), SearchView.O
     pagedListBuilder.build().observe(this, Observer {
       if(it!=null)  t.submitList(it)
     })
-
+    texts_list.smoothScrollToPosition(0)
     return ConversationViewModel::class.java
   }
 
-  override fun attachViewModelListeners(viewModel: ConversationViewModel) {
-
-  }
+  override fun attachViewModelListeners(viewModel: ConversationViewModel) {}
 
   override fun doWork() {
 
@@ -151,7 +150,9 @@ class ConversationActivity : BaseActivity<ConversationViewModel>(), SearchView.O
 
     fun OpenThread(threadId : String, cat: String, name: String,
                    text: String?, address: String, context: Context){
-      val i = Intent(context, ConversationActivity::class.java)
+      val i = Intent(context, ConversationActivity::class.java).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+      }
       i.putExtra("cat", cat)
       i.putExtra("threadId", threadId)
       i.putExtra("address", address)
@@ -160,6 +161,12 @@ class ConversationActivity : BaseActivity<ConversationViewModel>(), SearchView.O
         i.putExtra("text", text)
       i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
       context.startActivity(i)
+    }
+
+    fun sendSms(address: String, text: String,
+                subscriptionId : Int = SmsManager.getDefaultSmsSubscriptionId()){
+      val manager = SmsManager.getSmsManagerForSubscriptionId(subscriptionId)
+      manager.sendTextMessage(address, null, text, null, null)
     }
 
   }

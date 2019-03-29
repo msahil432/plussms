@@ -77,12 +77,14 @@ public class SmsApplication extends Application {
         return null;
 
       ArrayList<String> codes = new ArrayList<>();
-      Pattern p = Pattern.compile("\\d{1,3}");
+      Pattern p = Pattern.compile("\\d{4,8}");
       Matcher m = p.matcher(text);
       if(! m.find())
         return null;
-      for(int i =0; i<m.groupCount(); i++)
-        codes.add(m.group(i));
+      try {
+        for (int i = 0; i < 3; i++)
+          codes.add(m.group(i));
+      }catch (Exception e){}
       return codes;
     }catch (Exception e){
       Log.e("FindOtp", "findOtp: "+e.getMessage(), e);

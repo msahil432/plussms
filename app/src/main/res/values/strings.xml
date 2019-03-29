@@ -121,7 +121,6 @@
   <string name="type_your_message_here">Type your Message here</string>
   <string name="wait_for_net">Waiting for Internet</string>
   <string name="call">Call</string>
-  <string name="delete">Delete</string>
   <string name="view_contact">View Contact</string>
   <string name="report_wrong_category">Report Wrong Category</string>
   <string name="welcome">Welcome</string>
@@ -140,4 +139,8 @@
     \n\nNone of your Contacts, Phone Numbers are uploaded to server in any way.
   </string>
   <string name="lets_go">All Done! Let\'s Go.</string>
+  <string name="copy">Copy</string>
+  <string name="mark_read">Mark Read</string>
+  <string name="delete">Delete</string>
+  <string name="reply">Reply</string>
 </resources>

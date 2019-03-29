@@ -10,4 +10,5 @@
 
   <color name="black">#000000</color>
   <color name="black_shaded">#333333</color>
+  <color name="transparent_shaded">#36EBE9E9</color>
 </resources>

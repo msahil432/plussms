@@ -45,46 +45,6 @@ class SetupViewModel : BaseViewModel() {
     }
   }
 
-  private val collectSms = Runnable {
-
-    collectSms()
-
-    if(collectedSms.isEmpty()) {
-      return@Runnable
-    }
-
-    for(i in 0 .. collectedSms.size/50){
-      val tem2 = ServerModel()
-      tem2.texts = ArrayList<ServerMessage>()
-
-      for(a in 0 until 50){
-        tem2.texts.add(collectedSms[(i*50)+a])
-        if((i*50)+a+1 == collectedSms.size)
-          break
-      }
-
-      var net = false
-      var v = ServerModel()
-      while(!net) {
-        try {
-          val call = retrofit.categorizeSMS(tem2).execute()
-          if(!call.isSuccessful){
-            throw Exception("Unsuccessful Call!")
-          }
-          v = call.body()!!
-          net = true
-          networkOk.postValue(true)
-        }catch (e: Exception){
-          net = false
-          networkOk.postValue(false)
-        }
-      }
-
-      saveToDb(v)
-    }
-
-  }
-
   private fun collectSms(){
     val cursor = context.contentResolver.query(Telephony.Sms.Inbox.CONTENT_URI, null,
       "body IS NOT NULL", null, "date DESC")
@@ -106,7 +66,7 @@ class SetupViewModel : BaseViewModel() {
             continue
           }
         }catch (e: Exception){}
-        temp.textMessage = cursor.getString(bodyIndex)
+        temp.textMessage = BackgroundCategorizationService.cleanPrivacy(cursor.getString(bodyIndex))
         collectedSms.add(temp)
         if(collectedSms.size==50){
           sendToServer(collectedSms)
@@ -154,11 +114,11 @@ class SetupViewModel : BaseViewModel() {
   }
 
   private fun sendToServer(collected: ArrayList<ServerMessage>){
-    if(collectedSms.size==0)
+    if(collected.size==0)
       return
 
     val tem2 = ServerModel()
-    tem2.texts = collectedSms
+    tem2.texts = collected
 
     var net = false
     var v = ServerModel()
@@ -185,27 +145,28 @@ class SetupViewModel : BaseViewModel() {
       val mId = t.id.substring(t.id.indexOf('m') + 1)
       val phone = GetPhone(context, threadId)
       val cur2 = context.contentResolver.query(Telephony.Sms.Inbox.CONTENT_URI,
-        arrayOf(Telephony.Sms.Inbox.READ, Telephony.Sms.DATE, Telephony.Sms._ID),
+        arrayOf(Telephony.Sms.Inbox.READ, Telephony.Sms.DATE, Telephony.Sms._ID, Telephony.Sms.BODY),
         Telephony.Sms._ID + "=" + mId, null, null)
       if(cur2==null || !cur2.moveToFirst())
         continue
       cur2.moveToFirst()
       val read = cur2.getInt(0)
       val timestamp = cur2.getLong(1)
+      val body = cur2.getString(3)
       cur2.close()
-      val sms = SMS(t.id, "OTHERS", threadId, mId, t.textMessage, phone, read, timestamp)
+      val sms = SMS(t.id, "OTHERS", threadId, mId, body, phone, read, timestamp)
       try {
         when (t.cat) {
-          "PROMOTIONAL", "PROMO", "ADS" -> {
+          "PROMOTIONAL", "PROMO", "ADS", "ads" -> {
             sms.cat = "ADS"
           }
-          "PERSONAL", "URGENT" -> {
+          "PERSONAL", "URGENT", "personal" -> {
             sms.cat = "PERSONAL"
           }
-          "MONEY", "OTP", "BANK" -> {
+          "MONEY", "OTP", "BANK", "money" -> {
             sms.cat = "MONEY"
           }
-          "UPDATES", "WALLET/APP", "ORDER" -> {
+          "UPDATES", "WALLET/APP", "ORDER", "update" -> {
             sms.cat = "UPDATES"
           }
         }
@@ -227,7 +188,7 @@ class SetupViewModel : BaseViewModel() {
     var threadIndex = c.getColumnIndex(Telephony.Sms.Sent.THREAD_ID)
     var addressIndex = c.getColumnIndex(Telephony.Sms.Sent.ADDRESS)
     var idIndex = c.getColumnIndex(Telephony.Sms.Sent._ID)
-    var timeIndex = c.getColumnIndex(Telephony.Sms.Sent.DATE_SENT)
+    var timeIndex = c.getColumnIndex(Telephony.Sms.Sent.DATE)
     var sentIndex = c.getColumnIndex(Telephony.Sms.Sent.STATUS)
     var bodyIndex = c.getColumnIndex(Telephony.Sms.Sent.BODY)
     do {
@@ -258,7 +219,7 @@ class SetupViewModel : BaseViewModel() {
     threadIndex = c.getColumnIndex(Telephony.Sms.Outbox.THREAD_ID)
     addressIndex = c.getColumnIndex(Telephony.Sms.Outbox.ADDRESS)
     idIndex = c.getColumnIndex(Telephony.Sms.Outbox._ID)
-    timeIndex = c.getColumnIndex(Telephony.Sms.Outbox.DATE_SENT)
+    timeIndex = c.getColumnIndex(Telephony.Sms.Outbox.DATE)
     sentIndex = c.getColumnIndex(Telephony.Sms.Outbox.STATUS)
     bodyIndex = c.getColumnIndex(Telephony.Sms.Outbox.BODY)
     do {

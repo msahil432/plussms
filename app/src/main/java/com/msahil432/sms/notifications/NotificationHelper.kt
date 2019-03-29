@@ -3,22 +3,28 @@ package com.msahil432.sms.notifications
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.ContentValues
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.provider.Telephony
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
+import androidx.core.app.RemoteInput
 import androidx.core.graphics.drawable.IconCompat
 import com.msahil432.sms.R
 import com.msahil432.sms.SmsApplication
-import com.msahil432.sms.SplashActivity
+import com.msahil432.sms.database.SmsDatabase
 import com.msahil432.sms.helpers.ContactHelper
 import com.msahil432.sms.homeActivity.HomeActivity
+import com.msahil432.sms.services.BackgroundCategorizationService
 import java.lang.Exception
+import java.util.concurrent.Executors
+import java.util.concurrent.ThreadLocalRandom
 
 /**
  * Created by msahil432
@@ -31,50 +37,182 @@ class NotificationHelper{
     const val MONEY_CHANNEL_ID = "com.msahil432.sms.MONEY"
     const val UPDATES_CHANNEL_ID = "com.msahil432.sms.UPDATES"
     const val OTHERS_CHANNEL_ID = "com.msahil432.sms.OTHERS"
+    private const val TAG = "NotificationHelper"
 
-    fun createPersonalNotification(context: Context, address: String, name: String, text: String){
+    var activeNonCatNotifications = HashMap<String, ContentValues>()
+    var activeNotifications = HashMap<String, ContentValues>()
+    private lateinit var db : SmsDatabase
+    private val BgThread = Executors.newSingleThreadExecutor()
 
-      val intent = Intent(context, SplashActivity::class.java).apply {
-        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    fun createInitialNotification(context: Context, values : ContentValues){
+      BgThread.execute {
+        try {
+          val threadId = values.getAsInteger(Telephony.Sms.THREAD_ID)
+          val notificationId = createNotificationId(threadId)
+
+          // Check if OTP
+          val otp = SmsApplication.findOtp(values.getAsString(Telephony.Sms.BODY))
+          if(otp!=null){
+            createOthersNotification(context, values, OTHERS_CHANNEL_ID, notificationId, otp[0])
+            return@execute
+          }
+
+          // Check if it's from Personal Category
+          if (!::db.isInitialized) {
+            db = SmsApplication.getSmsDatabase(context)
+          }
+          val t = db.userDao().getCatOfThread(threadId.toString())
+          if (!t.isEmpty()) {
+            when (t[0]) {
+              "PERSONAL" -> {
+                createPersonalNotification(context, values)
+                activeNotifications[threadId.toString()] = values
+                val ts = values.getAsString(Telephony.Sms.DATE)
+                BackgroundCategorizationService.removeTsFromNonCat(context, ts)
+                return@execute
+              }
+              "ADS" -> {
+                createOthersNotification(context, values, ADS_CHANNEL_ID, notificationId)
+              }
+              "UPDATES" -> {
+                createOthersNotification(context, values, UPDATES_CHANNEL_ID, notificationId)
+              }
+              "MONEY" -> {
+                createOthersNotification(context, values, MONEY_CHANNEL_ID, notificationId)
+              }
+              else ->{
+                createOthersNotification(context, values, OTHERS_CHANNEL_ID, notificationId)
+              }
+            }
+          }else{
+            createOthersNotification(context, values, OTHERS_CHANNEL_ID, notificationId)
+          }
+          activeNonCatNotifications[notificationId.toString()] = values
+        } catch (e: Exception) {
+          Log.e(TAG, e.message, e)
+        }
       }
-      val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+    }
 
-      val personBuilder = Person.Builder()
-      personBuilder.setIcon(IconCompat.createWithBitmap(ContactHelper.GetThumbnail(context, address, name)))
-      personBuilder.setName(name)
+    fun catFoundForNotification(context: Context, values: ContentValues){
+      val threadId = values.getAsString(Telephony.Sms.THREAD_ID)
+      if (!::db.isInitialized) {
+        return
+      }
+      val t = db.userDao().getCatOfThread(threadId)
+      if(!t.isEmpty() && t[0] == "PERSONAL"){
+          createPersonalNotification(context, values)
+        return
+      }
+    }
+
+    private fun createOthersNotification(context: Context, values: ContentValues,
+                                         channel: String, notificationId : Int, otp: String? = null){
+      val address = values.getAsString(Telephony.Sms.ADDRESS)
+      val name = ContactHelper.getName(context, address)
+      val image = ContactHelper.getContactsPhoto(context, address, name)
+
+      var builder = when(channel){
+        MONEY_CHANNEL_ID ->{
+          NotificationCompat.Builder(context, channel)
+            .setSmallIcon(R.drawable.ic_attach_money_black_24dp)
+        }
+        UPDATES_CHANNEL_ID ->{
+          NotificationCompat.Builder(context, channel)
+            .setSmallIcon(R.drawable.ic_info_black_24dp)
+        }
+        ADS_CHANNEL_ID ->{
+          NotificationCompat.Builder(context, channel)
+            .setSmallIcon(R.drawable.ic_delete_sweep_black_24dp)
+        }
+        else-> {
+          NotificationCompat.Builder(context, OTHERS_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_speaker_notes_black_24dp)
+        }
+      }
+
+      builder
+        .setLargeIcon(image)
+        .setContentTitle(name)
+        .setStyle(NotificationCompat.BigTextStyle()
+          .bigText(values.getAsString(Telephony.Sms.BODY)))
+        .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+        .setOnlyAlertOnce(true)
+        .setAutoCancel(true)
+
+      if(otp!=null){
+        builder = addOtpCopyIntent(context, otp, builder, values, notificationId)
+      }
+
+      val threadId = values.getAsString(Telephony.Sms.THREAD_ID)
+      if(ContactHelper.isPhoneNumber(address)){
+        builder.addAction(getReplyAction(context, threadId.toInt(), notificationId, values))
+      }
+
+      builder = addGeneralActions(context, builder, notificationId, values)
+
+      notifyAndAddDot(context, builder, notificationId)
+    }
+
+    fun createPersonalNotification(context: Context, values: ContentValues){
+      val address = values.getAsString(Telephony.Sms.ADDRESS)
+      val name = ContactHelper.getName(context, address)
+      val image = ContactHelper.getContactsPhoto(context, address, name)
+
+      val threadId = values.getAsString(Telephony.Sms.THREAD_ID)
+
+      val person = Person.Builder()
+        .setIcon(IconCompat.createWithBitmap(image))
+        .setName(name)
+        .build()
 
       val me : String? = null
-      val mBuilder = NotificationCompat.Builder(context, PERSONAL_CHANNEL_ID)
+      val style = NotificationCompat.MessagingStyle(person)
+        .setConversationTitle(name)
+
+      var i = 5
+      val cur = context.contentResolver.query(Telephony.Sms.CONTENT_URI, null,
+        "${Telephony.Sms.THREAD_ID}=$threadId", null,
+        "${Telephony.Sms.DATE} ASC")
+
+      if(cur!=null && cur.moveToFirst()){
+        val bodyIndex = cur.getColumnIndex(Telephony.Sms.BODY)
+        val timeIndex = cur.getColumnIndex(Telephony.Sms.DATE)
+        if(cur.count>i)
+          cur.moveToPosition(cur.count-i)
+        do{
+          style.addMessage(cur.getString(bodyIndex), cur.getLong(timeIndex), person)
+          i--
+        }while(cur.moveToNext() && i<3)
+        cur.close()
+      }
+
+      var builder = NotificationCompat.Builder(context, PERSONAL_CHANNEL_ID)
         .setSmallIcon(R.drawable.icon)
-        .setStyle(NotificationCompat.MessagingStyle(personBuilder.build())
-          .setConversationTitle(name)
-          .addMessage("Hi", System.currentTimeMillis()-2900, personBuilder.build())
-          .addMessage("> My Hi", System.currentTimeMillis()-2000, me)
-          .addMessage(context.getString(R.string.invite_msg),
-            System.currentTimeMillis()-360, personBuilder.build())
-          .addMessage("> Not much", System.currentTimeMillis()-32, me)
-          .addMessage("How about lunch?", System.currentTimeMillis(), personBuilder.build()))
+        .setStyle(style)
         .setCategory(NotificationCompat.CATEGORY_MESSAGE)
         .setPriority(NotificationCompat.PRIORITY_HIGH)
-        .setContentIntent(pendingIntent)
+        .setOnlyAlertOnce(true)
         .setGroup(PERSONAL_CHANNEL_ID)
         .setAutoCancel(true)
 
-      notifyAndAddDot(context, mBuilder)
+      builder.addAction(getReplyAction(context, threadId.toInt(), threadId.toInt(), values))
+      builder = addGeneralActions(context, builder, threadId.toInt(), values)
+
+      notifyAndAddDot(context, builder, threadId.toInt())
     }
 
-    private fun notifyAndAddDot(context: Context, buidler: NotificationCompat.Builder){
-
+    private fun notifyAndAddDot(context: Context, builder: NotificationCompat.Builder, id: Int){
       val c = context.contentResolver.query(Uri.parse("content://sms/inbox"), null,
         "read=0", null, null)
       Log.e(PERSONAL_CHANNEL_ID, "setting count")
       if(c!=null && c.count>0) {
         Log.e(PERSONAL_CHANNEL_ID, "setting count")
-        buidler.setNumber(c.count)
+        builder.setNumber(c.count)
         c.close()
       }
       with(NotificationManagerCompat.from(context)) {
-        notify(0, buidler.build())
+        notify(id, builder.build())
       }
     }
 
@@ -227,5 +365,118 @@ class NotificationHelper{
       }
     }
 
+    private fun addGeneralActions(context: Context, builder: NotificationCompat.Builder,
+                 notificationId: Int, values: ContentValues): NotificationCompat.Builder{
+      val threadId = values.getAsInteger(Telephony.Sms.THREAD_ID)
+      val oType = if(1==threadId) 10 else 1
+      val openIntent = Intent(context, NotificationActionReceiver::class.java).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+      }
+      openIntent.putExtra(NotificationActionReceiver.ID_PARAM, notificationId)
+      openIntent.putExtra(NotificationActionReceiver.CONTENT_VALUE_PARAM, values)
+      openIntent.putExtra(NotificationActionReceiver.ACTION_TYPE_PARAM,
+        NotificationActionReceiver.Companion.ActionTypes.OpenIntent.type)
+      val pendingOpen = PendingIntent.getBroadcast(context, oType, openIntent, 0)
+      builder.setContentIntent(pendingOpen)
+
+      val cType = if(2==threadId) 10 else 2
+
+      val clearIntent = Intent(context, NotificationActionReceiver::class.java)
+      clearIntent.putExtra(NotificationActionReceiver.CONTENT_VALUE_PARAM, values)
+      clearIntent.putExtra(NotificationActionReceiver.ID_PARAM, notificationId)
+      clearIntent.putExtra(NotificationActionReceiver.ACTION_TYPE_PARAM,
+        NotificationActionReceiver.Companion.ActionTypes.ClearIntent.type)
+      clearIntent.putExtra(Telephony.Sms._ID, notificationId)
+      val pendingClear = PendingIntent.getBroadcast(context, cType, clearIntent, 0)
+      builder.setDeleteIntent(pendingClear)
+
+      if(!SmsApplication.AmIDefaultApp(context))
+        return builder
+
+      val rType = if(4==threadId) 10 else 4
+      val readIntent = Intent(context, NotificationActionReceiver::class.java)
+      readIntent.putExtra(NotificationActionReceiver.CONTENT_VALUE_PARAM, values)
+      readIntent.putExtra(NotificationActionReceiver.ACTION_TYPE_PARAM,
+        NotificationActionReceiver.Companion.ActionTypes.MarkRead.type)
+      val pendingRead = PendingIntent.getBroadcast(context, rType, readIntent, 0)
+      builder.addAction(R.drawable.ic_delete_black_24dp, context.getString(R.string.mark_read), pendingRead)
+
+      val dType = if(3==threadId) 10 else 3
+      val delete = Intent(context, NotificationActionReceiver::class.java)
+      delete.putExtra(NotificationActionReceiver.CONTENT_VALUE_PARAM, values)
+      delete.putExtra(NotificationActionReceiver.ID_PARAM, notificationId)
+      delete.putExtra(NotificationActionReceiver.ACTION_TYPE_PARAM,
+        NotificationActionReceiver.Companion.ActionTypes.Delete.type)
+      val pendingDelete = PendingIntent.getBroadcast(context, dType, delete, 0)
+      builder.addAction(R.drawable.ic_delete_black_24dp, context.getString(R.string.delete), pendingDelete)
+
+      return builder
+    }
+
+    private fun addOtpCopyIntent(context: Context, otp: String, builder: NotificationCompat.Builder,
+                                 values: ContentValues, notificationId: Int): NotificationCompat.Builder{
+      val threadId = values.getAsInteger(Telephony.Sms.THREAD_ID)
+      val type = if(5==threadId) 10 else 5
+
+      val copyOtpIntent = Intent(context, NotificationActionReceiver::class.java)
+      copyOtpIntent.putExtra(NotificationActionReceiver.CONTENT_VALUE_PARAM, values)
+      copyOtpIntent.putExtra(NotificationActionReceiver.ID_PARAM, notificationId)
+      copyOtpIntent.putExtra(NotificationActionReceiver.OTP_PARAM, otp)
+      copyOtpIntent.putExtra(NotificationActionReceiver.ACTION_TYPE_PARAM,
+        NotificationActionReceiver.Companion.ActionTypes.CopyOtp.type)
+      val pending = PendingIntent.getBroadcast(context, type, copyOtpIntent, 0)
+      builder.addAction(R.drawable.ic_delete_black_24dp,
+        "${context.getString(R.string.copy)} $otp", pending)
+
+      return builder
+    }
+
+    const val KEY_TEXT_REPLY = "key_text_reply"
+
+    private fun getReplyAction(context: Context, threadId: Int, notificationId: Int,
+                               values: ContentValues): NotificationCompat.Action{
+      val replyLabel: String = context.getString(R.string.reply)
+      val remoteInput = RemoteInput.Builder(KEY_TEXT_REPLY).run {
+        setLabel(replyLabel)
+        build()
+      }
+
+      val replyIntent = Intent(context, NotificationActionReceiver::class.java)
+      replyIntent.putExtra(NotificationActionReceiver.CONTENT_VALUE_PARAM, values)
+      replyIntent.putExtra(NotificationActionReceiver.ID_PARAM, notificationId)
+      replyIntent.putExtra(NotificationActionReceiver.ACTION_TYPE_PARAM,
+        NotificationActionReceiver.Companion.ActionTypes.Reply.type)
+
+      val replyPendingIntent: PendingIntent =
+        PendingIntent.getBroadcast(context,
+          threadId,
+          replyIntent,
+          PendingIntent.FLAG_UPDATE_CURRENT)
+
+      return NotificationCompat.Action.Builder(R.drawable.icon,
+        context.getString(R.string.reply), replyPendingIntent)
+        .addRemoteInput(remoteInput)
+        .build()
+    }
+
+    private fun createNotificationId(threadId: Int): Int{
+      try{
+        for(t : String in activeNonCatNotifications.keys){
+          val tem = t.toInt()%1000000
+          if(tem==threadId){
+            return t.toInt()+1000000
+          }
+        }
+        for(t : String in activeNotifications.keys){
+          val tem = t.toInt()%1000000
+          if(tem==threadId){
+            return t.toInt()+1000000
+          }
+        }
+        return threadId
+      }catch (e: Exception){ }
+      return ThreadLocalRandom.current().nextInt(0, 9999)
+    }
+    
   }
 }

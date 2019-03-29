@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.msahil432.sms.R
 import com.msahil432.sms.database.SMS
 import com.msahil432.sms.helpers.ContactHelper
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -41,17 +42,37 @@ class ConvoPagedRecyclerAdapter(val context: Context, val address: String, val n
       holder.senderImage.setImageBitmap(ContactHelper.GetThumbnail(context, address, name))
     }
     holder.body.text = getItem(position)!!.text
+
     val date = Date(text.timestamp)
-    holder.time.text = timeFormat.format(date)
+
+    val timeFormatted = timeFormat.format(date)
+    try {
+      val t = timeFormat.format(Date(getItem(position - 1)!!.timestamp))
+      if(timeFormatted == t) {
+        holder.time.visibility = View.GONE
+        if(getItem(position-1)!!.status == text.status)
+          holder.senderImage?.visibility = View.INVISIBLE
+        else
+          holder.senderImage?.visibility = View.VISIBLE
+      }else {
+        holder.time.visibility = View.VISIBLE
+        holder.time.text = timeFormatted
+        holder.senderImage?.visibility = View.VISIBLE
+      }
+    }catch (e: Exception){
+      holder.time.visibility = View.VISIBLE
+      holder.time.text = timeFormatted
+      holder.senderImage?.visibility = View.VISIBLE
+    }
 
     val dateFormatted = dateFormat.format(date)
-    if(position>0){
-      val t = dateFormat.format(Date(getItem(position-1)!!.timestamp))
+    try {
+      val t = dateFormat.format(Date(getItem(position + 1)!!.timestamp))
       if(dateFormatted == t) {
         holder.dateBubble.visibility = View.GONE
         return
       }
-    }
+    }catch (e: Exception){ }
     holder.dateBubble.visibility = View.VISIBLE
     holder.textDate.text = dateFormatted
   }

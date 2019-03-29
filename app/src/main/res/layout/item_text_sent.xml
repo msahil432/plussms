@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <androidx.constraintlayout.widget.ConstraintLayout
-       android:layout_margin="8dp"
+       android:layout_marginStart="2dp"
+       android:layout_marginEnd="2dp"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        xmlns:android="http://schemas.android.com/apk/res/android"
@@ -23,29 +24,45 @@
          android:paddingEnd="8dp"
          android:layout_centerInParent="true"
          android:background="@drawable/rounded_bg"
-         android:backgroundTint="@color/white_shaded"
+         android:backgroundTint="@color/transparent_shaded"
          android:text="Moinday. 29 Feb"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"/>
   </RelativeLayout>
+  <androidx.constraintlayout.widget.Guideline
+       android:id="@+id/vert_guideline"
+       android:orientation="vertical"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       app:layout_constraintGuide_percent="0.2"/>
+  <RelativeLayout
+       android:id="@+id/text_box"
+       app:layout_constraintTop_toBottomOf="@id/date_bubble"
+       app:layout_constraintStart_toStartOf="@id/vert_guideline"
+       app:layout_constraintEnd_toEndOf="parent"
+       android:gravity="end"
+       android:layout_width="0dp"
+       android:layout_height="wrap_content">
     <androidx.appcompat.widget.AppCompatTextView
-         android:layout_marginStart="80dp"
-         app:layout_constraintTop_toBottomOf="@id/date_bubble"
-         app:layout_constraintStart_toStartOf="parent"
-         android:backgroundTint="@color/white_shaded"
+         android:text="@string/invite_msg"
+         android:textColor="@color/white"
+         android:textColorLink="@color/white"
+         android:textSize="16sp"
+         android:layout_margin="1dp"
          android:background="@drawable/bubble_from_right"
+         android:textIsSelectable="true"
          android:padding="8dp"
          android:id="@+id/text_body"
          android:autoLink="all"
-         android:textIsSelectable="true"
-         android:text="@string/invite_msg"
-         android:layout_width="match_parent"
+         android:layout_width="wrap_content"
          android:layout_height="wrap_content"/>
+  </RelativeLayout>
     <androidx.appcompat.widget.AppCompatTextView
-         app:layout_constraintTop_toBottomOf="@id/text_body"
+         app:layout_constraintTop_toBottomOf="@id/text_box"
          app:layout_constraintEnd_toEndOf="parent"
          android:id="@+id/messageTime"
          android:layout_margin="4dp"
+         android:textSize="12sp"
          android:text="04:00 PM"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"

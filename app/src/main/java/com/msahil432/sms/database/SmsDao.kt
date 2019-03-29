@@ -41,13 +41,16 @@ interface UserDao {
   @Query("select cat from sms where id = :uid")
   fun getCat(uid: String) : List<String>
 
+  @Query("select cat from sms where threadId = :threadId")
+  fun getCatOfThread(threadId: String) : List<String>
+
   @Query("select mId from sms where threadId= :tId order by mId desc")
   fun getMessagesForThread(tId: String) : List<String>
 
   @Query("select mId from sms where threadId= :tId and cat= :cat order by mId desc")
   fun getMessagesForThread(tId: String, cat: String) : List<String>
 
-  @Query("select * from sms where threadId= :tId order by mId desc")
+  @Query("select * from sms where threadId= :tId order by timestamp desc")
   fun getSmsForThread(tId: String) : DataSource.Factory<Int, SMS>
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)

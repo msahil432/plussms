@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
- xmlns:app="http://schemas.android.com/apk/res-auto"
- android:layout_margin="8dp"
- android:layout_width="match_parent"
- android:layout_height="wrap_content">
+<androidx.constraintlayout.widget.ConstraintLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     android:paddingStart="4dp"
+     android:paddingEnd="4dp"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content">
   <RelativeLayout
        app:layout_constraintTop_toTopOf="parent"
        xmlns:android="http://schemas.android.com/apk/res/android"
@@ -21,7 +23,7 @@
          android:paddingEnd="8dp"
          android:layout_centerInParent="true"
          android:background="@drawable/rounded_bg"
-         android:backgroundTint="@color/white_shaded"
+         android:backgroundTint="@color/transparent_shaded"
          android:text="Moinday. 29 Feb"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"/>
@@ -31,33 +33,47 @@
        android:paddingStart="0dp"
        android:paddingEnd="2dp"
        app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintBottom_toBottomOf="@id/messageTime"
+       app:layout_constraintBottom_toBottomOf="@id/text_box"
        android:id="@+id/sender_image"
        android:src="@drawable/icon"
        android:layout_width="42dp"
        android:layout_height="40dp"/>
-  <androidx.appcompat.widget.AppCompatTextView
-       android:layout_marginEnd="60dp"
+  <androidx.constraintlayout.widget.Guideline
+       android:id="@+id/vert_guideline"
+       android:orientation="vertical"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       app:layout_constraintGuide_percent="0.8"/>
+  <androidx.constraintlayout.widget.ConstraintLayout
+       android:id="@+id/text_box"
        app:layout_constraintTop_toBottomOf="@id/date_bubble"
        app:layout_constraintStart_toEndOf="@id/sender_image"
-       app:layout_constraintEnd_toEndOf="parent"
-       android:backgroundTint="@color/white_shaded"
-       android:background="@drawable/bubble_from_left"
-       android:textIsSelectable="true"
-       android:padding="8dp"
-       android:id="@+id/text_body"
-       android:autoLink="all"
-       android:text="invite_msg"
+       app:layout_constraintEnd_toEndOf="@id/vert_guideline"
        android:layout_width="0dp"
-       android:layout_height="wrap_content"/>
-  <androidx.appcompat.widget.AppCompatTextView
-       app:layout_constraintTop_toBottomOf="@id/text_body"
-       app:layout_constraintEnd_toEndOf="@id/text_body"
-       android:id="@+id/messageTime"
-       android:layout_margin="2dp"
-       android:textSize="11sp"
-       android:text="04:00 PM"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"/>
-  
+       android:layout_height="wrap_content">
+    <androidx.appcompat.widget.AppCompatTextView
+         app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+         android:text="@string/invite_msg"
+         android:textColor="@color/white"
+         android:layout_margin="1dp"
+         android:background="@drawable/bubble_from_left"
+         android:textIsSelectable="true"
+         android:padding="8dp"
+         android:textColorLink="@color/white"
+         android:textSize="16sp"
+         android:id="@+id/text_body"
+         android:autoLink="all"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"/>
+    <androidx.appcompat.widget.AppCompatTextView
+         app:layout_constraintTop_toBottomOf="@id/text_body"
+         app:layout_constraintEnd_toEndOf="@id/text_body"
+         android:id="@+id/messageTime"
+         android:layout_margin="2dp"
+         android:textSize="12sp"
+         android:text="04:00 PM"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"/>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

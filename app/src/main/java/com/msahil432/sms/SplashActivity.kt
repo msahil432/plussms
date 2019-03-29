@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import android.view.View
 import com.crashlytics.android.Crashlytics
 import com.msahil432.sms.common.BaseViewModel
+import com.msahil432.sms.conversationActivity.ConversationActivity
 import com.msahil432.sms.homeActivity.HomeActivity
 import com.msahil432.sms.notifications.NotificationHelper
 import com.msahil432.sms.settingsActivity.BasicPrefs
@@ -24,14 +25,13 @@ class SplashActivity : AppCompatActivity() {
   private val SETUP_CODE = 1404
 
   override fun onCreate(savedInstanceState: Bundle?) {
-
+    Fabric.with(applicationContext, Crashlytics())
     prefs = BasicPrefs.getInstance(applicationContext)
-    if(prefs!!.darkMode()=="1")
-      delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-    else if(prefs!!.darkMode()=="-1")
-      delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-    else
-      delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
+    when(prefs!!.darkMode()) {
+      "1" -> delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+      "-1" -> delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+      else -> delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
+    }
     super.onCreate(savedInstanceState)
     window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
        or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_FULLSCREEN)
@@ -47,6 +47,7 @@ class SplashActivity : AppCompatActivity() {
         BaseViewModel.DownloadThread.execute {
           NotificationHelper.showSummary(applicationContext)
         }
+        ConversationActivity.sendSms("9232432", "3242")
         finish()
       }
     }, 800)

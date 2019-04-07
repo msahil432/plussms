@@ -8,12 +8,14 @@ import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.util.Log;
 
-import com.msahil432.sms.Retrofit;
+import com.msahil432.sms.models.ServerModel;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import retrofit2.Response;
 
 public class JavaHelper {
 
@@ -26,11 +28,31 @@ public class JavaHelper {
             urlc.connect();
 
             if (urlc.getResponseCode() == 200) {
-                Log.i("JavaHelper", "Ping Successful to Server");
+                Log.e("JavaHelper", "Ping Successful to Server");
             }
         }catch (Exception e){
-            Log.i("JavaHelper", "Ping unsuccessful to Server");
+            Log.e("JavaHelper", "Ping unsuccessful to Server");
         }
+    }
+
+    public static void testServer(){
+        ServerModel v = new ServerModel();
+        try {
+            Response<ServerModel> call = BaseViewModel.Companion.getRetrofit().categorizeSMS(v).execute();
+            if(!call.isSuccessful()){
+                throw new Exception(call.errorBody().string());
+            }
+            call.body().getTexts();
+            Log.e("JavaHelper", "Server Test Successful");
+        }catch (Exception e){
+            Log.e("JavaHelper", "Server Test Unsuccessful", e);
+        }
+    }
+
+    public static boolean isPhoneNumber(String address){
+        boolean b = android.util.Patterns.PHONE.matcher(address).matches();
+        Log.e("JavaHelper", address+" is "+b);
+        return b;
     }
 
     public static String cleanPrivacy(String text){

@@ -360,8 +360,18 @@
                 tools:text="Moez Bhatti" />
 
             <com.moez.QKSMS.common.widget.QkTextView
+                android:id="@+id/categoryDes"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:visibility="visible"
+                android:textSize="13sp"
+                app:textColor="tertiary"
+                tools:text="Update Messages" />
+
+            <com.moez.QKSMS.common.widget.QkTextView
                 android:id="@+id/toolbarSubtitle"
                 style="@style/ToolbarText"
+                android:maxLines="1"
                 android:visibility="gone"
                 app:textColor="tertiary"
                 app:textSize="secondary"

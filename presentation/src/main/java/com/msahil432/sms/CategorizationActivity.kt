@@ -2,6 +2,7 @@ package com.msahil432.sms
 
 import android.app.Activity
 import android.graphics.Color
+import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.widget.Toast
@@ -16,6 +17,7 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.msahil432.sms.common.BaseActivity
 import com.transferwise.sequencelayout.SequenceStep
+import dagger.android.AndroidInjection
 import java.util.*
 
 /**
@@ -39,11 +41,14 @@ class CategorizationActivity : BaseActivity<CatViewModel>() {
     private var others = 0f
     private var pers = 0f
 
-    override fun setLayout(): Int {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
                 or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_FULLSCREEN)
-        return R.layout.activity_setup
+        super.onCreate(savedInstanceState)
     }
+
+    override fun setLayout(): Int = R.layout.activity_setup
 
     override fun setViewModelClass(): Class<CatViewModel> {
         startingStep.setActive(true)

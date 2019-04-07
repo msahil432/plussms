@@ -25,8 +25,8 @@ public open class BaseViewModel : ViewModel(){
         var DownloadThread: Executor = Executors.newSingleThreadExecutor()
         val retrofit = Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(com.msahil432.sms.Retrofit.hostUrl)
-                .build().create(com.msahil432.sms.Retrofit::class.java)!!
+                .baseUrl(com.msahil432.sms.common.Retrofit.hostUrl)
+                .build().create(com.msahil432.sms.common.Retrofit::class.java)!!
     }
 
     protected fun cancelTasks(){

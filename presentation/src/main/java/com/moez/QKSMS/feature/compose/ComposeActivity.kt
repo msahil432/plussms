@@ -32,6 +32,7 @@ import android.provider.MediaStore
 import android.text.format.DateFormat
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
@@ -164,6 +165,7 @@ class ComposeActivity : QkThemedActivity(), ComposeView {
         activityVisibleIntent.onNext(false)
     }
 
+    private var phoneValid = true
     override fun render(state: ComposeState) {
         if (state.hasError) {
             finish()
@@ -190,8 +192,10 @@ class ComposeActivity : QkThemedActivity(), ComposeView {
         if (state.editingMode && chips.adapter == null) chips.adapter = chipsAdapter
         if (state.editingMode && contacts.adapter == null) contacts.adapter = contactsAdapter
 
-        toolbar.menu.findItem(R.id.call)?.isVisible = !state.editingMode && state.selectedMessages == 0 && state.query.isEmpty()
-        toolbar.menu.findItem(R.id.info)?.isVisible = !state.editingMode && state.selectedMessages == 0 && state.query.isEmpty()
+        toolbar.menu.findItem(R.id.call)?.isVisible = !state.editingMode && state.selectedMessages == 0
+                && state.query.isEmpty()
+        toolbar.menu.findItem(R.id.info)?.isVisible = !state.editingMode && state.selectedMessages == 0
+                && state.query.isEmpty()
         toolbar.menu.findItem(R.id.copy)?.isVisible = !state.editingMode && state.selectedMessages == 1
         toolbar.menu.findItem(R.id.details)?.isVisible = !state.editingMode && state.selectedMessages == 1
         toolbar.menu.findItem(R.id.delete)?.isVisible = !state.editingMode && state.selectedMessages > 0
@@ -338,5 +342,16 @@ class ComposeActivity : QkThemedActivity(), ComposeView {
     }
 
     override fun onBackPressed() = backPressedIntent.onNext(Unit)
+
+    override fun showCategoryInfo(category: String) {
+        try {
+            if (category != "" && category != "PERSONAL") {
+                categoryDes.text = "Showing $category SMS"
+                categoryDes.visibility = View.VISIBLE
+            } else {
+                categoryDes.visibility = View.GONE
+            }
+        }catch (e: Exception){}
+    }
 
 }

@@ -13,6 +13,9 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
             android:layout_height="80dp"
+            android:theme="@style/AppThemeDark"
+            android:id="@+id/app_icon"
+            app:tint="@color/tools_theme"
             android:src="@drawable/icon"/>
         <com.moez.QKSMS.common.widget.QkTextView
             android:layout_width="match_parent"
@@ -23,6 +26,6 @@
             android:textStyle="bold"
             android:gravity="center"
             android:textSize="24sp"
-            app:textColor="primary" />
+            tools:textColor="@color/tools_theme" />
     </LinearLayout>
 </RelativeLayout>

@@ -61,6 +61,7 @@ import com.moez.QKSMS.repository.MessageRepository
 import com.moez.QKSMS.util.ActiveSubscriptionObservable
 import com.moez.QKSMS.util.Preferences
 import com.moez.QKSMS.util.tryOrNull
+import com.msahil432.sms.common.JavaHelper
 import com.uber.autodispose.kotlin.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -236,6 +237,10 @@ class ComposeViewModel @Inject constructor(
 
     override fun bindView(view: ComposeView) {
         super.bindView(view)
+
+        view.showCategoryInfo(category)
+        Log.e("ComposeVM", address)
+        Log.e("ComposeVM", JavaHelper.isPhoneNumber(address).toString())
 
         // Set the contact suggestions list to visible at all times when in editing mode and there are no contacts
         // selected yet, and also visible while in editing mode and there is text entered in the query field

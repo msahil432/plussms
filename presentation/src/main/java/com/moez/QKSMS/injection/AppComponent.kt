@@ -39,6 +39,8 @@ import com.moez.QKSMS.injection.android.ActivityBuilderModule
 import com.moez.QKSMS.injection.android.BroadcastReceiverBuilderModule
 import com.moez.QKSMS.injection.android.ServiceBuilderModule
 import com.moez.QKSMS.util.ContactImageLoader
+import com.msahil432.sms.CategorizationActivity
+import com.msahil432.sms.SplashActivity
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton

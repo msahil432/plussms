@@ -86,6 +86,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="4dp"
         android:layout_width="64dp"
+        android:maxLines="1"
+        app:autoSizeTextType="uniform"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:background="@color/rippleDark"

@@ -342,7 +342,7 @@
     <string name="notification_message_failed_text">The message to %s failed to send</string>
     <string name="drawer_all_messages">All Messages</string>
     <string name="drawer_personal_messages">Personal SMS</string>
-    <string name="drawer_money_sms">Money SMS</string>
+    <string name="drawer_money_sms">Finance SMS</string>
     <string name="drawer_updates_sms">Updates SMS</string>
     <string name="drawer_ads_sms">Ads SMS</string>
     <string name="drawer_other_sms">Other SMS</string>
@@ -362,7 +362,7 @@
     <string name="categorizing_sms_into_different_categories">Categorizing SMS into Different Categories:</string>
     <string name="personal_msg_notifs">Personal Message Notifications</string>
     <string name="update_msg_notifs">Updates Messages Notifications</string>
-    <string name="money_msg_notifs">Money Messages Notifications</string>
+    <string name="money_msg_notifs">Finance Messages Notifications</string>
     <string name="ads_msg_notifs">Ads Messages Notifications</string>
     <string name="other_msg_notifs">Other Messages Notification</string>
     <string name="app_notifs">Application Notifications</string>

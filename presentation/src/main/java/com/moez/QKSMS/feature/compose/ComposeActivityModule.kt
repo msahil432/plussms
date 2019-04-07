@@ -49,7 +49,6 @@ class ComposeActivityModule {
     @Named("address")
     fun provideAddress(activity: ComposeActivity): String {
         var address = ""
-
         activity.intent.data?.let {
             val data = it.toString()
             address = when {
@@ -59,11 +58,9 @@ class ComposeActivityModule {
                 it.scheme.startsWith("mms") -> data.replace("mms:", "")
                 else -> ""
             }
-
             // The dialer app on Oreo sends a URL encoded string, make sure to decode it
             if (address.contains('%')) address = URLDecoder.decode(address, "UTF-8")
         }
-
         return address
     }
 

@@ -38,6 +38,8 @@ import com.moez.QKSMS.feature.scheduled.ScheduledActivity
 import com.moez.QKSMS.feature.scheduled.ScheduledActivityModule
 import com.moez.QKSMS.feature.settings.SettingsActivity
 import com.moez.QKSMS.injection.scope.ActivityScope
+import com.msahil432.sms.CategorizationActivity
+import com.msahil432.sms.SplashActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -59,6 +61,14 @@ abstract class ActivityBuilderModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = [ComposeActivityModule::class])
     abstract fun bindComposeActivity(): ComposeActivity
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = [])
+    abstract fun bindSplashActivity(): SplashActivity
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = [])
+    abstract fun bindCategorizationActivity(): CategorizationActivity
 
     @ActivityScope
     @ContributesAndroidInjector(modules = [])

@@ -11,6 +11,7 @@ import com.msahil432.sms.models.ServerModel
 import io.realm.Realm
 import io.realm.Sort
 import java.lang.Exception
+import java.util.concurrent.Executors
 
 /**
  * Created by msahil432
@@ -31,21 +32,25 @@ class CatViewModel : BaseViewModel() {
     private val toProcessMessages = ArrayList<ServerMessage>()
 
     fun startProcess(context: Context){
+        Executors.newSingleThreadExecutor().execute {
+            JavaHelper.pingServer()
+        }
+
         WorkThread.execute {
+            val messages = Realm.getDefaultInstance().where(Message::class.java)
+                    .equalTo("type", "sms").findAll()
+            total.postValue(messages.size)
 
             val pm = Realm.getDefaultInstance().where(Message::class.java)
+                    .equalTo("type", "sms")
                     .equalTo("category", "PERSONAL")
                     .findAll()
             personalMessages.addAll(pm)
             pers = pm.size
             personal.postValue(pers)
 
-            JavaHelper.pingServer()
-
-            val messages = Realm.getDefaultInstance().where(Message::class.java).findAll()
-            total.postValue(messages.size)
-
             val nonMessages = Realm.getDefaultInstance().where(Message::class.java)
+                    .equalTo("type", "sms")
                     .equalTo("category", "NONE")
                     .findAll()
 
@@ -56,6 +61,7 @@ class CatViewModel : BaseViewModel() {
                     personal.postValue(pers)
                     continue
                 }
+
                 val temp = ServerMessage(t.id.toString(),
                         JavaHelper.cleanPrivacy(t.getText()), "")
                 toProcessMessages.add(temp)
@@ -165,7 +171,7 @@ class CatViewModel : BaseViewModel() {
                         personalMessages.add(message)
                     }
                     "MONEY", "OTP", "BANK", "money" -> {
-                        message.category = "MONEY"
+                        message.category = "FINANCE"
                         mo++
                         money.postValue(mo)
                     }

@@ -161,9 +161,7 @@ class AppModule(private var application: Application) {
     @Provides
     fun provideCursorToRecipient(mapper: CursorToRecipientImpl): CursorToRecipient = mapper
 
-
     // Repository
-
     @Provides
     fun provideBackupRepository(repository: BackupRepositoryImpl): BackupRepository = repository
 

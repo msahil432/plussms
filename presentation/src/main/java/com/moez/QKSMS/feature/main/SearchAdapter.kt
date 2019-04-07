@@ -71,7 +71,7 @@ class SearchAdapter @Inject constructor(
             index = title.indexOf(query, index + query.length, true)
         }
         view.title.text = title
-
+        view.category.text = result.conversation.category
         view.avatars.contacts = result.conversation.recipients
 
         when (result.messages == 0) {

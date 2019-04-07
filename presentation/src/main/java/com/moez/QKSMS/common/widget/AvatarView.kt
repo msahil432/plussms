@@ -35,7 +35,7 @@ import com.moez.QKSMS.listener.ContactAddedListener
 import com.moez.QKSMS.model.Contact
 import com.moez.QKSMS.model.Recipient
 import com.moez.QKSMS.util.GlideApp
-import com.msahil432.sms.KtHelper
+import com.msahil432.sms.common.KtHelper
 import com.uber.autodispose.android.ViewScopeProvider
 import com.uber.autodispose.kotlin.autoDisposable
 import kotlinx.android.synthetic.main.avatar_view.view.*

@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
+import com.moez.QKSMS.common.base.QkThemedActivity
 import com.msahil432.sms.R
 
 /**
@@ -33,7 +34,7 @@ import com.msahil432.sms.R
  * @param <VM> ViewModel of Activity
  */
 
-abstract class BaseActivity<VM : ViewModel> : AppCompatActivity() {
+abstract class BaseActivity<VM : ViewModel> : QkThemedActivity() {
 
     protected lateinit var viewModel: VM
 

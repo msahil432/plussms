@@ -1,4 +1,4 @@
-package com.msahil432.sms;
+package com.msahil432.sms.common;
 
 import com.msahil432.sms.models.ServerModel;
 

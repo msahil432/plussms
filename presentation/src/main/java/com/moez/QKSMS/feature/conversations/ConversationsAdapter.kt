@@ -31,6 +31,7 @@ import com.moez.QKSMS.common.base.QkViewHolder
 import com.moez.QKSMS.common.util.DateFormatter
 import com.moez.QKSMS.common.util.extensions.resolveThemeColor
 import com.moez.QKSMS.model.Conversation
+import com.msahil432.sms.SmsClassifier
 import kotlinx.android.synthetic.main.conversation_list_item.view.*
 import javax.inject.Inject
 
@@ -98,7 +99,7 @@ class ConversationsAdapter @Inject constructor(
             false -> conversation.snippet
         }
         view.pinned.isVisible = conversation.pinned
-        if(showCategory && conversation.category!="NONE")
+        if(showCategory && conversation.category!=SmsClassifier.NONE_CATEGORY)
             view.category.text = conversation.category
         else
             view.category.visibility = View.GONE

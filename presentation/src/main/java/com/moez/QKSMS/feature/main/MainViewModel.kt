@@ -42,6 +42,11 @@ import com.moez.QKSMS.model.SyncLog
 import com.moez.QKSMS.repository.ConversationRepository
 import com.moez.QKSMS.repository.SyncRepository
 import com.moez.QKSMS.util.Preferences
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_ADS
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_FINANCE
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_OTHERS
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_PERSONAL
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_UPDATES
 import com.uber.autodispose.kotlin.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -203,19 +208,19 @@ class MainViewModel @Inject constructor(
                             copy(page = Archived(data = conversationRepo.getConversations(true)))
                         }
                         DrawerItem.PERSONAL -> newState{
-                            copy(page = PersonalInbox(data = conversationRepo.getConversations("PERSONAL")))
+                            copy(page = PersonalInbox(data = conversationRepo.getConversations(CATEGORY_PERSONAL)))
                         }
-                        DrawerItem.MONEY -> newState{
-                            copy(page = MoneyInbox(data = conversationRepo.getConversations("MONEY")))
+                        DrawerItem.FINANCE -> newState{
+                            copy(page = FinanceInbox(data = conversationRepo.getConversations(CATEGORY_FINANCE)))
                         }
                         DrawerItem.UPDATES -> newState{
-                            copy(page = UpdatesInbox(data = conversationRepo.getConversations("UPDATES")))
+                            copy(page = UpdatesInbox(data = conversationRepo.getConversations(CATEGORY_UPDATES)))
                         }
                         DrawerItem.OTHERS -> newState{
-                            copy(page = OthersInbox(data = conversationRepo.getConversations("OTHERS")))
+                            copy(page = OthersInbox(data = conversationRepo.getConversations(CATEGORY_OTHERS)))
                         }
                         DrawerItem.ADS -> newState{
-                            copy(page = AdsInbox(data = conversationRepo.getConversations("ADS")))
+                            copy(page = AdsInbox(data = conversationRepo.getConversations(CATEGORY_ADS)))
                         }
                         else -> {
                         } // Do nothing

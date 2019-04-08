@@ -42,6 +42,12 @@ import com.moez.QKSMS.model.MmsPart
 import com.moez.QKSMS.model.Recipient
 import com.moez.QKSMS.model.SyncLog
 import com.moez.QKSMS.util.tryOrNull
+import com.msahil432.sms.SmsClassifier
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_ADS
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_FINANCE
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_OTHERS
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_PERSONAL
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_UPDATES
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 import io.realm.Realm
@@ -152,6 +158,7 @@ class SyncRepositoryImpl @Inject constructor(
 
             realm.where(Message::class.java)
                     .sort("date", Sort.DESCENDING)
+                    .distinct("category")
                     .distinct("threadId")
                     .findAll()
                     .forEach { message ->
@@ -159,13 +166,14 @@ class SyncRepositoryImpl @Inject constructor(
                         conversation?.date = message.date
                         conversation?.snippet = message.getSummary()
                         conversation?.me = message.isMe()
-                        try{
-                        if(conversation?.me!!)
-                            conversation.category = "PERSONAL"
-                        else
-                            conversation.category = "NONE"
-                        }catch (e: Exception){
-                            conversation?.category = "NONE"
+                        conversation?.category = message.category
+                        conversation?.vid = when(message.category){
+                            CATEGORY_PERSONAL -> message.threadId + 1000000
+                            CATEGORY_OTHERS -> message.threadId + 2000000
+                            CATEGORY_ADS -> message.threadId + 3000000
+                            CATEGORY_UPDATES -> message.threadId + 4000000
+                            CATEGORY_FINANCE -> message.threadId + 5000000
+                            else -> message.threadId
                         }
                     }
             realm.insertOrUpdate(conversations)
@@ -197,9 +205,8 @@ class SyncRepositoryImpl @Inject constructor(
 
         // Only delete this after the sync has successfully completed
         oldBlockedSenders.delete()
-//        context.startActivity(Intent(context, ))
-        LocalBroadcastManager.getInstance(context)
-                .sendBroadcast(Intent("com.msahil432.sms.START_CATEGORIZATION"))
+//        LocalBroadcastManager.getInstance(context)
+//                .sendBroadcast(Intent("com.msahil432.sms.START_CATEGORIZATION"))
         syncProgress.onNext(SyncRepository.SyncProgress.Idle())
     }
 

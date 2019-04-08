@@ -26,7 +26,7 @@ import io.realm.RealmMigration
 class QkRealmMigration : RealmMigration {
 
     companion object {
-        const val SCHEMA_VERSION: Long = 5
+        const val SCHEMA_VERSION: Long = 6
     }
 
     override fun migrate(realm: DynamicRealm, oldVersion: Long, newVersion: Long) {

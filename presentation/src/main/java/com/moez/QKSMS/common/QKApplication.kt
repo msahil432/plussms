@@ -23,6 +23,7 @@ import android.app.Application
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.IntentFilter
+import android.util.Log
 import androidx.core.provider.FontRequest
 import androidx.emoji.text.EmojiCompat
 import androidx.emoji.text.FontRequestEmojiCompatConfig
@@ -40,6 +41,7 @@ import com.moez.QKSMS.manager.AnalyticsManager
 import com.moez.QKSMS.migration.QkRealmMigration
 import com.moez.QKSMS.util.NightModeManager
 import com.msahil432.sms.CategorizerBroadcastReceiver
+import com.msahil432.sms.ClassifierDataSet
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -47,6 +49,7 @@ import dagger.android.HasBroadcastReceiverInjector
 import dagger.android.HasServiceInjector
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import io.realm.annotations.RealmModule
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -79,8 +82,12 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
         Realm.init(this)
         Realm.setDefaultConfiguration(RealmConfiguration.Builder()
                 .compactOnLaunch()
-                .migration(QkRealmMigration())
+                .initialData {
+                    ClassifierDataSet().addDataToDb(it)
+                    Log.e("QKApp", "Added Initial Data")
+                }
                 .schemaVersion(QkRealmMigration.SCHEMA_VERSION)
+                .deleteRealmIfMigrationNeeded()
                 .build())
 
         AppComponentManager.init(this)

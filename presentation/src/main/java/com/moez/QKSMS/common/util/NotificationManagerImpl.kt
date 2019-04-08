@@ -76,7 +76,7 @@ class NotificationManagerImpl @Inject constructor(
     companion object {
         const val PERSONAL_CHANNEL_ID = "com.msahil432.sms.PERSONAL"
         const val ADS_CHANNEL_ID = "com.msahil432.sms.ADS"
-        const val MONEY_CHANNEL_ID = "com.msahil432.sms.MONEY"
+        const val MONEY_CHANNEL_ID = "com.msahil432.sms.FINANCE"
         const val UPDATES_CHANNEL_ID = "com.msahil432.sms.UPDATES"
         const val OTHERS_CHANNEL_ID = "com.msahil432.sms.OTHERS"
         const val DEFAULT_CHANNEL_ID = "notifications_default"
@@ -432,7 +432,7 @@ class NotificationManagerImpl @Inject constructor(
                     return when (cat){
                         "PERSONAL" -> PERSONAL_CHANNEL_ID
                         "UPDATES" -> UPDATES_CHANNEL_ID
-                        "MONEY" -> MONEY_CHANNEL_ID
+                        "FINANCE" -> MONEY_CHANNEL_ID
                         "ADS" -> ADS_CHANNEL_ID
                         "OTHERS" -> OTHERS_CHANNEL_ID
                         else -> DEFAULT_CHANNEL_ID
@@ -445,7 +445,7 @@ class NotificationManagerImpl @Inject constructor(
                 return when (convo.category){
                     "PERSONAL" -> PERSONAL_CHANNEL_ID
                     "UPDATES" -> UPDATES_CHANNEL_ID
-                    "MONEY" -> MONEY_CHANNEL_ID
+                    "FINANCE" -> MONEY_CHANNEL_ID
                     "ADS" -> ADS_CHANNEL_ID
                     "OTHERS" -> OTHERS_CHANNEL_ID
                     else -> DEFAULT_CHANNEL_ID

@@ -72,7 +72,7 @@ data class OthersInbox(
         val selected: Int = 0
 ) : MainPage()
 
-data class MoneyInbox(
+data class FinanceInbox(
         val markPinned: Boolean = true,
         val markRead: Boolean = false,
         val data: RealmResults<Conversation>? = null,

@@ -102,7 +102,7 @@ class CatViewModel : BaseViewModel() {
                         ad--
                         ads.postValue(ad)
                     }
-                    "MONEY" ->{
+                    "FINANCE" ->{
                         mo--
                         money.postValue(mo)
                     }
@@ -170,7 +170,7 @@ class CatViewModel : BaseViewModel() {
                         personal.postValue(pers)
                         personalMessages.add(message)
                     }
-                    "MONEY", "OTP", "BANK", "money" -> {
+                    "FINANCE", "OTP", "BANK", "money" -> {
                         message.category = "FINANCE"
                         mo++
                         money.postValue(mo)

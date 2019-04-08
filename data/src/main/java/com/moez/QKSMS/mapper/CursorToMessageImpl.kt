@@ -32,6 +32,7 @@ import com.moez.QKSMS.model.Message
 import com.moez.QKSMS.util.Preferences
 import com.moez.QKSMS.util.SqliteWrapper
 import com.moez.QKSMS.util.tryOrNull
+import com.msahil432.sms.SmsClassifier
 import javax.inject.Inject
 
 class CursorToMessageImpl @Inject constructor(
@@ -127,7 +128,7 @@ class CursorToMessageImpl @Inject constructor(
                     parts.addAll(cursorToPart.getPartsCursor(contentId)?.map { cursorToPart.map(it) } ?: listOf())
                 }
             }
-            category = if(isMe()) "PERSONAL" else "NONE"
+            category = if(isMe()) SmsClassifier.CATEGORY_PERSONAL else SmsClassifier.classify(body)
         }
     }
 

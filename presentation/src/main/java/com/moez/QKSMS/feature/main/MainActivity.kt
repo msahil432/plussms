@@ -31,7 +31,6 @@ import android.view.ViewStub
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
-import androidx.core.view.accessibility.AccessibilityEventCompat.setAction
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -91,7 +90,7 @@ class MainActivity : QkThemedActivity(), MainView {
                 inbox.clicks().map { DrawerItem.INBOX },
                 personal_inbox.clicks().map { DrawerItem.PERSONAL },
                 ads_inbox.clicks().map { DrawerItem.ADS },
-                money_inbox.clicks().map { DrawerItem.MONEY },
+                money_inbox.clicks().map { DrawerItem.FINANCE },
                 update_inbox.clicks().map { DrawerItem.UPDATES },
                 others_inbox.clicks().map { DrawerItem.OTHERS },
                 archived.clicks().map { DrawerItem.ARCHIVED },
@@ -200,7 +199,7 @@ class MainActivity : QkThemedActivity(), MainView {
         val markPinned = when (state.page) {
             is Inbox -> state.page.markPinned
             is PersonalInbox -> state.page.markPinned
-            is MoneyInbox -> state.page.markPinned
+            is FinanceInbox -> state.page.markPinned
             is UpdatesInbox -> state.page.markPinned
             is OthersInbox -> state.page.markPinned
             is AdsInbox -> state.page.markPinned
@@ -211,7 +210,7 @@ class MainActivity : QkThemedActivity(), MainView {
         val markRead = when (state.page) {
             is Inbox -> state.page.markRead
             is PersonalInbox -> state.page.markRead
-            is MoneyInbox -> state.page.markRead
+            is FinanceInbox -> state.page.markRead
             is UpdatesInbox -> state.page.markRead
             is OthersInbox -> state.page.markRead
             is AdsInbox -> state.page.markRead
@@ -222,7 +221,7 @@ class MainActivity : QkThemedActivity(), MainView {
         val selectedConversations = when (state.page) {
             is Inbox -> state.page.selected
             is PersonalInbox -> state.page.selected
-            is MoneyInbox -> state.page.selected
+            is FinanceInbox -> state.page.selected
             is UpdatesInbox -> state.page.selected
             is OthersInbox -> state.page.selected
             is AdsInbox -> state.page.selected
@@ -250,7 +249,7 @@ class MainActivity : QkThemedActivity(), MainView {
         rateLayout.setVisible(false)
 
         val isConvosVisible = state.page is Inbox || state.page is Archived
-                || state.page is PersonalInbox || state.page is MoneyInbox
+                || state.page is PersonalInbox || state.page is FinanceInbox
                 || state.page is UpdatesInbox || state.page is OthersInbox
                 || state.page is AdsInbox
 
@@ -277,7 +276,7 @@ class MainActivity : QkThemedActivity(), MainView {
                 itemTouchHelper.attachToRecyclerView(recyclerView)
                 empty.setText(R.string.inbox_empty_text)
             }
-            is MoneyInbox -> {
+            is FinanceInbox -> {
                 conversationsAdapter.showCategory(false)
                 showBackButton(state.page.selected > 0)
                 title = getString(R.string.main_title_selected, state.page.selected)
@@ -338,7 +337,7 @@ class MainActivity : QkThemedActivity(), MainView {
 
         inbox.isActivated = state.page is Inbox
         personal_inbox.isActivated = state.page is PersonalInbox
-        money_inbox.isActivated = state.page is MoneyInbox
+        money_inbox.isActivated = state.page is FinanceInbox
         others_inbox.isActivated = state.page is OthersInbox
         update_inbox.isActivated = state.page is UpdatesInbox
         ads_inbox.isActivated = state.page is AdsInbox

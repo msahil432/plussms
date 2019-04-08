@@ -17,6 +17,7 @@
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
 apply plugin: 'com.android.library'
+apply plugin: 'realm-android'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
@@ -86,6 +87,12 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 
+    implementation 'com.github.ptnplanet:Java-Naive-Bayes-Classifier:1.0.7'
+
+//    // realm
+//    implementation("io.realm:android-adapters:$realm_adapters_version") { transitive = false }
+//    kapt "io.realm:realm-annotations:$realm_version"
+//    kapt "io.realm:realm-annotations-processor:$realm_version"
 }
 
 repositories {

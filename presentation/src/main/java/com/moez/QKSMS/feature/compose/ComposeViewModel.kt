@@ -240,7 +240,6 @@ class ComposeViewModel @Inject constructor(
 
         view.showCategoryInfo(category)
         Log.e("ComposeVM", address)
-        Log.e("ComposeVM", JavaHelper.isPhoneNumber(address).toString())
 
         // Set the contact suggestions list to visible at all times when in editing mode and there are no contacts
         // selected yet, and also visible while in editing mode and there is text entered in the query field

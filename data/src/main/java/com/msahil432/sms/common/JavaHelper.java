@@ -8,8 +8,6 @@ import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.util.Log;
 
-import com.msahil432.sms.Retrofit;
-
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.regex.Matcher;
@@ -19,7 +17,7 @@ public class JavaHelper {
 
     public static void pingServer(){
         try{
-            URL url = new URL(Retrofit.hostUrl);
+            URL url = new URL("https://glacial-hamlet-87000.herokuapp.com");
             HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
             urlc.setRequestProperty("Connection", "close");
             urlc.setConnectTimeout(1000 * 30);

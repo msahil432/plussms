@@ -18,6 +18,7 @@
  */
 package com.moez.QKSMS.compat
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.telephony.SubscriptionManager
@@ -30,6 +31,7 @@ class SubscriptionManagerCompat @Inject constructor(context: Context, private va
         get() = field?.takeIf { permissions.hasPhone() }
 
     val activeSubscriptionInfoList: List<SubscriptionInfoCompat>
+        @SuppressLint("MissingPermission")
         get() {
             return if (Build.VERSION.SDK_INT >= 22) {
                 subscriptionManager?.activeSubscriptionInfoList?.map { SubscriptionInfoCompat(it) } ?: listOf()

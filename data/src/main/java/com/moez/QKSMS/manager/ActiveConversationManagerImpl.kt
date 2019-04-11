@@ -18,16 +18,6 @@
  */
 package com.moez.QKSMS.manager
 
-import com.msahil432.sms.Retrofit
-import com.msahil432.sms.common.JavaHelper
-import com.msahil432.sms.models.ServerMessage
-import com.msahil432.sms.models.ServerModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.Exception
-import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -42,31 +32,5 @@ class ActiveConversationManagerImpl @Inject constructor() : ActiveConversationMa
 
     override fun getActiveConversation(): Long? {
         return threadId
-    }
-
-    private val map = HashMap<String, String>()
-    private val retrofit = retrofit2.Retrofit.Builder()
-            .baseUrl(Retrofit.hostUrl).addConverterFactory(GsonConverterFactory.create()).build()
-            .create(Retrofit::class.java)
-    override fun getCategoryForSms(body: String): String {
-        val text = JavaHelper.cleanPrivacy(body)
-        val cat = map[text]
-        if(cat==null){
-            val t = ServerModel(listOf(ServerMessage("hey-there", text, "")))
-            retrofit.categorizeSMS(t).enqueue(object: Callback<ServerModel> {
-                override fun onFailure(call: Call<ServerModel>, t: Throwable) {}
-                override fun onResponse(call: Call<ServerModel>, response: Response<ServerModel>) {
-                    try {
-                        val t2 = response.body()!!.texts
-                        if (t2 != null)
-                            map[t2[0].textMessage] = t2[0].cat
-                    }catch (e: Exception){
-                        e.printStackTrace()
-                    }
-                }
-            })
-            return "NONE"
-        }
-        return cat
     }
 }

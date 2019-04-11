@@ -37,7 +37,6 @@ import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import androidx.core.app.TaskStackBuilder
 import androidx.core.graphics.drawable.IconCompat
-import androidx.core.graphics.get
 import com.msahil432.sms.R
 import com.moez.QKSMS.common.util.extensions.dpToPx
 import com.moez.QKSMS.extensions.isImage
@@ -51,12 +50,19 @@ import com.moez.QKSMS.receiver.DeleteMessagesReceiver
 import com.moez.QKSMS.receiver.MarkReadReceiver
 import com.moez.QKSMS.receiver.MarkSeenReceiver
 import com.moez.QKSMS.receiver.RemoteMessagingReceiver
-import com.moez.QKSMS.repository.ContactRepository
 import com.moez.QKSMS.repository.ConversationRepository
 import com.moez.QKSMS.repository.MessageRepository
 import com.moez.QKSMS.util.GlideApp
 import com.moez.QKSMS.util.Preferences
 import com.moez.QKSMS.util.tryOrNull
+import com.msahil432.sms.SmsClassifier
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_ADS
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_FINANCE
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_OTHERS
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_PERSONAL
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_UPDATES
+import com.msahil432.sms.SmsClassifier.Companion.NONE_CATEGORY
+import com.msahil432.sms.common.KtHelper
 import io.realm.Realm
 import io.realm.Sort
 import javax.inject.Inject
@@ -76,7 +82,7 @@ class NotificationManagerImpl @Inject constructor(
     companion object {
         const val PERSONAL_CHANNEL_ID = "com.msahil432.sms.PERSONAL"
         const val ADS_CHANNEL_ID = "com.msahil432.sms.ADS"
-        const val MONEY_CHANNEL_ID = "com.msahil432.sms.FINANCE"
+        const val FINANCE_CHANNEL_ID = "com.msahil432.sms.FINANCE"
         const val UPDATES_CHANNEL_ID = "com.msahil432.sms.UPDATES"
         const val OTHERS_CHANNEL_ID = "com.msahil432.sms.OTHERS"
         const val DEFAULT_CHANNEL_ID = "notifications_default"
@@ -109,7 +115,7 @@ class NotificationManagerImpl @Inject constructor(
             adsChannel.description = context.getString(R.string.drawer_ads_sms)
             adsChannel.setSound(null, null)
 
-            val moneyChannel = NotificationChannel(MONEY_CHANNEL_ID,
+            val moneyChannel = NotificationChannel(FINANCE_CHANNEL_ID,
                     context.getString(R.string.drawer_money_sms), NotificationManager.IMPORTANCE_HIGH)
             moneyChannel.description = context.getString(R.string.drawer_money_sms)
             moneyChannel.setShowBadge(true)
@@ -174,7 +180,7 @@ class NotificationManagerImpl @Inject constructor(
         when(channel){
             PERSONAL_CHANNEL_ID -> notification.setSmallIcon(R.drawable.ic_person_pin_black_24dp)
             UPDATES_CHANNEL_ID -> notification.setSmallIcon(R.drawable.ic_info_black_24dp)
-            MONEY_CHANNEL_ID -> notification.setSmallIcon(R.drawable.ic_attach_money_black_24dp)
+            FINANCE_CHANNEL_ID -> notification.setSmallIcon(R.drawable.ic_attach_money_black_24dp)
             ADS_CHANNEL_ID -> notification.setSmallIcon(R.drawable.ic_delete_sweep_black_24dp)
             else -> notification.setSmallIcon(R.drawable.icon)
         }
@@ -183,8 +189,10 @@ class NotificationManagerImpl @Inject constructor(
                 .setAutoCancel(true)
                 .setContentIntent(contentPI)
                 .setDeleteIntent(seenPI)
-                .setSound(ringtone)
-                .setLights(Color.WHITE, 500, 2000)
+
+        if(channel!= ADS_CHANNEL_ID)
+                notification.setSound(ringtone)
+        notification.setLights(Color.WHITE, 500, 2000)
                 .setVibrate(if (prefs.vibration(threadId).get()) VIBRATE_PATTERN else longArrayOf(0))
 
         // Tell the notification if it's a group message
@@ -204,10 +212,9 @@ class NotificationManagerImpl @Inject constructor(
 
                 person.setName(recipient?.getDisplayName() ?: message.address)
 
-                person.setIcon(GlideApp.with(context)
-                        .asBitmap()
+                person.setIcon(KtHelper.getLoadedGlide(
+                            PhoneNumberUtils.stripSeparators(message.address), context )
                         .circleCrop()
-                        .load(PhoneNumberUtils.stripSeparators(message.address))
                         .submit(64.dpToPx(context), 64.dpToPx(context))
                         .let { futureGet -> tryOrNull(false) { futureGet.get() } }
                         ?.let(IconCompat::createWithBitmap))
@@ -427,14 +434,14 @@ class NotificationManagerImpl @Inject constructor(
     private fun getChannelIdForNotification(threadId: Long, body: String): String {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             try {
-                val cat = activeConversationManager.getCategoryForSms(body)
-                if(cat!="NONE")
+                val cat = SmsClassifier.classify(body)
+                if(cat!= NONE_CATEGORY)
                     return when (cat){
-                        "PERSONAL" -> PERSONAL_CHANNEL_ID
-                        "UPDATES" -> UPDATES_CHANNEL_ID
-                        "FINANCE" -> MONEY_CHANNEL_ID
-                        "ADS" -> ADS_CHANNEL_ID
-                        "OTHERS" -> OTHERS_CHANNEL_ID
+                        CATEGORY_PERSONAL -> PERSONAL_CHANNEL_ID
+                        CATEGORY_UPDATES -> UPDATES_CHANNEL_ID
+                        CATEGORY_FINANCE -> FINANCE_CHANNEL_ID
+                        CATEGORY_ADS -> ADS_CHANNEL_ID
+                        CATEGORY_OTHERS -> OTHERS_CHANNEL_ID
                         else -> DEFAULT_CHANNEL_ID
                     }
 
@@ -443,11 +450,11 @@ class NotificationManagerImpl @Inject constructor(
                         .sort("date", Sort.DESCENDING).findFirst()!!
 
                 return when (convo.category){
-                    "PERSONAL" -> PERSONAL_CHANNEL_ID
-                    "UPDATES" -> UPDATES_CHANNEL_ID
-                    "FINANCE" -> MONEY_CHANNEL_ID
-                    "ADS" -> ADS_CHANNEL_ID
-                    "OTHERS" -> OTHERS_CHANNEL_ID
+                    CATEGORY_PERSONAL -> PERSONAL_CHANNEL_ID
+                    CATEGORY_UPDATES -> UPDATES_CHANNEL_ID
+                    CATEGORY_FINANCE -> FINANCE_CHANNEL_ID
+                    CATEGORY_ADS -> ADS_CHANNEL_ID
+                    CATEGORY_OTHERS -> OTHERS_CHANNEL_ID
                     else -> DEFAULT_CHANNEL_ID
                 }
 

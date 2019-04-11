@@ -106,7 +106,7 @@ class NotificationPrefsViewModel @Inject constructor(
                             navigator.showNotificationChannel(NotificationManagerImpl.PERSONAL_CHANNEL_ID)
 
                         R.id.money_notifications ->
-                            navigator.showNotificationChannel(NotificationManagerImpl.MONEY_CHANNEL_ID)
+                            navigator.showNotificationChannel(NotificationManagerImpl.FINANCE_CHANNEL_ID)
 
                         R.id.ads_notifications ->
                             navigator.showNotificationChannel(NotificationManagerImpl.ADS_CHANNEL_ID)

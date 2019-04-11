@@ -49,6 +49,9 @@ import com.moez.QKSMS.service.SendSmsService
 import com.moez.QKSMS.util.ImageUtils
 import com.moez.QKSMS.util.Preferences
 import com.moez.QKSMS.util.tryOrNull
+import com.msahil432.sms.SmsClassifier
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_PERSONAL
+import com.msahil432.sms.common.JavaHelper
 import io.realm.Case
 import io.realm.Realm
 import io.realm.RealmResults
@@ -72,7 +75,7 @@ class MessageRepositoryImpl @Inject constructor(
                 .where(Message::class.java)
                 .equalTo("threadId", threadId)
                 .let { if (query.isEmpty()) it else it.contains("body", query, Case.INSENSITIVE) }
-                .let { if (category.isEmpty()) it else it.equalTo("category", category) }
+                .let { if (category.isEmpty() || category=="") it else it.equalTo("category", category) }
                 .sort("date").findAllAsync()
     }
 
@@ -355,7 +358,12 @@ class MessageRepositoryImpl @Inject constructor(
     }
 
     override fun insertReceivedSms(subId: Int, address: String, body: String, sentTime: Long): Message {
-        activeConversationManager.getCategoryForSms(body)
+
+        val realm = Realm.getDefaultInstance()
+        val previous = realm.where(Message::class.java)
+                .equalTo("address", address).findAll()
+                .takeIf { it.size>0 }
+
         // Insert the message to Realm
         val message = Message().apply {
             this.address = address
@@ -368,10 +376,12 @@ class MessageRepositoryImpl @Inject constructor(
             threadId = TelephonyCompat.getOrCreateThreadId(context, address)
             boxId = Telephony.Sms.MESSAGE_TYPE_INBOX
             type = "sms"
-            category = if (isMe()) "PERSONAL" else activeConversationManager.getCategoryForSms(body)
+            category = if (isMe() || JavaHelper.getContactName(address, context)!=address
+                            || (previous!=null && previous[0]?.category == CATEGORY_PERSONAL))
+                        CATEGORY_PERSONAL
+                        else SmsClassifier.classify(body)
             read = activeConversationManager.getActiveConversation() == threadId
         }
-        val realm = Realm.getDefaultInstance()
         var managedMessage: Message? = null
         realm.executeTransaction { managedMessage = realm.copyToRealmOrUpdate(message) }
 
@@ -387,13 +397,6 @@ class MessageRepositoryImpl @Inject constructor(
             // Update the contentId after the message has been inserted to the content provider
             realm.executeTransaction { managedMessage?.contentId = uri.lastPathSegment.toLong() }
         }
-
-        val cat = activeConversationManager.getCategoryForSms(body)
-        if(cat!="NONE" && message.category != "PERSONAL")
-            realm.executeTransaction {
-                message.category = cat
-                realm.copyToRealmOrUpdate(message)
-            }
 
         realm.close()
 

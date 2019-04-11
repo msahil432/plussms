@@ -45,7 +45,7 @@
         style="@style/TextPrimary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="6dp"
         android:layout_marginStart="16dp"
         app:layout_constraintBottom_toTopOf="@id/snippet"
         app:layout_constraintEnd_toStartOf="@id/category"
@@ -94,7 +94,7 @@
         app:layout_constraintBottom_toBottomOf="@id/title"
         app:layout_constraintEnd_toStartOf="@id/date"
         app:layout_constraintHorizontal_bias="100"
-        tools:text="MONEY" />
+        tools:text="Personal" />
 
     <com.moez.QKSMS.common.widget.QkTextView
         android:id="@+id/date"
@@ -105,6 +105,6 @@
         app:layout_constraintBottom_toBottomOf="@id/title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="100"
-        tools:text="Oct 11" />
+        tools:text="Oct 11, 2018" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

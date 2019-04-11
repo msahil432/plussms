@@ -42,6 +42,7 @@ import com.moez.QKSMS.model.MmsPart
 import com.moez.QKSMS.model.Recipient
 import com.moez.QKSMS.model.SyncLog
 import com.moez.QKSMS.util.tryOrNull
+import com.msahil432.sms.ClassifierDataSet
 import com.msahil432.sms.SmsClassifier
 import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_ADS
 import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_FINANCE
@@ -52,6 +53,7 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 import io.realm.Realm
 import io.realm.Sort
+import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -120,7 +122,6 @@ class SyncRepositoryImpl @Inject constructor(
 
         var progress = 0
 
-
         // Sync messages
         messageCursor?.use {
             val messageColumns = CursorToMessage.MessageColumns(messageCursor)
@@ -157,16 +158,28 @@ class SyncRepositoryImpl @Inject constructor(
             }
 
             realm.where(Message::class.java)
+                .equalTo("category", CATEGORY_PERSONAL).findAll().forEach {
+                    realm.where(Message::class.java)
+                        .equalTo("threadId", it.threadId)
+                        .findAll()
+                        .forEach { it2 ->
+                            it2.category = CATEGORY_PERSONAL
+                            realm.insertOrUpdate(it2)
+                        }
+                }
+
+            realm.where(Message::class.java)
                     .sort("date", Sort.DESCENDING)
-                    .distinct("category")
-                    .distinct("threadId")
+                    .distinct("threadId", "category")
                     .findAll()
                     .forEach { message ->
-                        val conversation = conversations.firstOrNull { conversation -> conversation.id == message.threadId }
+                        val conversation = conversations
+                                .firstOrNull { conversation -> conversation.id == message.threadId }
                         conversation?.date = message.date
                         conversation?.snippet = message.getSummary()
                         conversation?.me = message.isMe()
-                        conversation?.category = message.category
+                        conversation?.category =
+                                if(message.isMe()) CATEGORY_PERSONAL else message.category
                         conversation?.vid = when(message.category){
                             CATEGORY_PERSONAL -> message.threadId + 1000000
                             CATEGORY_OTHERS -> message.threadId + 2000000
@@ -316,6 +329,26 @@ class SyncRepositoryImpl @Inject constructor(
                         numbers.addAll(allNumbers)
                     }
                 } ?: listOf()
+    }
+
+    override fun trainClassifier(){
+        syncProgress.onNext(SyncRepository.SyncProgress.Running(0, 0, true))
+        Executors.newSingleThreadExecutor().execute {
+
+            syncProgress.onNext(SyncRepository.SyncProgress.Idle())
+        }
+    }
+
+    override fun addTrainingDataSet(realm: Realm){
+        syncProgress.onNext(SyncRepository.SyncProgress.Running(0, 0, true))
+        realm.close()
+        Executors.newSingleThreadExecutor().execute {
+            Realm.getDefaultInstance().executeTransaction {
+                ClassifierDataSet().addDataToDb(it)
+            }
+            syncProgress.onNext(SyncRepository.SyncProgress.Idle())
+            try{syncMessages()}catch (e: Exception){}
+        }
     }
 
 }

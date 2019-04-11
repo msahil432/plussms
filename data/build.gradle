@@ -24,20 +24,11 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 28
     publishNonDefault true
-    flavorDimensions "analytics"
 
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField "String", "AMPLITUDE_API_KEY", "\"${System.getenv("AMPLITUDE_API_KEY")}\""
-        buildConfigField "String", "MIXPANEL_API_KEY", "\"${System.getenv("MIXPANEL_API_KEY")}\""
-    }
-
-    productFlavors {
-        withAnalytics { dimension "analytics" }
-        noAnalytics { dimension "analytics" }
     }
 }
 
@@ -80,19 +71,14 @@ dependencies {
     implementation project(":android-smsmms")
     implementation project(':common')
     implementation project(':domain')
-    withAnalyticsImplementation "com.amplitude:android-sdk:2.16.0"
-    withAnalyticsImplementation "com.mixpanel.android:mixpanel-android:5.2.1"
+//    withAnalyticsImplementation "com.amplitude:android-sdk:2.16.0"
+//    withAnalyticsImplementation "com.mixpanel.android:mixpanel-android:5.2.1"
 
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 
     implementation 'com.github.ptnplanet:Java-Naive-Bayes-Classifier:1.0.7'
-
-//    // realm
-//    implementation("io.realm:android-adapters:$realm_adapters_version") { transitive = false }
-//    kapt "io.realm:realm-annotations:$realm_version"
-//    kapt "io.realm:realm-annotations-processor:$realm_version"
 }
 
 repositories {

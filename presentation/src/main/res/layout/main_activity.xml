@@ -74,7 +74,13 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             tools:text="Your conversations will appear here"
             tools:visibility="invisible" />
-
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            app:layout_constraintBottom_toTopOf="@id/bottom"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            android:id="@+id/swiperefresh"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
@@ -83,10 +89,8 @@
             android:clipToPadding="false"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
-            app:layout_constraintBottom_toTopOf="@id/bottom"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
             tools:listitem="@layout/conversation_list_item" />
-
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         <ImageView
             android:id="@+id/compose"
             android:layout_width="56dp"
@@ -101,7 +105,6 @@
             app:layout_constraintBottom_toTopOf="@id/bottom"
             app:layout_constraintEnd_toEndOf="parent"
             tools:backgroundTint="@color/tools_theme" />
-
         <View
             android:layout_width="0dp"
             android:layout_height="8dp"

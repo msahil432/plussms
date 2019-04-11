@@ -29,6 +29,4 @@ interface ActiveConversationManager {
 
     fun getActiveConversation(): Long?
 
-    fun getCategoryForSms(body: String): String
-
 }

@@ -39,6 +39,7 @@ import com.moez.QKSMS.injection.AppComponentManager
 import com.moez.QKSMS.injection.appComponent
 import com.moez.QKSMS.manager.AnalyticsManager
 import com.moez.QKSMS.migration.QkRealmMigration
+import com.moez.QKSMS.repository.SyncRepository
 import com.moez.QKSMS.util.NightModeManager
 import com.msahil432.sms.CategorizerBroadcastReceiver
 import com.msahil432.sms.ClassifierDataSet
@@ -51,6 +52,7 @@ import io.realm.Realm
 import io.realm.RealmConfiguration
 import io.realm.annotations.RealmModule
 import timber.log.Timber
+import java.util.concurrent.Executors
 import javax.inject.Inject
 
 class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverInjector, HasServiceInjector {
@@ -61,21 +63,22 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
     @Suppress("unused")
     @Inject lateinit var analyticsManager: AnalyticsManager
 
+    @Inject lateinit var syncRepository: SyncRepository
     @Inject lateinit var dispatchingActivityInjector: DispatchingAndroidInjector<Activity>
     @Inject lateinit var dispatchingBroadcastReceiverInjector: DispatchingAndroidInjector<BroadcastReceiver>
     @Inject lateinit var dispatchingServiceInjector: DispatchingAndroidInjector<Service>
     @Inject lateinit var fileLoggingTree: FileLoggingTree
     @Inject lateinit var nightModeManager: NightModeManager
 
-    private val packages = arrayOf("com.moez.QKSMS")
+    private val packages = arrayOf("com.msahil432.sms")
 
     override fun onCreate() {
         super.onCreate()
 
-//        Bugsnag.init(this, Configuration(BuildConfig.BUGSNAG_API_KEY).apply {
-//            appVersion = BuildConfig.VERSION_NAME
-//            projectPackages = packages
-//        })
+        Bugsnag.init(this, Configuration("937e2453db969953603c313cf6553080").apply {
+            appVersion = BuildConfig.VERSION_NAME
+            projectPackages = packages
+        })
 
         RxJava2Debug.enableRxJava2AssemblyTracking()
 
@@ -83,8 +86,7 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
         Realm.setDefaultConfiguration(RealmConfiguration.Builder()
                 .compactOnLaunch()
                 .initialData {
-                    ClassifierDataSet().addDataToDb(it)
-                    Log.e("QKApp", "Added Initial Data")
+                    syncRepository.addTrainingDataSet(it)
                 }
                 .schemaVersion(QkRealmMigration.SCHEMA_VERSION)
                 .deleteRealmIfMigrationNeeded()
@@ -94,7 +96,7 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
         appComponent.inject(this)
 
         packageManager.getInstallerPackageName(packageName)?.let { installer ->
-//            analyticsManager.setUserProperty("Installer", installer)
+            analyticsManager.setUserProperty("Installer", installer)
         }
 
         nightModeManager.updateCurrentTheme()

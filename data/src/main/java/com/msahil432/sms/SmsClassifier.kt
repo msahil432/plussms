@@ -27,25 +27,27 @@ class SmsClassifier{
 //            }
         }
 
-        private fun initializeClassifier(){
+        fun initializeClassifier(){
             var count =0
             Realm.getDefaultInstance().where(ClassifierData::class.java)
                     .findAll()
                     .forEach {
                         count++
-                        classifier.learn(it.category, it.text.split("\\s"))
+                        classifier.learn(it.category, it.text.split(" "))
                     }
             Log.e("SmsClassifier", "Trained for : $count")
         }
 
-        public fun classify(text: String): String{
-            val cat = classifier.classify(cleanPrivacy(text).split("\\s"))
+        fun classify(text: String): String{
+            val cat = classifier.classify(cleanPrivacy(text).split(" "))
             Log.e("SmsClassifier", "Classifing: $text-- $cat")
             return if(cat==null) "NONE" else cat.category
         }
 
-        public fun cleanPrivacy(text: String): String {
-            return text.replace("\\d".toRegex(), "")
+        fun cleanPrivacy(text: String): String {
+            return text.replace("\\d".toRegex(), "").replace("\n", " ")
+                    .replace(",", " ").replace("?", " ")
+                    .replace("\\s\\s", " ")
         }
     }
 }

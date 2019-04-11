@@ -21,6 +21,7 @@ package com.moez.QKSMS.repository
 import android.net.Uri
 import com.moez.QKSMS.model.Message
 import io.reactivex.Observable
+import io.realm.Realm
 
 interface SyncRepository {
 
@@ -43,5 +44,9 @@ interface SyncRepository {
      * Return false if the contact couldn't be found
      */
     fun syncContact(address: String): Boolean
+
+    fun addTrainingDataSet(realm: Realm)
+
+    fun trainClassifier()
 
 }

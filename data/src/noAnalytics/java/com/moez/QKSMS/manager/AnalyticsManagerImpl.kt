@@ -27,7 +27,6 @@ import javax.inject.Singleton
 class AnalyticsManagerImpl @Inject constructor() : AnalyticsManager {
 
     override fun track(event: String, vararg properties: Pair<String, Any>) {
-
         // Log the event, but don't do anything else
         JSONObject(properties
                 .associateBy { pair -> pair.first }

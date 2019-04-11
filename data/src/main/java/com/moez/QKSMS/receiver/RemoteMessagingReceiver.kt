@@ -45,6 +45,8 @@ class RemoteMessagingReceiver : BroadcastReceiver() {
         val bundle = intent.extras ?: return
 
         val threadId = bundle.getLong("threadId")
+        if(remoteInput.getCharSequence("body")==null)
+            return
         val body = remoteInput.getCharSequence("body").toString()
         markRead.execute(listOf(threadId))
 

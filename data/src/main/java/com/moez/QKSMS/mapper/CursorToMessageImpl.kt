@@ -33,6 +33,7 @@ import com.moez.QKSMS.util.Preferences
 import com.moez.QKSMS.util.SqliteWrapper
 import com.moez.QKSMS.util.tryOrNull
 import com.msahil432.sms.SmsClassifier
+import com.msahil432.sms.common.JavaHelper
 import javax.inject.Inject
 
 class CursorToMessageImpl @Inject constructor(
@@ -128,7 +129,10 @@ class CursorToMessageImpl @Inject constructor(
                     parts.addAll(cursorToPart.getPartsCursor(contentId)?.map { cursorToPart.map(it) } ?: listOf())
                 }
             }
-            category = if(isMe()) SmsClassifier.CATEGORY_PERSONAL else SmsClassifier.classify(body)
+            category =
+                    if(isMe() || JavaHelper.getContactName(address, context)!=address)
+                        SmsClassifier.CATEGORY_PERSONAL
+                    else SmsClassifier.classify(body)
         }
     }
 

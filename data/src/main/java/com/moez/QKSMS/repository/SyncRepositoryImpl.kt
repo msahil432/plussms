@@ -334,7 +334,7 @@ class SyncRepositoryImpl @Inject constructor(
     override fun trainClassifier(){
         syncProgress.onNext(SyncRepository.SyncProgress.Running(0, 0, true))
         Executors.newSingleThreadExecutor().execute {
-
+            SmsClassifier.initializeClassifier()
             syncProgress.onNext(SyncRepository.SyncProgress.Idle())
         }
     }

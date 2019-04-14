@@ -31,10 +31,10 @@ class SyncMessage @Inject constructor(
     private val updateBadge: UpdateBadge
 ) : Interactor<Uri>() {
 
-    override fun buildObservable(params: Uri): Flowable<*> {
+    override fun buildObservable(params: Uri, DoNotUse: String): Flowable<*> {
         return Flowable.just(params)
                 .mapNotNull { uri -> syncManager.syncMessage(uri) }
-                .doOnNext { message -> conversationRepo.updateConversations(message.threadId) }
+                .doOnNext { message -> conversationRepo.updateConversations(message.threadId, category = "") }
                 .flatMap { updateBadge.buildObservable(Unit) } // Update the badge
     }
 

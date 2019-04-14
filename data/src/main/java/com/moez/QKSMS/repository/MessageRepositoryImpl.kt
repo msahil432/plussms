@@ -29,7 +29,6 @@ import android.os.Build
 import android.provider.Telephony
 import android.telephony.PhoneNumberUtils
 import android.telephony.SmsManager
-import android.util.Log
 import com.google.android.mms.ContentType
 import com.google.android.mms.MMSPart
 import com.klinker.android.send_message.SmsManagerFactory
@@ -153,10 +152,11 @@ class MessageRepositoryImpl @Inject constructor(
         realm.close()
     }
 
-    override fun markSeen(threadId: Long) {
+    override fun markSeen(threadId: Long, category: String) {
         val realm = Realm.getDefaultInstance()
         val messages = realm.where(Message::class.java)
                 .equalTo("threadId", threadId)
+                .equalTo("category", category)
                 .equalTo("seen", false)
                 .findAll()
 
@@ -168,11 +168,12 @@ class MessageRepositoryImpl @Inject constructor(
         realm.close()
     }
 
-    override fun markRead(vararg threadIds: Long) {
+    override fun markRead(vararg vIds: Long, category: String) {
         Realm.getDefaultInstance()?.use { realm ->
             val messages = realm.where(Message::class.java)
-                    .anyOf("threadId", threadIds)
+                    .anyOf("threadId", vIds)
                     .beginGroup()
+                    .equalTo("category", category)
                     .equalTo("read", false)
                     .or()
                     .equalTo("seen", false)
@@ -185,26 +186,27 @@ class MessageRepositoryImpl @Inject constructor(
                     message.read = true
                 }
             }
-        }
 
-        val values = ContentValues()
-        values.put(Telephony.Sms.SEEN, true)
-        values.put(Telephony.Sms.READ, true)
+            val values = ContentValues()
+            values.put(Telephony.Sms.SEEN, true)
+            values.put(Telephony.Sms.READ, true)
 
-        threadIds.forEach { threadId ->
-            try {
-                val uri = ContentUris.withAppendedId(Telephony.MmsSms.CONTENT_CONVERSATIONS_URI, threadId)
-                context.contentResolver.update(uri, values, "${Telephony.Sms.READ} = 0", null)
-            } catch (exception: Exception) {
-                Timber.w(exception)
+            messages.forEach { m ->
+                try {
+                    val uri = ContentUris.withAppendedId(Telephony.MmsSms.CONTENT_CONVERSATIONS_URI, m.threadId)
+                    context.contentResolver.update(uri, values, "${Telephony.Sms.READ} = 0", null)
+                } catch (exception: Exception) {
+                    Timber.w(exception)
+                }
             }
         }
     }
 
-    override fun markUnread(vararg threadIds: Long) {
+    override fun markUnread(vararg threadIds: Long, category: String) {
         Realm.getDefaultInstance()?.use { realm ->
             val conversation = realm.where(Conversation::class.java)
                     .anyOf("id", threadIds)
+                    .equalTo("category", category)
                     .equalTo("read", true)
                     .findAll()
 
@@ -214,7 +216,8 @@ class MessageRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun sendMessage(subId: Int, threadId: Long, addresses: List<String>, body: String, attachments: List<Attachment>, delay: Int) {
+    override fun sendMessage(subId: Int, threadId: Long, addresses: List<String>,
+                             body: String, attachments: List<Attachment>, delay: Int) {
         if (addresses.size == 1 && attachments.isEmpty()) { // SMS
             if (delay > 0) { // With delay
                 val sendTime = System.currentTimeMillis() + delay
@@ -268,7 +271,8 @@ class MessageRepositoryImpl @Inject constructor(
                     .map { vCard -> MMSPart("contact", ContentType.TEXT_VCARD, vCard) }
 
             val transaction = Transaction(context)
-            transaction.sendNewMessage(subId, threadId, addresses.map(PhoneNumberUtils::stripSeparators), parts, null)
+            transaction.sendNewMessage(subId, threadId,
+                    addresses.map(PhoneNumberUtils::stripSeparators), parts, null)
         }
     }
 
@@ -277,7 +281,8 @@ class MessageRepositoryImpl @Inject constructor(
                 ?.let(SmsManagerFactory::createSmsManager)
                 ?: SmsManager.getDefault()
 
-        val parts = smsManager.divideMessage(if (prefs.unicode.get()) StripAccents.stripAccents(message.body) else message.body)
+        val parts = smsManager.divideMessage(if (prefs.unicode.get())
+            StripAccents.stripAccents(message.body) else message.body)
                 ?: arrayListOf()
 
         val sentIntents = parts.map {
@@ -289,11 +294,13 @@ class MessageRepositoryImpl @Inject constructor(
         val deliveredIntents = parts.map {
             context.registerReceiver(SmsDeliveredReceiver(), IntentFilter(SmsDeliveredReceiver.ACTION))
             val intent = Intent(SmsDeliveredReceiver.ACTION).putExtra("id", message.id)
-            val pendingIntent = PendingIntent.getBroadcast(context, message.id.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val pendingIntent = PendingIntent.getBroadcast(context, message.id.toInt(),
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT)
             if (prefs.delivery.get()) pendingIntent else null
         }
 
-        smsManager.sendMultipartTextMessage(message.address, null, parts, ArrayList(sentIntents), ArrayList(deliveredIntents))
+        smsManager.sendMultipartTextMessage(message.address, null,
+                parts, ArrayList(sentIntents), ArrayList(deliveredIntents))
     }
 
     override fun cancelDelayedSms(id: Long) {
@@ -315,7 +322,7 @@ class MessageRepositoryImpl @Inject constructor(
             this.body = body
             this.date = date
             this.subId = subId
-
+            this.category = CATEGORY_PERSONAL
             id = messageIds.newId()
             boxId = Telephony.Sms.MESSAGE_TYPE_OUTBOX
             type = "sms"
@@ -360,9 +367,6 @@ class MessageRepositoryImpl @Inject constructor(
     override fun insertReceivedSms(subId: Int, address: String, body: String, sentTime: Long): Message {
 
         val realm = Realm.getDefaultInstance()
-        val previous = realm.where(Message::class.java)
-                .equalTo("address", address).findAll()
-                .takeIf { it.size>0 }
 
         // Insert the message to Realm
         val message = Message().apply {
@@ -376,9 +380,8 @@ class MessageRepositoryImpl @Inject constructor(
             threadId = TelephonyCompat.getOrCreateThreadId(context, address)
             boxId = Telephony.Sms.MESSAGE_TYPE_INBOX
             type = "sms"
-            category = if (isMe() || JavaHelper.getContactName(address, context)!=address
-                            || (previous!=null && previous[0]?.category == CATEGORY_PERSONAL))
-                        CATEGORY_PERSONAL
+            category = if (isMe() || JavaHelper.getContactName(address, context)!=address)
+                            CATEGORY_PERSONAL
                         else SmsClassifier.classify(body)
             read = activeConversationManager.getActiveConversation() == threadId
         }
@@ -513,12 +516,13 @@ class MessageRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun deleteMessages(vararg messageIds: Long) {
+    override fun deleteMessages(vararg messageIds: Long, category: String) {
         Realm.getDefaultInstance().use { realm ->
             realm.refresh()
 
             val messages = realm.where(Message::class.java)
                     .anyOf("id", messageIds)
+                    .equalTo("category", category)
                     .findAll()
 
             val uris = messages.map { it.getUri() }

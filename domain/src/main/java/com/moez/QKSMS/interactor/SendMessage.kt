@@ -39,7 +39,7 @@ class SendMessage @Inject constructor(
         val attachments: List<Attachment> = listOf(),
         val delay: Int = 0)
 
-    override fun buildObservable(params: Params): Flowable<*> = Flowable.just(Unit)
+    override fun buildObservable(params: Params, DoNotUse: String): Flowable<*> = Flowable.just(Unit)
             .filter { params.addresses.isNotEmpty() }
             .doOnNext { messageRepo.sendMessage(params.subId, params.threadId, params.addresses, params.body, params.attachments, params.delay) }
             .map {
@@ -51,7 +51,7 @@ class SendMessage @Inject constructor(
                     params.threadId
                 }
             }
-            .doOnNext { threadId -> conversationRepo.updateConversations(threadId) }
-            .doOnNext { threadId -> conversationRepo.markUnarchived(threadId) }
+            .doOnNext { threadId -> conversationRepo.updateConversations(threadId, category = "Personal") }
+            .doOnNext { threadId -> conversationRepo.markUnarchived(threadId, category ="Personal") }
 
 }

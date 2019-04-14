@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 class MarkAllSeen @Inject constructor(private val messageRepo: MessageRepository) : Interactor<Unit>() {
 
-    override fun buildObservable(params: Unit): Flowable<Unit> {
+    override fun buildObservable(params: Unit, dontUse: String): Flowable<Unit> {
         return Flowable.just(Unit)
                 .doOnNext { messageRepo.markAllSeen() }
     }

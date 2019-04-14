@@ -26,7 +26,10 @@ import io.realm.Realm
 interface SyncRepository {
 
     sealed class SyncProgress {
-        class Idle : SyncProgress()
+        class Idle : SyncProgress(){
+            override fun equals(other: Any?): Boolean { return super.equals(other) }
+            override fun hashCode(): Int { return super.hashCode() }
+        }
         data class Running(val max: Int, val progress: Int, val indeterminate: Boolean) : SyncProgress()
     }
 

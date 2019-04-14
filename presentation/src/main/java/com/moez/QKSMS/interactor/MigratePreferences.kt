@@ -35,7 +35,7 @@ class MigratePreferences @Inject constructor(
     private val rxPrefs: RxSharedPreferences
 ) : Interactor<Unit>() {
 
-    override fun buildObservable(params: Unit): Flowable<*> {
+    override fun buildObservable(params: Unit, DoNotUse: String): Flowable<*> {
         return Flowable.fromCallable { rxPrefs.getBoolean("pref_key_welcome_seen", false) }
                 .filter { seen -> seen.get() } // Only proceed if this value is true. It will be set false at the end
                 .doOnNext {

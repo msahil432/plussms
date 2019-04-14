@@ -1,6 +1,5 @@
 package com.moez.QKSMS.model
 
-import io.realm.RealmModel
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
@@ -12,6 +11,6 @@ import io.realm.annotations.RealmClass
 @RealmClass
 open class ClassifierData: RealmObject(){
     @PrimaryKey var id: Long = 0
-    public var text = ""
-    public var category = ""
+    var text = ""
+    var category = ""
 }

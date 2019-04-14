@@ -27,9 +27,9 @@ class MarkArchived @Inject constructor(
     private val markRead: MarkRead
 ) : Interactor<List<Long>>() {
 
-    override fun buildObservable(params: List<Long>): Flowable<*> {
+    override fun buildObservable(params: List<Long>, category: String): Flowable<*> {
         return Flowable.just(params.toLongArray())
-                .doOnNext { threadIds -> conversationRepo.markArchived(*threadIds) }
+                .doOnNext { threadIds -> conversationRepo.markArchived(*threadIds, category = category) }
                 .flatMap { markRead.buildObservable(params) }
     }
 

@@ -24,9 +24,9 @@ import javax.inject.Inject
 
 class MarkUnpinned @Inject constructor(private val conversationRepo: ConversationRepository) : Interactor<List<Long>>() {
 
-    override fun buildObservable(params: List<Long>): Flowable<*> {
+    override fun buildObservable(params: List<Long>, category: String): Flowable<*> {
         return Flowable.just(params.toLongArray())
-                .doOnNext { threadIds -> conversationRepo.markUnpinned(*threadIds) }
+                .doOnNext { threadIds -> conversationRepo.markUnpinned(*threadIds, category = category) }
     }
 
 }

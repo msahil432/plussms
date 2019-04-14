@@ -29,7 +29,7 @@ class UpdateScheduledMessageAlarms @Inject constructor(
     private val sendScheduledMessage: SendScheduledMessage
 ) : Interactor<Unit>() {
 
-    override fun buildObservable(params: Unit): Flowable<*> {
+    override fun buildObservable(params: Unit, category: String): Flowable<*> {
         return Flowable.just(params)
                 .map { scheduledMessageRepo.getScheduledMessages() } // Get all the scheduled messages
                 .map { it.map { message -> Pair(message.id, message.date) } } // Map the data we need out of Realm

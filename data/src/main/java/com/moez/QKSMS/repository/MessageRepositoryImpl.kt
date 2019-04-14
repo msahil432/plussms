@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.moez.QKSMS.repository
 
 import android.app.AlarmManager
@@ -29,13 +11,14 @@ import android.os.Build
 import android.provider.Telephony
 import android.telephony.PhoneNumberUtils
 import android.telephony.SmsManager
-import android.util.Log
+import android.widget.Toast
 import com.google.android.mms.ContentType
 import com.google.android.mms.MMSPart
 import com.klinker.android.send_message.SmsManagerFactory
 import com.klinker.android.send_message.StripAccents
 import com.klinker.android.send_message.Transaction
 import com.moez.QKSMS.compat.TelephonyCompat
+import com.moez.QKSMS.data.R
 import com.moez.QKSMS.extensions.anyOf
 import com.moez.QKSMS.manager.ActiveConversationManager
 import com.moez.QKSMS.manager.KeyManager
@@ -214,8 +197,14 @@ class MessageRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun sendMessage(subId: Int, threadId: Long, addresses: List<String>, body: String, attachments: List<Attachment>, delay: Int) {
+    override fun sendMessage(subId: Int, threadId: Long, addresses: List<String>,
+                             body: String, attachments: List<Attachment>, delay: Int) {
         if (addresses.size == 1 && attachments.isEmpty()) { // SMS
+            val address = PhoneNumberUtils.stripSeparators(addresses.first())
+            if(!JavaHelper.validPhoneNumber(address)){
+                Toast.makeText(context, R.string.invalid_phone_number, Toast.LENGTH_LONG).show()
+                return
+            }
             if (delay > 0) { // With delay
                 val sendTime = System.currentTimeMillis() + delay
                 val message = insertSentSms(subId, threadId, addresses.first(), body, sendTime)
@@ -233,6 +222,8 @@ class MessageRepositoryImpl @Inject constructor(
                 sendSms(message)
             }
         } else { // MMS
+            Toast.makeText(context, R.string.sending_as_mms, Toast.LENGTH_LONG).show()
+            
             val parts = arrayListOf<MMSPart>()
 
             if (body.isNotBlank()) {
@@ -273,6 +264,8 @@ class MessageRepositoryImpl @Inject constructor(
     }
 
     override fun sendSms(message: Message) {
+        
+        
         val smsManager = message.subId.takeIf { it != -1 }
                 ?.let(SmsManagerFactory::createSmsManager)
                 ?: SmsManager.getDefault()
@@ -315,6 +308,7 @@ class MessageRepositoryImpl @Inject constructor(
             this.body = body
             this.date = date
             this.subId = subId
+            this.category = CATEGORY_PERSONAL
 
             id = messageIds.newId()
             boxId = Telephony.Sms.MESSAGE_TYPE_OUTBOX

@@ -273,19 +273,19 @@ class MainActivity : QkThemedActivity(), MainView {
                 conversationsAdapter.updateData(state.page.data)
                 itemTouchHelper.attachToRecyclerView(recyclerView)
                 conversationsAdapter.showCategory(true)
-                toolbarSearch.setText(R.string.drawer_all_messages)
+                toolbarSearch.setHint(R.string.drawer_all_messages)
                 empty.setText(R.string.inbox_empty_text)
             }
 
             is UpdatesInbox -> {
-                conversationsAdapter.showCategory(false)
                 showBackButton(state.page.selected > 0)
                 title = getString(R.string.main_title_selected, state.page.selected)
                 if (recyclerView.adapter !== conversationsAdapter)
                     recyclerView.adapter = conversationsAdapter
                 conversationsAdapter.updateData(state.page.data)
+                conversationsAdapter.showCategory(false)
                 itemTouchHelper.attachToRecyclerView(recyclerView)
-                toolbarSearch.setText(R.string.drawer_updates_sms)
+                toolbarSearch.setHint(R.string.drawer_updates_sms)
                 empty.setText(R.string.inbox_empty_text)
             }
             is FinanceInbox -> {
@@ -295,7 +295,7 @@ class MainActivity : QkThemedActivity(), MainView {
                     recyclerView.adapter = conversationsAdapter
                 conversationsAdapter.updateData(state.page.data)
                 conversationsAdapter.showCategory(false)
-                toolbarSearch.setText(R.string.drawer_money_sms)
+                toolbarSearch.setHint(R.string.drawer_money_sms)
                 itemTouchHelper.attachToRecyclerView(recyclerView)
                 empty.setText(R.string.inbox_empty_text)
             }
@@ -307,7 +307,7 @@ class MainActivity : QkThemedActivity(), MainView {
                 conversationsAdapter.updateData(state.page.data)
                 conversationsAdapter.showCategory(false)
                 itemTouchHelper.attachToRecyclerView(recyclerView)
-                toolbarSearch.setText(R.string.drawer_ads_sms)
+                toolbarSearch.setHint(R.string.drawer_ads_sms)
                 empty.setText(R.string.inbox_empty_text)
             }
             is OthersInbox -> {
@@ -318,7 +318,7 @@ class MainActivity : QkThemedActivity(), MainView {
                 conversationsAdapter.updateData(state.page.data)
                 conversationsAdapter.showCategory(false)
                 itemTouchHelper.attachToRecyclerView(recyclerView)
-                toolbarSearch.setText(R.string.drawer_other_sms)
+                toolbarSearch.setHint(R.string.drawer_other_sms)
                 empty.setText(R.string.inbox_empty_text)
             }
             is PersonalInbox-> {

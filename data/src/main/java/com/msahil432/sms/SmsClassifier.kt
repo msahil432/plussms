@@ -96,7 +96,7 @@ class SmsClassifier{
 
         fun classify(text: String): String{
             val cleanedText = cleanPrivacy(text).split(" ")
-            var cat = adClassifier.classify(cleanedText)
+            var cat = adClassifier.classify(cleanedText).takeIf { it!=null } ?: return NONE_CATEGORY
             if(cat.category== NONE_CATEGORY){
                 cat = financeClassifier.classify(cleanedText)
                 if(cat.category == NONE_CATEGORY){

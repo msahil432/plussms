@@ -90,10 +90,9 @@
         app:autoSizeTextType="uniform"
         android:layout_height="wrap_content"
         android:gravity="start|center_vertical"
-        android:background="@color/rippleDark"
         app:layout_constraintBottom_toBottomOf="@id/title"
         app:layout_constraintEnd_toStartOf="@id/date"
-        app:layout_constraintHorizontal_bias="100"
+        app:layout_constraintHorizontal_bias="0"
         tools:text="Personal" />
 
     <com.moez.QKSMS.common.widget.QkTextView

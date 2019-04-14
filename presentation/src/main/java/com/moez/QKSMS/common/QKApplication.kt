@@ -43,6 +43,7 @@ import com.moez.QKSMS.repository.SyncRepository
 import com.moez.QKSMS.util.NightModeManager
 import com.msahil432.sms.CategorizerBroadcastReceiver
 import com.msahil432.sms.ClassifierDataSet
+import com.msahil432.sms.SmsClassifier
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -70,6 +71,8 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
     @Inject lateinit var fileLoggingTree: FileLoggingTree
     @Inject lateinit var nightModeManager: NightModeManager
 
+    private var classifier : String? = null
+
     private val packages = arrayOf("com.msahil432.sms")
 
     override fun onCreate() {
@@ -91,6 +94,8 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
                 .schemaVersion(QkRealmMigration.SCHEMA_VERSION)
                 .deleteRealmIfMigrationNeeded()
                 .build())
+
+        classifier = SmsClassifier.classify("test")
 
         AppComponentManager.init(this)
         appComponent.inject(this)

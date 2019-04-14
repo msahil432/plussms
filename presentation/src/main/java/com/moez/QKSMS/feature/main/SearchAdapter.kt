@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.moez.QKSMS.feature.main
 
 import android.content.Context
@@ -50,7 +32,7 @@ class SearchAdapter @Inject constructor(
         return QkViewHolder(view).apply {
             view.setOnClickListener {
                 val result = getItem(adapterPosition)
-                navigator.showConversation(result.conversation.id, result.query.takeIf { result.messages > 0 })
+                navigator.showConversation(result.conversation.id, result.conversation.category, result.query.takeIf { result.messages > 0 })
             }
         }
     }
@@ -83,7 +65,6 @@ class SearchAdapter @Inject constructor(
                     false -> result.conversation.snippet
                 }
             }
-
             false -> {
                 view.date.setVisible(false)
                 view.snippet.text = context.getString(R.string.main_message_results, result.messages)
@@ -92,12 +73,16 @@ class SearchAdapter @Inject constructor(
     }
 
     override fun areItemsTheSame(old: SearchResult, new: SearchResult): Boolean {
-        return old.conversation.id == new.conversation.id && old.messages > 0 == new.messages > 0
+        return old.conversation.vid == new.conversation.vid && old.messages > 0 == new.messages > 0
     }
 
     override fun areContentsTheSame(old: SearchResult, new: SearchResult): Boolean {
         return old.query == new.query && // Queries are the same
                 old.conversation.id == new.conversation.id // Conversation id is the same
                 && old.messages == new.messages // Result count is the same
+    }
+
+    override fun getItemId(position: Int): Long {
+        return getItem(position).conversation.vid
     }
 }

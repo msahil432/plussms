@@ -66,12 +66,7 @@ public class JavaHelper {
     }
 
     public static boolean validateEmail(String email) {
-        Pattern pattern;
-        Matcher matcher;
-        String EMAIL_PATTERN = "\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b";
-        pattern = Pattern.compile(EMAIL_PATTERN);
-        matcher = pattern.matcher(email);
-        return matcher.matches();
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     public static long resolveVid(long id, String category){
@@ -83,6 +78,14 @@ public class JavaHelper {
             case CATEGORY_FINANCE : return id + 5000000;
         }
         return id;
+    }
+
+    public static boolean validPhoneNumber(String phone){
+        return android.util.Patterns.PHONE.matcher(phone).matches();
+    }
+
+    public static boolean canSendToThis(String address){
+        return validateEmail(address) || validPhoneNumber(address);
     }
 
 }

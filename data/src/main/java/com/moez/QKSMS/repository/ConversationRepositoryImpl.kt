@@ -22,6 +22,7 @@ import android.content.ContentUris
 import android.content.Context
 import android.provider.Telephony
 import android.telephony.PhoneNumberUtils
+import android.util.Log
 import com.moez.QKSMS.compat.TelephonyCompat
 import com.moez.QKSMS.extensions.anyOf
 import com.moez.QKSMS.extensions.map
@@ -33,6 +34,7 @@ import com.moez.QKSMS.model.Conversation
 import com.moez.QKSMS.model.Message
 import com.moez.QKSMS.model.SearchResult
 import com.moez.QKSMS.util.tryOrNull
+import com.msahil432.sms.common.JavaHelper
 import io.realm.Case
 import io.realm.Realm
 import io.realm.RealmResults
@@ -122,16 +124,33 @@ class ConversationRepositoryImpl @Inject constructor(
                 .where(Message::class.java)
                 .contains("body", query, Case.INSENSITIVE)
                 .findAll()
+
+        val convos = HashMap<Long, SearchResult>()
+        messagesByConversation.forEach {
+            val vid = JavaHelper.resolveVid(it.id, it.category)
+            val s = convos[vid]
+            if(s!=null){
+                val c = s.conversation
+                c.count++
+                convos[vid] = SearchResult(query, c, c.count)
+            }else{
+                val c = conversations.find { c -> c.vid == vid } ?: return@forEach
+                c.count = 1
+                convos[vid] = SearchResult(query, c, c.count)
+            }
+        }
+        /*
                 .groupBy { message -> message.threadId }
                 .filter { (threadId, _) -> conversations.firstOrNull { it.id == threadId } != null }
                 .map { (threadId, messages) -> Pair(conversations.first { it.id == threadId }, messages.size) }
                 .map { (conversation, messages) -> SearchResult(query, conversation, messages) }
                 .sortedByDescending { result -> result.messages }
+        */
 
         return conversations
                 .filter { conversation -> conversationFilter.filter(conversation, query) }
                 .map { conversation -> SearchResult(query, conversation, 0) }
-                .plus(messagesByConversation)
+                .plus(convos.values.sortedByDescending { result -> result.messages  })
     }
 
     override fun getBlockedConversations(): RealmResults<Conversation> {

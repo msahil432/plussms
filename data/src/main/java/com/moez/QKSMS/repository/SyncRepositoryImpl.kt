@@ -23,11 +23,7 @@ import com.moez.QKSMS.model.SyncLog
 import com.moez.QKSMS.util.tryOrNull
 import com.msahil432.sms.ClassifierDataSet
 import com.msahil432.sms.SmsClassifier
-import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_ADS
-import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_FINANCE
-import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_OTHERS
 import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_PERSONAL
-import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_UPDATES
 import com.msahil432.sms.common.JavaHelper
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
@@ -158,7 +154,7 @@ class SyncRepositoryImpl @Inject constructor(
                                     c.category = m.category
                                     c.vid = JavaHelper.resolveVid(m.threadId, m.category)
                                     c.date = m.date
-                                    c.snippet = m.body
+                                    c.snippet = m.body.replace("\n", " ")
                                     c.me = m.isMe()
 
 //                                    Log.e("SyncRepo", "Convo added ${m.threadId}: ${c.vid}")

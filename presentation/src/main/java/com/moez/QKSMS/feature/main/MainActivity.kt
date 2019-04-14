@@ -161,8 +161,7 @@ class MainActivity : QkThemedActivity(), MainView {
                 .subscribe { theme ->
                     // Set the color for the drawer icons
                     val states = arrayOf(intArrayOf(android.R.attr.state_activated), intArrayOf(-android.R.attr.state_activated))
-                    resolveThemeColor(android.R.attr.textColorSecondary)
-                            .let { textSecondary -> ColorStateList(states, intArrayOf(theme.theme, textSecondary)) }
+                    ColorStateList(states, intArrayOf(theme.theme, resolveThemeColor(android.R.attr.textColorSecondary)))
                             .let { tintList ->
                                 inboxIcon.imageTintList = tintList
                                 personal_inboxIcon.imageTintList = tintList

@@ -192,6 +192,7 @@ class MainActivity : QkThemedActivity(), MainView {
         conversationsAdapter.autoScrollToStart(recyclerView)
 
         swiperefresh.setOnRefreshListener {
+            swiperefresh.isRefreshing = false
             toolbarSearch.requestFocus()
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(toolbarSearch, InputMethodManager.SHOW_IMPLICIT)

@@ -13,6 +13,12 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.msahil432.sms.SmsClassifier.CATEGORY_ADS;
+import static com.msahil432.sms.SmsClassifier.CATEGORY_FINANCE;
+import static com.msahil432.sms.SmsClassifier.CATEGORY_OTHERS;
+import static com.msahil432.sms.SmsClassifier.CATEGORY_PERSONAL;
+import static com.msahil432.sms.SmsClassifier.CATEGORY_UPDATES;
+
 public class JavaHelper {
 
     public static void pingServer(){
@@ -66,6 +72,17 @@ public class JavaHelper {
         pattern = Pattern.compile(EMAIL_PATTERN);
         matcher = pattern.matcher(email);
         return matcher.matches();
+    }
+
+    public static long resolveVid(long id, String category){
+        switch (category){
+            case CATEGORY_PERSONAL : return id + 1000000;
+            case CATEGORY_OTHERS : return id + 2000000;
+            case CATEGORY_ADS : return id + 3000000;
+            case CATEGORY_UPDATES : return id + 4000000;
+            case CATEGORY_FINANCE : return id + 5000000;
+        }
+        return id;
     }
 
 }

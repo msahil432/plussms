@@ -21,12 +21,9 @@ package com.moez.QKSMS.repository
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.provider.Telephony
 import android.telephony.PhoneNumberUtils
-import android.util.Log
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.f2prateek.rx.preferences2.RxSharedPreferences
 import com.moez.QKSMS.extensions.insertOrUpdate
 import com.moez.QKSMS.extensions.map
@@ -49,6 +46,7 @@ import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_FINANCE
 import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_OTHERS
 import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_PERSONAL
 import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_UPDATES
+import com.msahil432.sms.common.JavaHelper
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 import io.realm.Realm
@@ -83,7 +81,6 @@ class SyncRepositoryImpl @Inject constructor(
     override val syncProgress: Subject<SyncRepository.SyncProgress> = BehaviorSubject.createDefault(SyncRepository.SyncProgress.Idle())
 
     override fun syncMessages() {
-
         // If the sync is already running, don't try to do another one
         if (syncProgress.blockingFirst() is SyncRepository.SyncProgress.Running) return
         syncProgress.onNext(SyncRepository.SyncProgress.Running(0, 0, true))
@@ -168,30 +165,45 @@ class SyncRepositoryImpl @Inject constructor(
                         }
                 }
 
-            realm.where(Message::class.java)
-                    .sort("date", Sort.DESCENDING)
-                    .distinct("threadId", "category")
-                    .findAll()
-                    .forEach { message ->
-                        val conversation = conversations
-                                .firstOrNull { conversation -> conversation.id == message.threadId }
-                        conversation?.date = message.date
-                        conversation?.snippet = message.getSummary()
-                        conversation?.me = message.isMe()
-                        conversation?.category =
-                                if(message.isMe()) CATEGORY_PERSONAL else message.category
-                        conversation?.vid = when(message.category){
-                            CATEGORY_PERSONAL -> message.threadId + 1000000
-                            CATEGORY_OTHERS -> message.threadId + 2000000
-                            CATEGORY_ADS -> message.threadId + 3000000
-                            CATEGORY_UPDATES -> message.threadId + 4000000
-                            CATEGORY_FINANCE -> message.threadId + 5000000
-                            else -> message.threadId
-                        }
-                    }
-            realm.insertOrUpdate(conversations)
-        }
+            conversations
+                    .forEach {c ->
+                        realm.where(Message::class.java)
+                                .equalTo("threadId", c.id)
+                                .sort("date", Sort.DESCENDING)
+                                .distinct("category")
+                                .findAll()
+                                .forEach {m ->
+                                    c.category = m.category
+                                    c.vid = JavaHelper.resolveVid(m.threadId, m.category)
+                                    c.date = m.date
+                                    c.snippet = m.body
+                                    c.me = m.isMe()
 
+//                                    Log.e("SyncRepo", "Convo added ${m.threadId}: ${c.vid}")
+
+                                    realm.insertOrUpdate(c)
+                                }
+//                        Log.e("SyncRepo", "Convo processed ${c.id}")
+                    }
+
+//            realm.where(Message::class.java)
+//                    .sort("date", Sort.DESCENDING)
+//                    .distinct("threadId", "category")
+//                    .findAll()
+//                    .forEach { message ->
+//                        val conversation = conversations
+//                                .firstOrNull { conversation -> conversation.id == message.threadId }
+//                        conversation?.date = message.date
+//                        conversation?.snippet = message.getSummary()
+//                        conversation?.me = message.isMe()
+//                        conversation?.category =
+//                                if(message.isMe()) CATEGORY_PERSONAL else message.category
+//                        conversation?.vid = JavaHelper.resolveVid(message.id, message.category)
+//                    }
+//            realm.insertOrUpdate(conversations)
+
+
+        }
 
         // Sync recipients
         recipientCursor?.use {
@@ -224,7 +236,6 @@ class SyncRepositoryImpl @Inject constructor(
     }
 
     override fun syncMessage(uri: Uri): Message? {
-
         // If we don't have a valid type, return null
         val type = when {
             uri.toString().contains("mms") -> "mms"
@@ -331,11 +342,13 @@ class SyncRepositoryImpl @Inject constructor(
                 } ?: listOf()
     }
 
-    override fun trainClassifier(){
+    override fun trainClassifier(syncAlso: Boolean){
         syncProgress.onNext(SyncRepository.SyncProgress.Running(0, 0, true))
         Executors.newSingleThreadExecutor().execute {
             SmsClassifier.initializeClassifier()
             syncProgress.onNext(SyncRepository.SyncProgress.Idle())
+            if(syncAlso)
+                syncMessages()
         }
     }
 

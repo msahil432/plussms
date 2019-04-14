@@ -47,6 +47,6 @@ interface SyncRepository {
 
     fun addTrainingDataSet(realm: Realm)
 
-    fun trainClassifier()
+    fun trainClassifier(syncAlso:Boolean = false)
 
 }

@@ -89,7 +89,7 @@ class ClassifierDataSet{
         dataset["As per RBI guideline can do free money transfer from Money wallet bank a/c till From money transfer will be available only full KYC wallets Update min KYC on & continue enjoying our services. Full KYC upgrade will be launched shortly"]=CATEGORY_ADS
         dataset["Thank for using your SBI Debit Card for purchase worth Rs on POS at txn"]=CATEGORY_UPDATES
         dataset["Hi our customer contact centre number for Account customers is changing from March Kindly call our new number  for any queries or issues between am pm Mon Sat (except holidays) Local charges apply"]=CATEGORY_ADS
-        dataset["Paytm added Rs cashback in Paytm wallet for Order Bill Payment for TATA POWER - DDL (Promocode: TPDDL50) Upto Rs Cashback on movie tickets Code:MOVIE200"]=CATEGORY_FINANCE
+        dataset["Paytm added Rs cashback in Paytm wallet for Order Bill Payment for   POWER - DDL (Promocode: TPDDL50) Upto Rs Cashback on movie tickets Code:MOVIE200"]=CATEGORY_FINANCE
         dataset["A/C debit by transfer Rs on Avl Bal Rs Download"]=CATEGORY_FINANCE
         dataset["Urgent reminder Dear Customer wallet will be discontinued Feb Kindly utilize available balance Rs in your wallet by using your Visa virtual debit card For any further queries refer FAQs"]=CATEGORY_UPDATES
         dataset["Use as login OTP is confidential never calls asking for OTP Sharing with anyone gives them full access your Wallet"]=CATEGORY_UPDATES
@@ -107,7 +107,7 @@ class ClassifierDataSet{
         dataset["Beneficiary added successfully Wallet for funds transfer"]=CATEGORY_UPDATES
         dataset["no is credited by Rs by  linked mobile PRIVATE LIMITED IMPS Ref no"]=CATEGORY_FINANCE
         dataset["Best Offer Rs mein payein Local aur STD call min din tak Tariff check karne ke liye dial"]=CATEGORY_ADS
-        dataset["Payments dwara bhugtan karein aur payein cashback Tata Star Bazaar ke sabhi store par Shartein laagu"]=CATEGORY_ADS
+        dataset["Payments dwara bhugtan karein aur payein cashback   Star Bazaar ke sabhi store par Shartein laagu"]=CATEGORY_ADS
         dataset["Websites Month Mobile Friendly Design We also Provide Services E-Commerce Online Exam Portal BULK SMS Call"]=CATEGORY_ADS
         dataset["OTP for transaction is Do not share with anyone"]=CATEGORY_FINANCE
         dataset["Thank for using Internet Banking Transaction Ref No for Rs on Feb"]=CATEGORY_UPDATES
@@ -676,7 +676,7 @@ class ClassifierDataSet{
         dataset["Sorry had cancel order because some items are unavailable try another restaurant"]=CATEGORY_UPDATES
         dataset["Parents Bursting crackers in or around school premises is strictly prohibited Any student found in possession crackers or using them will face serious consequences ensure ward does not indulge in same Pitampura Delhi"]=CATEGORY_UPDATES
         dataset["Its time jingle folks Grab best Christmas Deals at hottest restaurants cashback only on Explore NOW"]=CATEGORY_ADS
-        dataset["Having colorful Holi Day Make flavorful too by celebrating with festive favorites at best restaurants Book now"]=CATEGORY_ADS
+        dataset["Having colorful Day Make flavorful too by celebrating with festive favorites at best restaurants Book now"]=CATEGORY_ADS
         dataset[" welcome Bank have successfully opened savings account with us For queries visit"]=CATEGORY_UPDATES
         dataset["Call me when are free its regarding internship"]=CATEGORY_PERSONAL
         dataset["Woah order was delivered lightning fast in under mins Bon Appetit can now use  favourite UPI App pay on"]=CATEGORY_UPDATES
@@ -765,7 +765,7 @@ class ClassifierDataSet{
         dataset["Dear Rider! ! have earned Rs. 20 worth Ridlr points. Use them transact on Ridlr, before they expire soon! Try now: http://ridlr.in/profile"]=CATEGORY_UPDATES
         dataset["Dear Member, Got Titan encircle points worth Rs 561 as on 14 Mar'19. Redeem your Points & Unlock Gifts from our partners. Know more http://smsd.in/1SrGC3Lt"]=CATEGORY_UPDATES
         dataset["Admissions Alert! Apply Now for PGDM for ITM Mumbai and get chance work with 650+ Recruiters. http://nmc.sg/bT0Rkc"]=CATEGORY_ADS
-        dataset["Kataria Sanyam has accepted your feedback request for TATA Nexon. Chat with Kataria Sanyam now & get all your queries clarified."]=CATEGORY_UPDATES
+        dataset["Kataria Sanyam has accepted your feedback request for   . Chat with Kataria Sanyam now & get all your queries clarified."]=CATEGORY_UPDATES
         dataset["Grofers Kifayati Thursdays By PhonePe Win up 100% cashback on payments via PhonePe Minimum Cashback: Rs.50 TCA bit.ly/Gro_"]=CATEGORY_ADS
         dataset["Dear XAT Aspirant, Last Call ! Only few hours left Today is last date enrolling for XAT 2019.Please submit your application by paying applicable fees online. Thank You"]=CATEGORY_UPDATES
         dataset["Dear Guest, Happy Hours 1+1 on drinks and food 20% off month Monday Friday all day long at your favourite Million Dollar Reservations 9910471478"]=CATEGORY_ADS

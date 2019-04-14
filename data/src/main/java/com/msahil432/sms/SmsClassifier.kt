@@ -34,34 +34,53 @@ class SmsClassifier{
 
         fun initializeClassifier(){
             var count =0
+            var ads =0
+            var finance = 0
+            var updates =0
+            adClassifier.reset()
+            updateClassifier.reset()
+            financeClassifier.reset()
             Realm.getDefaultInstance().where(ClassifierData::class.java)
                     .findAll()
                     .forEach {
+                        val text = it.text.split(" ")
                         count++
                         when(it.category){
                             CATEGORY_ADS -> {
-                                adClassifier.learn(it.category, it.text.split(" "))
-                                updateClassifier.learn(NONE_CATEGORY, it.text.split(" "))
-                                financeClassifier.learn(NONE_CATEGORY, it.text.split(" "))
+                                adClassifier.learn(it.category, text)
+                                updateClassifier.learn(NONE_CATEGORY, text)
+                                financeClassifier.learn(NONE_CATEGORY, text)
+                                ads++
                             }
                             CATEGORY_FINANCE -> {
-                                adClassifier.learn(NONE_CATEGORY, it.text.split(" "))
-                                updateClassifier.learn(NONE_CATEGORY, it.text.split(" "))
-                                financeClassifier.learn(it.category, it.text.split(" "))
+                                adClassifier.learn(NONE_CATEGORY, text)
+                                updateClassifier.learn(NONE_CATEGORY, text)
+                                financeClassifier.learn(it.category, text)
+                                finance++
                             }
                             CATEGORY_UPDATES -> {
-                                adClassifier.learn(NONE_CATEGORY, it.text.split(" "))
-                                updateClassifier.learn(NONE_CATEGORY, it.text.split(" "))
-                                financeClassifier.learn(it.category, it.text.split(" "))
+                                adClassifier.learn(NONE_CATEGORY, text)
+                                updateClassifier.learn(NONE_CATEGORY, text)
+                                financeClassifier.learn(it.category, text)
+                                updates++
                             }
                             CATEGORY_PERSONAL,CATEGORY_OTHERS ->{
-                                adClassifier.learn(NONE_CATEGORY, it.text.split(" "))
-                                updateClassifier.learn(NONE_CATEGORY, it.text.split(" "))
-                                financeClassifier.learn(NONE_CATEGORY, it.text.split(" "))
+                                adClassifier.learn(NONE_CATEGORY, text)
+                                updateClassifier.learn(NONE_CATEGORY, text)
+                                financeClassifier.learn(NONE_CATEGORY, text)
                             }
                         }
                     }
-            Log.e("SmsClassifier", "Trained for : $count")
+//            financeClassifier.features.forEach {
+//                Log.e("SMSClassifier", "finance:$it- ${financeClassifier.getFeatureCount(it)} - ${financeClassifier.getFeatureCount(it, CATEGORY_FINANCE)}")
+//            }
+//            adClassifier.features.forEach {
+//                Log.e("SMSClassifier", "ads:$it")
+//            }
+//            updateClassifier.features.forEach {
+//                Log.e("SMSClassifier", "update:$it")
+//            }
+            Log.e("SmsClassifier", "Trained for : $count = f$finance + u$updates + a$ads")
         }
 
 //        fun initializeClassifier(){
@@ -79,14 +98,15 @@ class SmsClassifier{
             val cleanedText = cleanPrivacy(text).split(" ")
             var cat = adClassifier.classify(cleanedText)
             if(cat.category== NONE_CATEGORY){
-                cat = updateClassifier.classify(cleanedText)
+                cat = financeClassifier.classify(cleanedText)
                 if(cat.category == NONE_CATEGORY){
-                    cat = financeClassifier.classify(cleanedText)
+                    cat = updateClassifier.classify(cleanedText)
                     if(cat.category == NONE_CATEGORY){
                         return CATEGORY_OTHERS
                     }
                 }
             }
+            Log.e("SmsClassifier", "$text Probablity for cat: ${cat.category} ${cat.probability}")
             return cat.category
         }
 

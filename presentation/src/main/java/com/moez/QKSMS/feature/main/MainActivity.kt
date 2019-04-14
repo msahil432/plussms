@@ -341,14 +341,13 @@ class MainActivity : QkThemedActivity(), MainView {
             }
 
             is Archived -> {
+                conversationsAdapter.showCategory(true)
                 showBackButton(state.page.selected > 0)
                 title = when (state.page.selected != 0) {
                     true -> getString(R.string.main_title_selected, state.page.selected)
                     false -> getString(R.string.title_archived)
                 }
-                if (recyclerView.adapter !== conversationsAdapter)
-                    recyclerView.adapter = conversationsAdapter
-                conversationsAdapter.showCategory(true)
+                if (recyclerView.adapter !== conversationsAdapter) recyclerView.adapter = conversationsAdapter
                 conversationsAdapter.updateData(state.page.data)
                 itemTouchHelper.attachToRecyclerView(null)
                 empty.setText(R.string.archived_empty_text)
@@ -363,10 +362,8 @@ class MainActivity : QkThemedActivity(), MainView {
         ads_inbox.isActivated = state.page is AdsInbox
         archived.isActivated = state.page is Archived
 
-        if (drawerLayout.isDrawerOpen(GravityCompat.START) && !state.drawerOpen)
-            drawerLayout.closeDrawer(GravityCompat.START)
-        else if (!drawerLayout.isDrawerVisible(GravityCompat.START) && state.drawerOpen)
-            drawerLayout.openDrawer(GravityCompat.START)
+        if (drawerLayout.isDrawerOpen(GravityCompat.START) && !state.drawerOpen) drawerLayout.closeDrawer(GravityCompat.START)
+        else if (!drawerLayout.isDrawerVisible(GravityCompat.START) && state.drawerOpen) drawerLayout.openDrawer(GravityCompat.START)
 
         when (state.syncing) {
             is SyncRepository.SyncProgress.Idle -> {

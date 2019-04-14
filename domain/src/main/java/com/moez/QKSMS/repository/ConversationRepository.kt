@@ -60,20 +60,20 @@ interface ConversationRepository {
     /**
      * Updates message-related fields in the conversation, like the date and snippet
      */
-    fun updateConversations(vararg threadIds: Long, category: String)
+    fun updateConversations(vararg threadIds: Long)
 
-    fun markArchived(vararg threadIds: Long, category: String)
+    fun markArchived(vararg threadIds: Long)
 
-    fun markUnarchived(vararg threadIds: Long, category: String)
+    fun markUnarchived(vararg threadIds: Long)
 
-    fun markPinned(vararg threadIds: Long, category: String)
+    fun markPinned(vararg threadIds: Long)
 
-    fun markUnpinned(vararg threadIds: Long, category: String)
+    fun markUnpinned(vararg threadIds: Long)
 
     fun markBlocked(vararg threadIds: Long)
 
     fun markUnblocked(vararg threadIds: Long)
 
-    fun deleteConversations(vararg threadIds: Long, category: String)
+    fun deleteConversations(vararg threadIds: Long)
 
 }

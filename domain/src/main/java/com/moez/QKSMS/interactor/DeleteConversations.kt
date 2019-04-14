@@ -29,9 +29,9 @@ class DeleteConversations @Inject constructor(
     private val updateBadge: UpdateBadge
 ) : Interactor<List<Long>>() {
 
-    override fun buildObservable(params: List<Long>, category: String): Flowable<*> {
+    override fun buildObservable(params: List<Long>): Flowable<*> {
         return Flowable.just(params.toLongArray())
-                .doOnNext { threadIds -> conversationRepo.deleteConversations(*threadIds, category= category) }
+                .doOnNext { threadIds -> conversationRepo.deleteConversations(*threadIds) }
                 .doOnNext { threadIds -> threadIds.forEach{notificationManager.update(it)} }
                 .flatMap { updateBadge.buildObservable(Unit) } // Update the badge
     }

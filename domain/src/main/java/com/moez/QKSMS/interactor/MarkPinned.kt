@@ -24,9 +24,9 @@ import javax.inject.Inject
 
 class MarkPinned @Inject constructor(private val conversationRepo: ConversationRepository) : Interactor<List<Long>>() {
 
-    override fun buildObservable(params: List<Long>, category: String): Flowable<*> {
+    override fun buildObservable(params: List<Long>): Flowable<*> {
         return Flowable.just(params.toLongArray())
-                .doOnNext { threadIds -> conversationRepo.markPinned(*threadIds, category = category) }
+                .doOnNext { threadIds -> conversationRepo.markPinned(*threadIds) }
     }
 
 }

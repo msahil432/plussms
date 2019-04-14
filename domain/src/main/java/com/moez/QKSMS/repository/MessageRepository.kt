@@ -51,11 +51,11 @@ interface MessageRepository {
 
     fun markAllSeen()
 
-    fun markSeen(threadId: Long, category: String)
+    fun markSeen(threadId: Long)
 
-    fun markRead(vararg vIds: Long, category: String)
+    fun markRead(vararg threadIds: Long)
 
-    fun markUnread(vararg threadIds: Long, category: String)
+    fun markUnread(vararg threadIds: Long)
 
     fun sendMessage(subId: Int, threadId: Long, addresses: List<String>, body: String, attachments: List<Attachment>, delay: Int = 0)
 
@@ -86,6 +86,6 @@ interface MessageRepository {
 
     fun markDeliveryFailed(id: Long, resultCode: Int)
 
-    fun deleteMessages(vararg messageIds: Long, category: String)
+    fun deleteMessages(vararg messageIds: Long)
 
 }

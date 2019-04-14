@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ *
+ * This file is part of QKSMS.
+ *
+ * QKSMS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * QKSMS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.moez.QKSMS.repository
 
 import android.content.ContentUris
@@ -187,7 +205,7 @@ class ConversationRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun updateConversations(vararg threadIds: Long, category: String) {
+    override fun updateConversations(vararg threadIds: Long) {
         Realm.getDefaultInstance().use { realm ->
             realm.refresh()
 
@@ -195,15 +213,11 @@ class ConversationRepositoryImpl @Inject constructor(
                 val conversation = realm
                         .where(Conversation::class.java)
                         .equalTo("id", threadId)
-                        .apply { if(category!="")
-                            equalTo("category", category)}
-                        .equalTo("category", category)
                         .findFirst() ?: return
 
                 val messages = realm
                         .where(Message::class.java)
                         .equalTo("threadId", threadId)
-                        .equalTo("category", category)
                         .sort("date", Sort.DESCENDING)
                         .findAll()
 
@@ -220,11 +234,10 @@ class ConversationRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun markArchived(vararg threadIds: Long, category: String) {
+    override fun markArchived(vararg threadIds: Long) {
         Realm.getDefaultInstance().use { realm ->
             val conversations = realm.where(Conversation::class.java)
                     .anyOf("id", threadIds)
-                    .equalTo("category", category)
                     .findAll()
 
             realm.executeTransaction {
@@ -233,13 +246,10 @@ class ConversationRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun markUnarchived(vararg threadIds: Long, category: String) {
+    override fun markUnarchived(vararg threadIds: Long) {
         Realm.getDefaultInstance().use { realm ->
             val conversations = realm.where(Conversation::class.java)
                     .anyOf("id", threadIds)
-                    .beginGroup()
-                    .equalTo("category", category)
-                    .endGroup()
                     .findAll()
 
             realm.executeTransaction {
@@ -248,11 +258,10 @@ class ConversationRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun markPinned(vararg threadIds: Long, category: String) {
+    override fun markPinned(vararg threadIds: Long) {
         Realm.getDefaultInstance().use { realm ->
             val conversations = realm.where(Conversation::class.java)
                     .anyOf("id", threadIds)
-                    .equalTo("category", category)
                     .findAll()
 
             realm.executeTransaction {
@@ -261,13 +270,10 @@ class ConversationRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun markUnpinned(vararg threadIds: Long, category: String) {
+    override fun markUnpinned(vararg threadIds: Long) {
         Realm.getDefaultInstance().use { realm ->
             val conversations = realm.where(Conversation::class.java)
                     .anyOf("id", threadIds)
-                    .beginGroup()
-                    .equalTo("category", category)
-                    .endGroup()
                     .findAll()
 
             realm.executeTransaction {
@@ -300,24 +306,20 @@ class ConversationRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun deleteConversations(vararg threadIds: Long, category: String) {
+    override fun deleteConversations(vararg threadIds: Long) {
         Realm.getDefaultInstance().use { realm ->
-
-            val conversation = realm.where(Conversation::class.java).anyOf("id", threadIds)
-                    .equalTo("category", category)
-                    .findAll()
-            val messages = realm.where(Message::class.java).anyOf("threadId", threadIds)
-                    .equalTo("category", category).findAll()
-
-            messages.forEach { m ->
-                val uri = ContentUris.withAppendedId(Telephony.Threads.CONTENT_URI, m.contentId)
-                context.contentResolver.delete(uri, null, null)
-            }
+            val conversation = realm.where(Conversation::class.java).anyOf("id", threadIds).findAll()
+            val messages = realm.where(Message::class.java).anyOf("threadId", threadIds).findAll()
 
             realm.executeTransaction {
                 conversation.deleteAllFromRealm()
                 messages.deleteAllFromRealm()
             }
+        }
+
+        threadIds.forEach { threadId ->
+            val uri = ContentUris.withAppendedId(Telephony.Threads.CONTENT_URI, threadId)
+            context.contentResolver.delete(uri, null, null)
         }
     }
 

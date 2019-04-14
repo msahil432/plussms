@@ -33,12 +33,10 @@ class DeleteMessages @Inject constructor(
 
     data class Params(val messageIds: List<Long>, val threadId: Long? = null)
 
-    override fun buildObservable(params: Params, category: String): Flowable<*> {
+    override fun buildObservable(params: Params): Flowable<*> {
         return Flowable.just(params.messageIds.toLongArray())
-                .doOnNext { messageIds ->
-                    messageRepo.deleteMessages(*messageIds, category = category) } // Delete the messages
-                .doOnNext { params.threadId?.let {
-                    conversationRepo.updateConversations(it, category = category) } } // Update the conversation
+                .doOnNext { messageIds -> messageRepo.deleteMessages(*messageIds) } // Delete the messages
+                .doOnNext { params.threadId?.let { conversationRepo.updateConversations(it) } } // Update the conversation
                 .doOnNext { params.threadId?.let { notificationManager.update(it) } }
                 .flatMap { updateBadge.buildObservable(Unit) } // Update the badge
     }

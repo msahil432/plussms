@@ -34,10 +34,9 @@ class AddScheduledMessage @Inject constructor(
                       val body: String,
                       val attachments: List<String>)
 
-    override fun buildObservable(params: Params, category: String): Flowable<*> {
+    override fun buildObservable(params: Params): Flowable<*> {
         return Flowable.just(params)
-                .map { scheduledMessageRepo.saveScheduledMessage(it.date, it.subId,
-                        it.recipients, it.sendAsGroup, it.body, it.attachments) }
+                .map { scheduledMessageRepo.saveScheduledMessage(it.date, it.subId, it.recipients, it.sendAsGroup, it.body, it.attachments) }
                 .flatMap { updateScheduledMessageAlarms.buildObservable(Unit) }
     }
 

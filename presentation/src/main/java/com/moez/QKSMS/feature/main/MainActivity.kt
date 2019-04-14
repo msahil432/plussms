@@ -267,12 +267,14 @@ class MainActivity : QkThemedActivity(), MainView {
 
         when (state.page) {
             is Inbox-> {
-                conversationsAdapter.showCategory(true)
                 showBackButton(state.page.selected > 0)
                 title = getString(R.string.main_title_selected, state.page.selected)
-                if (recyclerView.adapter !== conversationsAdapter) recyclerView.adapter = conversationsAdapter
+                if (recyclerView.adapter !== conversationsAdapter)
+                    recyclerView.adapter = conversationsAdapter
                 conversationsAdapter.updateData(state.page.data)
                 itemTouchHelper.attachToRecyclerView(recyclerView)
+                conversationsAdapter.showCategory(true)
+                toolbarSearch.setText(R.string.drawer_all_messages)
                 empty.setText(R.string.inbox_empty_text)
             }
 
@@ -280,44 +282,53 @@ class MainActivity : QkThemedActivity(), MainView {
                 conversationsAdapter.showCategory(false)
                 showBackButton(state.page.selected > 0)
                 title = getString(R.string.main_title_selected, state.page.selected)
-                if (recyclerView.adapter !== conversationsAdapter) recyclerView.adapter = conversationsAdapter
+                if (recyclerView.adapter !== conversationsAdapter)
+                    recyclerView.adapter = conversationsAdapter
                 conversationsAdapter.updateData(state.page.data)
                 itemTouchHelper.attachToRecyclerView(recyclerView)
+                toolbarSearch.setText(R.string.drawer_updates_sms)
                 empty.setText(R.string.inbox_empty_text)
             }
             is FinanceInbox -> {
-                conversationsAdapter.showCategory(false)
                 showBackButton(state.page.selected > 0)
                 title = getString(R.string.main_title_selected, state.page.selected)
-                if (recyclerView.adapter !== conversationsAdapter) recyclerView.adapter = conversationsAdapter
+                if (recyclerView.adapter !== conversationsAdapter)
+                    recyclerView.adapter = conversationsAdapter
                 conversationsAdapter.updateData(state.page.data)
+                conversationsAdapter.showCategory(false)
+                toolbarSearch.setText(R.string.drawer_money_sms)
                 itemTouchHelper.attachToRecyclerView(recyclerView)
                 empty.setText(R.string.inbox_empty_text)
             }
             is AdsInbox-> {
-                conversationsAdapter.showCategory(false)
                 showBackButton(state.page.selected > 0)
                 title = getString(R.string.main_title_selected, state.page.selected)
-                if (recyclerView.adapter !== conversationsAdapter) recyclerView.adapter = conversationsAdapter
+                if (recyclerView.adapter !== conversationsAdapter)
+                    recyclerView.adapter = conversationsAdapter
                 conversationsAdapter.updateData(state.page.data)
+                conversationsAdapter.showCategory(false)
                 itemTouchHelper.attachToRecyclerView(recyclerView)
+                toolbarSearch.setText(R.string.drawer_ads_sms)
                 empty.setText(R.string.inbox_empty_text)
             }
             is OthersInbox -> {
-                conversationsAdapter.showCategory(false)
                 showBackButton(state.page.selected > 0)
                 title = getString(R.string.main_title_selected, state.page.selected)
-                if (recyclerView.adapter !== conversationsAdapter) recyclerView.adapter = conversationsAdapter
+                if (recyclerView.adapter !== conversationsAdapter)
+                    recyclerView.adapter = conversationsAdapter
                 conversationsAdapter.updateData(state.page.data)
+                conversationsAdapter.showCategory(false)
                 itemTouchHelper.attachToRecyclerView(recyclerView)
+                toolbarSearch.setText(R.string.drawer_other_sms)
                 empty.setText(R.string.inbox_empty_text)
             }
             is PersonalInbox-> {
-                conversationsAdapter.showCategory(false)
                 showBackButton(state.page.selected > 0)
                 title = getString(R.string.main_title_selected, state.page.selected)
-                if (recyclerView.adapter !== conversationsAdapter) recyclerView.adapter = conversationsAdapter
+                if (recyclerView.adapter !== conversationsAdapter)
+                    recyclerView.adapter = conversationsAdapter
                 conversationsAdapter.updateData(state.page.data)
+                conversationsAdapter.showCategory(false)
                 itemTouchHelper.attachToRecyclerView(recyclerView)
                 empty.setText(R.string.inbox_empty_text)
             }

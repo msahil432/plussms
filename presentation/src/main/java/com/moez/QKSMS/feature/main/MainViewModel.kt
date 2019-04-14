@@ -306,7 +306,26 @@ class MainViewModel @Inject constructor(
                             val page = state.page.copy(markPinned = pin, markRead = read, selected = selected)
                             newState { copy(page = page.copy(markRead = read, selected = selected)) }
                         }
-
+                        is UpdatesInbox->{
+                            val page = state.page.copy(markPinned = pin, markRead = read, selected = selected)
+                            newState { copy(page = page.copy(markRead = read, selected = selected)) }
+                        }
+                        is FinanceInbox->{
+                            val page = state.page.copy(markPinned = pin, markRead = read, selected = selected)
+                            newState { copy(page = page.copy(markRead = read, selected = selected)) }
+                        }
+                        is AdsInbox->{
+                            val page = state.page.copy(markPinned = pin, markRead = read, selected = selected)
+                            newState { copy(page = page.copy(markRead = read, selected = selected)) }
+                        }
+                        is PersonalInbox->{
+                            val page = state.page.copy(markPinned = pin, markRead = read, selected = selected)
+                            newState { copy(page = page.copy(markRead = read, selected = selected)) }
+                        }
+                        is OthersInbox->{
+                            val page = state.page.copy(markPinned = pin, markRead = read, selected = selected)
+                            newState { copy(page = page.copy(markRead = read, selected = selected)) }
+                        }
                         is Archived -> {
                             val page = state.page.copy(markPinned = pin, markRead = read, selected = selected)
                             newState { copy(page = page) }

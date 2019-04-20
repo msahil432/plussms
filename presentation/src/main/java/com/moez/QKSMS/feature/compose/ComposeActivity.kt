@@ -19,6 +19,7 @@
 package com.moez.QKSMS.feature.compose
 
 import android.Manifest
+import android.animation.LayoutTransition
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -121,6 +122,10 @@ class ComposeActivity : QkThemedActivity(), ComposeView {
         showBackButton(true)
 
         viewModel.bindView(this)
+
+        contentView.layoutTransition = LayoutTransition().apply {
+            disableTransitionType(LayoutTransition.CHANGING)
+        }
 
         chipsAdapter.view = chips
 

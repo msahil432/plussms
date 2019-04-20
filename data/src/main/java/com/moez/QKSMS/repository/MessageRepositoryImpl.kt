@@ -202,7 +202,7 @@ class MessageRepositoryImpl @Inject constructor(
         if (addresses.size == 1 && attachments.isEmpty()) { // SMS
             val address = PhoneNumberUtils.stripSeparators(addresses.first())
             if(!JavaHelper.validPhoneNumber(address)){
-                Toast.makeText(context, R.string.invalid_phone_number, Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Invalid Address", Toast.LENGTH_LONG).show()
                 return
             }
             if (delay > 0) { // With delay
@@ -222,7 +222,7 @@ class MessageRepositoryImpl @Inject constructor(
                 sendSms(message)
             }
         } else { // MMS
-            Toast.makeText(context, R.string.sending_as_mms, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "This message will be sent as a MMS", Toast.LENGTH_LONG).show()
             
             val parts = arrayListOf<MMSPart>()
 

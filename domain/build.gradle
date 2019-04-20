@@ -28,6 +28,10 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
     }
+    buildTypes {
+        release {
+        }
+    }
 }
 
 dependencies {

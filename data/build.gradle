@@ -30,12 +30,21 @@ android {
         targetSdkVersion 28
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+    buildToolsVersion = '28.0.3'
+    buildTypes {
+        release {
+        }
+    }
 }
 
 dependencies {
 
     // androidx
-    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
+    implementation "androidx.appcompat:appcompat:${androidx_appcompat_version}"
     implementation "androidx.core:core-ktx:$androidx_core_version"
     implementation "androidx.exifinterface:exifinterface:$androidx_exifinterface_version"
 
@@ -74,9 +83,9 @@ dependencies {
 //    withAnalyticsImplementation "com.amplitude:android-sdk:2.16.0"
 //    withAnalyticsImplementation "com.mixpanel.android:mixpanel-android:5.2.1"
 
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
 
     implementation 'com.github.ptnplanet:Java-Naive-Bayes-Classifier:1.0.7'
 }

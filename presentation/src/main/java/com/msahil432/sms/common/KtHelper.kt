@@ -3,9 +3,11 @@ package com.msahil432.sms.common
 import android.content.Context
 import android.graphics.Bitmap
 import android.widget.ImageView
-import com.moez.QKSMS.util.GlideApp
-import com.moez.QKSMS.util.GlideRequest
+import com.msahil432.sms.util.GlideApp
+import com.msahil432.sms.util.GlideRequest
 import com.msahil432.sms.R
+import java.util.regex.Pattern
+
 
 /**
  * Created by msahil432
@@ -198,6 +200,21 @@ class KtHelper{
 
                 else -> glide.load(address)
             }
+        }
+
+        public fun getOtp(text: String): String{
+            val t = text.toLowerCase()
+            if (!(text.contains("code") || text.contains("one time password")
+                            || text.contains("otp")))
+                return ""
+            val p = Pattern.compile("\\d{4,8}")
+            val m = p.matcher(text)
+            if (!m.find())
+                return ""
+            try {
+                return m.group(0)
+            } catch (e: Exception) { }
+            return ""
         }
 
     }

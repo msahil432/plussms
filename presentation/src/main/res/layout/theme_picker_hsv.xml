@@ -24,7 +24,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
-    <com.moez.QKSMS.feature.themepicker.HSVPickerView
+    <com.msahil432.sms.feature.themepicker.HSVPickerView
         android:id="@+id/picker"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

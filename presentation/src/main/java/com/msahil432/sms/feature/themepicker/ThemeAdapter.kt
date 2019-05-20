@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.msahil432.sms.feature.themepicker
 
 import android.content.Context
@@ -26,16 +8,12 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayout
 import com.msahil432.sms.R
-import com.msahil432.sms.common.base.QkAdapter
-import com.msahil432.sms.common.base.QkViewHolder
-import com.msahil432.sms.common.util.Colors
-import com.msahil432.sms.common.util.extensions.dpToPx
-import com.msahil432.sms.common.util.extensions.setBackgroundTint
-import com.msahil432.sms.common.util.extensions.setTint
-import com.msahil432.sms.common.util.extensions.setVisible
+import com.moez.QKSMS.common.base.QkAdapter
+import com.moez.QKSMS.common.base.QkViewHolder
+import com.moez.QKSMS.common.util.Colors
+import com.moez.QKSMS.common.util.extensions.dpToPx
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import kotlinx.android.synthetic.main.theme_list_item.view.*
 import kotlinx.android.synthetic.main.theme_palette_list_item.view.*
 import javax.inject.Inject
 
@@ -95,8 +73,8 @@ class ThemeAdapter @Inject constructor(
                         theme.setBackgroundTint(color)
 
                         // Control the check visibility and tint
-                        check.setVisible(color == selectedColor)
-                        check.setTint(iconTint)
+                        check_view.setVisible(color == selectedColor)
+                        check_view.setTint(iconTint)
 
                         // Update the size so that the spacing is perfectly even
                         layoutParams = (layoutParams as FlexboxLayout.LayoutParams).apply {

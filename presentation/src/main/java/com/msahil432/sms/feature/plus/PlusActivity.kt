@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.msahil432.sms.feature.plus
 
 import android.graphics.Typeface
@@ -26,14 +8,14 @@ import androidx.lifecycle.ViewModelProviders
 import com.jakewharton.rxbinding2.view.clicks
 import com.msahil432.sms.BuildConfig
 import com.msahil432.sms.R
-import com.msahil432.sms.common.base.QkThemedActivity
-import com.msahil432.sms.common.util.BillingManager
-import com.msahil432.sms.common.util.FontProvider
-import com.msahil432.sms.common.util.extensions.resolveThemeColor
-import com.msahil432.sms.common.util.extensions.setBackgroundTint
-import com.msahil432.sms.common.util.extensions.setTint
-import com.msahil432.sms.common.util.extensions.setVisible
-import com.msahil432.sms.common.widget.PreferenceView
+import com.moez.QKSMS.common.base.QkThemedActivity
+import com.moez.QKSMS.common.util.BillingManager
+import com.moez.QKSMS.common.util.FontProvider
+import com.moez.QKSMS.common.util.extensions.resolveThemeColor
+import com.moez.QKSMS.common.util.extensions.setBackgroundTint
+import com.moez.QKSMS.common.util.extensions.setTint
+import com.moez.QKSMS.common.util.extensions.setVisible
+import com.moez.QKSMS.common.widget.PreferenceView
 import com.msahil432.sms.feature.plus.experiment.UpgradeButtonExperiment
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.collapsing_toolbar.*

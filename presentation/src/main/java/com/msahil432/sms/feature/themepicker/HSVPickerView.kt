@@ -26,9 +26,9 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.msahil432.sms.R
-import com.msahil432.sms.common.util.extensions.setBackgroundTint
-import com.msahil432.sms.common.util.extensions.setTint
-import com.msahil432.sms.common.util.extensions.within
+import com.moez.QKSMS.common.util.extensions.setBackgroundTint
+import com.moez.QKSMS.common.util.extensions.setTint
+import com.moez.QKSMS.common.util.extensions.within
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 import kotlinx.android.synthetic.main.hsv_picker_view.view.*

@@ -21,7 +21,7 @@ package com.msahil432.sms.feature.compose
 import android.net.Uri
 import androidx.annotation.StringRes
 import androidx.core.view.inputmethod.InputContentInfoCompat
-import com.msahil432.sms.common.base.QkView
+import com.moez.QKSMS.common.base.QkView
 import com.msahil432.sms.model.Attachment
 import com.msahil432.sms.model.Contact
 import com.msahil432.sms.model.Message

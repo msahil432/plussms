@@ -338,6 +338,22 @@
         <item quantity="one">New message</item>
         <item quantity="other">%s new messages</item>
     </plurals>
+    <plurals name="personal_notification_new_messages">
+        <item quantity="one">New Personal message</item>
+        <item quantity="other">%s new Personal messages</item>
+    </plurals>
+    <plurals name="update_notification_new_messages">
+        <item quantity="one">New Update message</item>
+        <item quantity="other">%s new Update messages</item>
+    </plurals>
+    <plurals name="ads_notification_new_messages">
+        <item quantity="one">New Ads message</item>
+        <item quantity="other">%s new Ads messages</item>
+    </plurals>
+    <plurals name="finance_notification_new_messages">
+        <item quantity="one">New Finance message</item>
+        <item quantity="other">%s new Finance messages</item>
+    </plurals>
     <string name="notification_message_failed_title">Message not sent</string>
     <string name="notification_message_failed_text">The message to %s failed to send</string>
     <string name="drawer_all_messages">All Messages</string>

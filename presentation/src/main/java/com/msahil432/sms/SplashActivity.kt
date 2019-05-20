@@ -2,14 +2,13 @@ package com.msahil432.sms
 
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import com.moez.QKSMS.common.base.QkThemedActivity
-import com.moez.QKSMS.feature.main.MainActivity
+import com.msahil432.sms.feature.main.MainActivity
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_splash.*
 

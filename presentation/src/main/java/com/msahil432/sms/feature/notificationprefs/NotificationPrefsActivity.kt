@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.msahil432.sms.feature.notificationprefs
 
 import android.app.Activity
@@ -29,12 +11,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.jakewharton.rxbinding2.view.clicks
 import com.msahil432.sms.R
-import com.msahil432.sms.common.QkDialog
-import com.msahil432.sms.common.androidxcompat.scope
-import com.msahil432.sms.common.base.QkThemedActivity
-import com.msahil432.sms.common.util.extensions.animateLayoutChanges
-import com.msahil432.sms.common.util.extensions.setVisible
-import com.msahil432.sms.common.widget.PreferenceView
+import com.moez.QKSMS.common.QkDialog
+import com.moez.QKSMS.common.androidxcompat.scope
+import com.moez.QKSMS.common.base.QkThemedActivity
+import com.moez.QKSMS.common.util.extensions.animateLayoutChanges
+import com.moez.QKSMS.common.util.extensions.setVisible
+import com.moez.QKSMS.common.widget.PreferenceView
 import com.uber.autodispose.kotlin.autoDisposable
 import dagger.android.AndroidInjection
 import io.reactivex.Observable

@@ -31,10 +31,10 @@ import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.msahil432.sms.R
-import com.msahil432.sms.common.util.Colors
-import com.msahil432.sms.common.util.DateFormatter
-import com.msahil432.sms.common.util.extensions.dpToPx
-import com.msahil432.sms.common.util.extensions.getColorCompat
+import com.moez.QKSMS.common.util.Colors
+import com.moez.QKSMS.common.util.DateFormatter
+import com.moez.QKSMS.common.util.extensions.dpToPx
+import com.moez.QKSMS.common.util.extensions.getColorCompat
 import com.msahil432.sms.feature.main.MainActivity
 import com.msahil432.sms.injection.appComponent
 import com.msahil432.sms.model.Contact

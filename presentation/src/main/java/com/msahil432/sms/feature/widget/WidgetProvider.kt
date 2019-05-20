@@ -29,8 +29,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.RemoteViews
 import com.msahil432.sms.R
-import com.msahil432.sms.common.util.Colors
-import com.msahil432.sms.common.util.extensions.getColorCompat
+import com.moez.QKSMS.common.util.Colors
+import com.moez.QKSMS.common.util.extensions.getColorCompat
 import com.msahil432.sms.feature.compose.ComposeActivity
 import com.msahil432.sms.feature.main.MainActivity
 import com.msahil432.sms.manager.WidgetManager

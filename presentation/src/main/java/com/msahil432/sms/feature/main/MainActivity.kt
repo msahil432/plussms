@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.msahil432.sms.feature.main
 
 import android.Manifest
@@ -33,6 +15,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.accessibility.AccessibilityEventCompat.setAction
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -42,17 +25,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.textChanges
 import com.msahil432.sms.R
-import com.msahil432.sms.common.Navigator
-import com.msahil432.sms.common.androidxcompat.drawerOpen
-import com.msahil432.sms.common.androidxcompat.scope
-import com.msahil432.sms.common.base.QkThemedActivity
-import com.msahil432.sms.common.util.extensions.autoScrollToStart
-import com.msahil432.sms.common.util.extensions.dismissKeyboard
-import com.msahil432.sms.common.util.extensions.resolveThemeColor
-import com.msahil432.sms.common.util.extensions.scrapViews
-import com.msahil432.sms.common.util.extensions.setBackgroundTint
-import com.msahil432.sms.common.util.extensions.setTint
-import com.msahil432.sms.common.util.extensions.setVisible
+import com.moez.QKSMS.common.Navigator
+import com.moez.QKSMS.common.base.QkThemedActivity
+import com.moez.QKSMS.common.androidxcompat.drawerOpen
+import com.moez.QKSMS.common.androidxcompat.scope
+import com.moez.QKSMS.common.util.extensions.*
 import com.msahil432.sms.feature.conversations.ConversationItemTouchCallback
 import com.msahil432.sms.feature.conversations.ConversationsAdapter
 import com.msahil432.sms.repository.SyncRepository

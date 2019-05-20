@@ -22,7 +22,7 @@ import android.content.Context
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.msahil432.sms.common.util.extensions.dpToPx
+import com.moez.QKSMS.common.util.extensions.dpToPx
 import javax.inject.Inject
 
 class GridSpacingItemDecoration @Inject constructor(context: Context) : RecyclerView.ItemDecoration() {

@@ -12,10 +12,6 @@ import java.util.concurrent.LinkedBlockingQueue
  * Created by msahil432
  **/
 
-/**
- * Created by msahil432 on
- **/
-
 public open class BaseViewModel : ViewModel(){
 
     companion object {
@@ -23,10 +19,6 @@ public open class BaseViewModel : ViewModel(){
         var workQueue = LinkedBlockingQueue<Runnable>()
         var WorkThread: Executor = Executors.newSingleThreadExecutor()
         var DownloadThread: Executor = Executors.newSingleThreadExecutor()
-        val retrofit = Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(com.msahil432.sms.common.Retrofit.hostUrl)
-                .build().create(com.msahil432.sms.common.Retrofit::class.java)!!
     }
 
     protected fun cancelTasks(){

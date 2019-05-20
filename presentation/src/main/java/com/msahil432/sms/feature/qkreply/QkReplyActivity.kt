@@ -13,11 +13,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.textChanges
 import com.msahil432.sms.R
-import com.msahil432.sms.common.base.QkThemedActivity
-import com.msahil432.sms.common.util.extensions.autoScrollToStart
-import com.msahil432.sms.common.util.extensions.resolveThemeColor
-import com.msahil432.sms.common.util.extensions.setBackgroundTint
-import com.msahil432.sms.common.util.extensions.setVisible
+import com.moez.QKSMS.common.base.QkThemedActivity
+import com.moez.QKSMS.common.util.extensions.autoScrollToStart
+import com.moez.QKSMS.common.util.extensions.resolveThemeColor
+import com.moez.QKSMS.common.util.extensions.setBackgroundTint
+import com.moez.QKSMS.common.util.extensions.setVisible
 import com.msahil432.sms.feature.compose.MessagesAdapter
 import dagger.android.AndroidInjection
 import io.reactivex.subjects.PublishSubject

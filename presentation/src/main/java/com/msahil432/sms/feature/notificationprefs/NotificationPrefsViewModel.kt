@@ -1,31 +1,13 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.msahil432.sms.feature.notificationprefs
 
 import android.content.Context
 import android.media.RingtoneManager
 import android.net.Uri
 import com.msahil432.sms.R
-import com.msahil432.sms.common.Navigator
-import com.msahil432.sms.common.androidxcompat.scope
-import com.msahil432.sms.common.base.QkViewModel
-import com.msahil432.sms.common.util.NotificationManagerImpl
+import com.moez.QKSMS.common.Navigator
+import com.moez.QKSMS.common.androidxcompat.scope
+import com.moez.QKSMS.common.base.QkViewModel
+import com.moez.QKSMS.common.util.NotificationManagerImpl
 import com.msahil432.sms.extensions.mapNotNull
 import com.msahil432.sms.repository.ConversationRepository
 import com.msahil432.sms.util.Preferences
@@ -38,11 +20,11 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class NotificationPrefsViewModel @Inject constructor(
-    @Named("threadId") private val threadId: Long,
-    private val context: Context,
-    private val conversationRepo: ConversationRepository,
-    private val navigator: Navigator,
-    private val prefs: Preferences
+        @Named("threadId") private val threadId: Long,
+        private val context: Context,
+        private val conversationRepo: ConversationRepository,
+        private val navigator: Navigator,
+        private val prefs: Preferences
 ) : QkViewModel<NotificationPrefsView, NotificationPrefsState>(NotificationPrefsState(threadId = threadId)) {
 
     private val notifications = prefs.notifications(threadId)

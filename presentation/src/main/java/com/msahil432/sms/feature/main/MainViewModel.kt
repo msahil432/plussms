@@ -1,29 +1,11 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.msahil432.sms.feature.main
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.msahil432.sms.R
-import com.msahil432.sms.common.Navigator
-import com.msahil432.sms.common.androidxcompat.scope
-import com.msahil432.sms.common.base.QkViewModel
-import com.msahil432.sms.common.util.BillingManager
+import com.moez.QKSMS.common.Navigator
+import com.moez.QKSMS.common.androidxcompat.scope
+import com.moez.QKSMS.common.base.QkViewModel
+import com.moez.QKSMS.common.util.BillingManager
 import com.msahil432.sms.extensions.removeAccents
 import com.msahil432.sms.interactor.DeleteConversations
 import com.msahil432.sms.interactor.MarkAllSeen
@@ -58,24 +40,24 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
-    billingManager: BillingManager,
-    markAllSeen: MarkAllSeen,
-    migratePreferences: MigratePreferences,
-    syncRepository: SyncRepository,
-    private val conversationRepo: ConversationRepository,
-    private val deleteConversations: DeleteConversations,
-    private val markArchived: MarkArchived,
-    private val markBlocked: MarkBlocked,
-    private val markPinned: MarkPinned,
-    private val markRead: MarkRead,
-    private val markUnarchived: MarkUnarchived,
-    private val markUnpinned: MarkUnpinned,
-    private val markUnread: MarkUnread,
-    private val navigator: Navigator,
-    private val permissionManager: PermissionManager,
-    private val prefs: Preferences,
-    private val ratingManager: RatingManager,
-    private val syncMessages: SyncMessages
+        billingManager: BillingManager,
+        markAllSeen: MarkAllSeen,
+        migratePreferences: MigratePreferences,
+        syncRepository: SyncRepository,
+        private val conversationRepo: ConversationRepository,
+        private val deleteConversations: DeleteConversations,
+        private val markArchived: MarkArchived,
+        private val markBlocked: MarkBlocked,
+        private val markPinned: MarkPinned,
+        private val markRead: MarkRead,
+        private val markUnarchived: MarkUnarchived,
+        private val markUnpinned: MarkUnpinned,
+        private val markUnread: MarkUnread,
+        private val navigator: Navigator,
+        private val permissionManager: PermissionManager,
+        private val prefs: Preferences,
+        private val ratingManager: RatingManager,
+        private val syncMessages: SyncMessages
 ) : QkViewModel<MainView, MainState>(MainState(page = Inbox(data = conversationRepo.getConversations()))) {
 
     init {

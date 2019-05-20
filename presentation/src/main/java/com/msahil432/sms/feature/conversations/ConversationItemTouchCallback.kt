@@ -26,8 +26,8 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.msahil432.sms.R
-import com.msahil432.sms.common.util.Colors
-import com.msahil432.sms.common.util.extensions.dpToPx
+import com.moez.QKSMS.common.util.Colors
+import com.moez.QKSMS.common.util.extensions.dpToPx
 import com.msahil432.sms.util.Preferences
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables

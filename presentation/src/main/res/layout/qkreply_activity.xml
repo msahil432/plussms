@@ -14,7 +14,7 @@
     android:elevation="8dp"
     android:maxWidth="320dp"
     android:maxHeight="320dp"
-    tools:context="com.moez.QKSMS.feature.qkreply.QkReplyActivity">
+    tools:context="com.msahil432.sms.feature.qkreply.QkReplyActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messages"

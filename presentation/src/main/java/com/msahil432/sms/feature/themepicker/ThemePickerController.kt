@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.msahil432.sms.feature.themepicker
 
 import android.animation.ObjectAnimator
@@ -24,11 +6,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding2.view.clicks
 import com.msahil432.sms.R
-import com.msahil432.sms.common.base.QkController
-import com.msahil432.sms.common.util.Colors
-import com.msahil432.sms.common.util.extensions.dpToPx
-import com.msahil432.sms.common.util.extensions.setBackgroundTint
-import com.msahil432.sms.common.util.extensions.setVisible
+import com.moez.QKSMS.common.base.QkController
+import com.moez.QKSMS.common.util.Colors
+import com.moez.QKSMS.common.util.extensions.dpToPx
+import com.moez.QKSMS.common.util.extensions.setBackgroundTint
+import com.moez.QKSMS.common.util.extensions.setVisible
 import com.msahil432.sms.feature.themepicker.injection.ThemePickerModule
 import com.msahil432.sms.injection.appComponent
 import io.reactivex.Observable
@@ -37,6 +19,7 @@ import io.reactivex.subjects.Subject
 import kotlinx.android.synthetic.main.theme_picker_controller.*
 import kotlinx.android.synthetic.main.theme_picker_hsv.*
 import javax.inject.Inject
+import kotlin.apply
 
 class ThemePickerController(val threadId: Long = 0L) : QkController<ThemePickerView, ThemePickerState, ThemePickerPresenter>(), ThemePickerView {
 

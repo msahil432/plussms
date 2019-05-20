@@ -6,9 +6,9 @@ import android.content.Context
 import android.preference.PreferenceManager
 import androidx.lifecycle.ViewModelProvider
 import com.f2prateek.rx.preferences2.RxSharedPreferences
-import com.msahil432.sms.common.ViewModelFactory
-import com.msahil432.sms.common.util.NotificationManagerImpl
-import com.msahil432.sms.common.util.ShortcutManagerImpl
+import com.moez.QKSMS.common.ViewModelFactory
+import com.moez.QKSMS.common.util.NotificationManagerImpl
+import com.moez.QKSMS.common.util.ShortcutManagerImpl
 import com.msahil432.sms.feature.conversationinfo.injection.ConversationInfoComponent
 import com.msahil432.sms.feature.themepicker.injection.ThemePickerComponent
 import com.msahil432.sms.listener.ContactAddedListener

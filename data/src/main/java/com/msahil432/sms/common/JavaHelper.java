@@ -1,5 +1,7 @@
 package com.msahil432.sms.common;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -7,6 +9,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -20,6 +23,18 @@ import static com.msahil432.sms.SmsClassifier.CATEGORY_PERSONAL;
 import static com.msahil432.sms.SmsClassifier.CATEGORY_UPDATES;
 
 public class JavaHelper {
+
+    public static boolean copyToClipboard(Context context, String text){
+        try {
+            ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("OTP Code", text);
+            assert cm!=null;
+            cm.setPrimaryClip(clip);
+            Toast.makeText(context, text+" Copied", Toast.LENGTH_SHORT).show();
+            return true;
+        }catch (Exception e){ }
+        return false;
+    }
 
     public static void pingServer(){
         try{

@@ -1,7 +1,7 @@
 package com.msahil432.sms
 
 import android.util.Log
-import com.moez.QKSMS.model.ClassifierData
+import com.msahil432.sms.model.ClassifierData
 import de.daslaboratorium.machinelearning.classifier.bayes.BayesClassifier
 import io.realm.Realm
 

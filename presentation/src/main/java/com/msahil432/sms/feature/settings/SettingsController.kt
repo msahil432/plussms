@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.msahil432.sms.feature.settings
 
 import android.animation.ObjectAnimator
@@ -30,14 +12,14 @@ import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.view.longClicks
 import com.msahil432.sms.BuildConfig
 import com.msahil432.sms.R
-import com.msahil432.sms.common.QkChangeHandler
-import com.msahil432.sms.common.QkDialog
-import com.msahil432.sms.common.base.QkController
-import com.msahil432.sms.common.util.Colors
-import com.msahil432.sms.common.util.extensions.animateLayoutChanges
-import com.msahil432.sms.common.util.extensions.setBackgroundTint
-import com.msahil432.sms.common.util.extensions.setVisible
-import com.msahil432.sms.common.widget.PreferenceView
+import com.moez.QKSMS.common.QkChangeHandler
+import com.moez.QKSMS.common.QkDialog
+import com.moez.QKSMS.common.base.QkController
+import com.moez.QKSMS.common.util.Colors
+import com.moez.QKSMS.common.util.extensions.animateLayoutChanges
+import com.moez.QKSMS.common.util.extensions.setBackgroundTint
+import com.moez.QKSMS.common.util.extensions.setVisible
+import com.moez.QKSMS.common.widget.PreferenceView
 import com.msahil432.sms.feature.settings.about.AboutController
 import com.msahil432.sms.feature.settings.swipe.SwipeActionsController
 import com.msahil432.sms.feature.themepicker.ThemePickerController
@@ -49,7 +31,6 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import kotlinx.android.synthetic.main.settings_controller.*
-import kotlinx.android.synthetic.main.settings_controller.view.*
 import kotlinx.android.synthetic.main.settings_switch_widget.view.*
 import kotlinx.android.synthetic.main.settings_theme_widget.*
 import javax.inject.Inject

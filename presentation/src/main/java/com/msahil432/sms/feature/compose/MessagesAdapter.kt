@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.msahil432.sms.feature.compose
 
 import android.animation.ObjectAnimator
@@ -35,17 +17,12 @@ import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding2.view.clicks
 import com.msahil432.sms.R
-import com.msahil432.sms.common.Navigator
-import com.msahil432.sms.common.base.QkRealmAdapter
-import com.msahil432.sms.common.base.QkViewHolder
-import com.msahil432.sms.common.util.Colors
-import com.msahil432.sms.common.util.DateFormatter
-import com.msahil432.sms.common.util.extensions.dpToPx
-import com.msahil432.sms.common.util.extensions.forwardTouches
-import com.msahil432.sms.common.util.extensions.setBackgroundTint
-import com.msahil432.sms.common.util.extensions.setPadding
-import com.msahil432.sms.common.util.extensions.setTint
-import com.msahil432.sms.common.util.extensions.setVisible
+import com.moez.QKSMS.common.Navigator
+import com.moez.QKSMS.common.base.QkRealmAdapter
+import com.moez.QKSMS.common.base.QkViewHolder
+import com.moez.QKSMS.common.util.Colors
+import com.moez.QKSMS.common.util.DateFormatter
+import com.moez.QKSMS.common.util.extensions.*
 import com.msahil432.sms.compat.SubscriptionManagerCompat
 import com.msahil432.sms.extensions.isImage
 import com.msahil432.sms.extensions.isVCard
@@ -66,12 +43,12 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MessagesAdapter @Inject constructor(
-    private val context: Context,
-    private val colors: Colors,
-    private val dateFormatter: DateFormatter,
-    private val navigator: Navigator,
-    private val prefs: Preferences,
-    private val subscriptionManager: SubscriptionManagerCompat
+        private val context: Context,
+        private val colors: Colors,
+        private val dateFormatter: DateFormatter,
+        private val navigator: Navigator,
+        private val prefs: Preferences,
+        private val subscriptionManager: SubscriptionManagerCompat
 ) : QkRealmAdapter<Message>() {
 
     companion object {

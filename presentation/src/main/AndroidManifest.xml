@@ -17,19 +17,12 @@
     <uses-permission android:name="android.permission.WRITE_SMS" />
 
     <application
-        android:name="com.moez.QKSMS.common.QKApplication"
+        android:name=".common.PlusSmsApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppThemeDark">
-        <receiver android:name=".CategorizerBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.msahil432.sms.START_CATEGORIZATION"/>
-            </intent-filter>
-        </receiver>
         <activity
             android:name="com.msahil432.sms.SplashActivity"
             android:launchMode="singleTask">
@@ -40,7 +33,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.moez.QKSMS.feature.main.MainActivity"
+            android:name=".feature.main.MainActivity"
             android:launchMode="singleTask">
             <meta-data
                 android:name="android.app.shortcuts"
@@ -48,8 +41,8 @@
         </activity>
 
         <activity
-            android:name="com.moez.QKSMS.feature.compose.ComposeActivity"
-            android:parentActivityName="com.moez.QKSMS.feature.main.MainActivity">
+            android:name=".feature.compose.ComposeActivity"
+            android:parentActivityName=".feature.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
@@ -91,43 +84,42 @@
                 android:name="android.service.chooser.chooser_target_service"
                 android:value=".common.util.QkChooserTargetService" />
         </activity>
-        <activity android:name="com.moez.QKSMS.feature.settings.SettingsActivity" />
-        <activity android:name="com.moez.QKSMS.feature.plus.PlusActivity" />
+        <activity android:name=".feature.settings.SettingsActivity" />
+        <activity android:name=".feature.plus.PlusActivity" />
         <activity
-            android:name="com.moez.QKSMS.feature.gallery.GalleryActivity"
+            android:name=".feature.gallery.GalleryActivity"
             android:theme="@style/AppThemeBlack" />
-        <activity android:name="com.moez.QKSMS.feature.conversationinfo.ConversationInfoActivity" />
-        <activity android:name="com.moez.QKSMS.feature.notificationprefs.NotificationPrefsActivity" />
-        <activity android:name="com.moez.QKSMS.feature.blocked.BlockedActivity" />
+        <activity android:name=".feature.conversationinfo.ConversationInfoActivity" />
+        <activity android:name=".feature.notificationprefs.NotificationPrefsActivity" />
+        <activity android:name=".feature.blocked.BlockedActivity" />
         <activity
-            android:name="com.moez.QKSMS.feature.qkreply.QkReplyActivity"
+            android:name=".feature.qkreply.QkReplyActivity"
             android:excludeFromRecents="true"
             android:taskAffinity=""
             android:theme="@style/AppThemeLightDialog" />
-        <activity android:name="com.moez.QKSMS.feature.scheduled.ScheduledActivity" />
-        <activity android:name="com.moez.QKSMS.feature.backup.BackupActivity" />
-        <activity android:name=".CategorizationActivity" />
+        <activity android:name=".feature.scheduled.ScheduledActivity" />
+        <activity android:name=".feature.backup.BackupActivity" />
 
-        <receiver android:name="com.moez.QKSMS.receiver.BootReceiver">
+        <receiver android:name=".receiver.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.moez.QKSMS.receiver.DefaultSmsChangedReceiver">
+        <receiver android:name=".receiver.DefaultSmsChangedReceiver">
             <intent-filter>
                 <action android:name="android.provider.action.DEFAULT_SMS_PACKAGE_CHANGED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.moez.QKSMS.receiver.DeleteMessagesReceiver" />
+        <receiver android:name=".receiver.DeleteMessagesReceiver" />
         <receiver
-            android:name="com.moez.QKSMS.receiver.SmsReceiver"
+            android:name=".receiver.SmsReceiver"
             android:permission="android.permission.BROADCAST_SMS">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_DELIVER" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.moez.QKSMS.receiver.MmsReceiver"
+            android:name=".receiver.MmsReceiver"
             android:permission="android.permission.BROADCAST_WAP_PUSH">
             <intent-filter>
                 <action android:name="android.provider.Telephony.WAP_PUSH_DELIVER" />
@@ -136,25 +128,25 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.moez.QKSMS.receiver.MmsSentReceiver"
+            android:name=".receiver.MmsSentReceiver"
             android:taskAffinity="com.moez.QKSMS.MMS_SENT" />
         <receiver
-            android:name="com.moez.QKSMS.receiver.MmsUpdatedReceiver"
+            android:name=".receiver.MmsUpdatedReceiver"
             android:taskAffinity="com.moez.QKSMS.MMS_UPDATED" />
         <receiver
-            android:name="com.moez.QKSMS.receiver.MmsReceivedReceiver"
+            android:name=".receiver.MmsReceivedReceiver"
             android:taskAffinity="com.klinker.android.messaging.MMS_RECEIVED" />
-        <receiver android:name="com.moez.QKSMS.receiver.MarkSeenReceiver" />
-        <receiver android:name="com.moez.QKSMS.receiver.MarkReadReceiver" />
-        <receiver android:name="com.moez.QKSMS.receiver.RemoteMessagingReceiver" />
-        <receiver android:name="com.moez.QKSMS.receiver.NightModeReceiver" />
-        <receiver android:name="com.moez.QKSMS.receiver.SmsProviderChangedReceiver">
+        <receiver android:name=".receiver.MarkSeenReceiver" />
+        <receiver android:name=".receiver.MarkReadReceiver" />
+        <receiver android:name=".receiver.RemoteMessagingReceiver" />
+        <receiver android:name=".receiver.NightModeReceiver" />
+        <receiver android:name=".receiver.SmsProviderChangedReceiver">
             <intent-filter>
                 <action android:name="android.provider.action.EXTERNAL_PROVIDER_CHANGE" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.moez.QKSMS.receiver.SendScheduledMessageReceiver" />
-        <receiver android:name="com.moez.QKSMS.feature.widget.WidgetProvider">
+        <receiver android:name=".receiver.SendScheduledMessageReceiver" />
+        <receiver android:name=".feature.widget.WidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.moez.QKSMS.intent.action.ACTION_NOTIFY_DATASET_CHANGED" />
@@ -166,12 +158,12 @@
         </receiver>
 
         <service android:name="com.android.mms.transaction.TransactionService" />
-        <service android:name="com.moez.QKSMS.feature.backup.RestoreBackupService" />
+        <service android:name=".feature.backup.RestoreBackupService" />
         <service
-            android:name="com.moez.QKSMS.feature.widget.WidgetService"
+            android:name=".feature.widget.WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service
-            android:name="com.moez.QKSMS.service.HeadlessSmsSendService"
+            android:name=".service.HeadlessSmsSendService"
             android:exported="true"
             android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE">
             <intent-filter>
@@ -193,7 +185,7 @@
                 <action android:name="android.service.chooser.ChooserTargetService" />
             </intent-filter>
         </service>
-        <service android:name="com.moez.QKSMS.service.SendSmsService" />
+        <service android:name=".service.SendSmsService" />
 
         <meta-data
             android:name="preloaded_fonts"

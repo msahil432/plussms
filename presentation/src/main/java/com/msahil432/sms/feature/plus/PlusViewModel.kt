@@ -18,10 +18,10 @@
  */
 package com.msahil432.sms.feature.plus
 
-import com.msahil432.sms.common.Navigator
-import com.msahil432.sms.common.androidxcompat.scope
-import com.msahil432.sms.common.base.QkViewModel
-import com.msahil432.sms.common.util.BillingManager
+import com.moez.QKSMS.common.Navigator
+import com.moez.QKSMS.common.androidxcompat.scope
+import com.moez.QKSMS.common.base.QkViewModel
+import com.moez.QKSMS.common.util.BillingManager
 import com.msahil432.sms.manager.AnalyticsManager
 import com.uber.autodispose.kotlin.autoDisposable
 import io.reactivex.Observable

@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.msahil432.sms.feature.gallery
 
 import android.content.Context
@@ -31,8 +13,8 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.google.android.mms.ContentType
 import com.msahil432.sms.R
-import com.msahil432.sms.common.base.QkRealmAdapter
-import com.msahil432.sms.common.base.QkViewHolder
+import com.moez.QKSMS.common.base.QkRealmAdapter
+import com.moez.QKSMS.common.base.QkViewHolder
 import com.msahil432.sms.extensions.isImage
 import com.msahil432.sms.extensions.isVideo
 import com.msahil432.sms.model.MmsPart

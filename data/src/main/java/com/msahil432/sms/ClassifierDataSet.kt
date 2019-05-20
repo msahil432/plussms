@@ -1,7 +1,7 @@
 package com.msahil432.sms
 
 import android.util.Log
-import com.moez.QKSMS.model.ClassifierData
+import com.msahil432.sms.model.ClassifierData
 import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_FINANCE
 import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_PERSONAL
 import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_ADS

@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.msahil432.sms.feature.conversationinfo
 
 import android.text.InputFilter
@@ -24,15 +6,11 @@ import androidx.appcompat.app.AlertDialog
 import com.bluelinelabs.conductor.RouterTransaction
 import com.jakewharton.rxbinding2.view.clicks
 import com.msahil432.sms.R
-import com.msahil432.sms.common.Navigator
-import com.msahil432.sms.common.QkChangeHandler
-import com.msahil432.sms.common.base.QkController
-import com.msahil432.sms.common.util.extensions.animateLayoutChanges
-import com.msahil432.sms.common.util.extensions.dpToPx
-import com.msahil432.sms.common.util.extensions.resolveThemeColor
-import com.msahil432.sms.common.util.extensions.scrapViews
-import com.msahil432.sms.common.util.extensions.setVisible
-import com.msahil432.sms.common.widget.QkEditText
+import com.moez.QKSMS.common.Navigator
+import com.moez.QKSMS.common.QkChangeHandler
+import com.moez.QKSMS.common.base.QkController
+import com.moez.QKSMS.common.util.extensions.*
+import com.moez.QKSMS.common.widget.QkEditText
 import com.msahil432.sms.feature.conversationinfo.injection.ConversationInfoModule
 import com.msahil432.sms.feature.themepicker.ThemePickerController
 import com.msahil432.sms.injection.appComponent

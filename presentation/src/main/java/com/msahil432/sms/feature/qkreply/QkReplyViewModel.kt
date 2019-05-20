@@ -1,28 +1,10 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.msahil432.sms.feature.qkreply
 
 import android.telephony.SmsMessage
 import com.msahil432.sms.R
-import com.msahil432.sms.common.Navigator
-import com.msahil432.sms.common.androidxcompat.scope
-import com.msahil432.sms.common.base.QkViewModel
+import com.moez.QKSMS.common.Navigator
+import com.moez.QKSMS.common.androidxcompat.scope
+import com.moez.QKSMS.common.base.QkViewModel
 import com.msahil432.sms.compat.SubscriptionManagerCompat
 import com.msahil432.sms.extensions.asObservable
 import com.msahil432.sms.extensions.mapNotNull
@@ -46,14 +28,14 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class QkReplyViewModel @Inject constructor(
-    @Named("threadId") private val threadId: Long,
-    private val conversationRepo: ConversationRepository,
-    private val deleteMessages: DeleteMessages,
-    private val markRead: MarkRead,
-    private val messageRepo: MessageRepository,
-    private val navigator: Navigator,
-    private val sendMessage: SendMessage,
-    private val subscriptionManager: SubscriptionManagerCompat
+        @Named("threadId") private val threadId: Long,
+        private val conversationRepo: ConversationRepository,
+        private val deleteMessages: DeleteMessages,
+        private val markRead: MarkRead,
+        private val messageRepo: MessageRepository,
+        private val navigator: Navigator,
+        private val sendMessage: SendMessage,
+        private val subscriptionManager: SubscriptionManagerCompat
 ) : QkViewModel<QkReplyView, QkReplyState>(QkReplyState(selectedConversation = threadId)) {
 
     private val conversation by lazy {

@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.msahil432.sms.feature.compose
 
 import android.content.Context
@@ -26,13 +8,13 @@ import android.telephony.SmsMessage
 import android.util.Log
 import android.view.inputmethod.EditorInfo
 import com.msahil432.sms.R
-import com.msahil432.sms.common.Navigator
-import com.msahil432.sms.common.androidxcompat.scope
-import com.msahil432.sms.common.base.QkViewModel
-import com.msahil432.sms.common.util.BillingManager
-import com.msahil432.sms.common.util.ClipboardUtils
-import com.msahil432.sms.common.util.MessageDetailsFormatter
-import com.msahil432.sms.common.util.extensions.makeToast
+import com.moez.QKSMS.common.Navigator
+import com.moez.QKSMS.common.androidxcompat.scope
+import com.moez.QKSMS.common.base.QkViewModel
+import com.moez.QKSMS.common.util.BillingManager
+import com.moez.QKSMS.common.util.ClipboardUtils
+import com.moez.QKSMS.common.util.MessageDetailsFormatter
+import com.moez.QKSMS.common.util.extensions.makeToast
 import com.msahil432.sms.compat.SubscriptionManagerCompat
 import com.msahil432.sms.compat.TelephonyCompat
 import com.msahil432.sms.extensions.asObservable
@@ -61,7 +43,6 @@ import com.msahil432.sms.repository.MessageRepository
 import com.msahil432.sms.util.ActiveSubscriptionObservable
 import com.msahil432.sms.util.Preferences
 import com.msahil432.sms.util.tryOrNull
-import com.msahil432.sms.common.JavaHelper
 import com.uber.autodispose.kotlin.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -79,31 +60,31 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class ComposeViewModel @Inject constructor(
-    @Named("query") private val query: String,
-    @Named("threadId") private val threadId: Long,
-    @Named("category") private val category: String,
-    @Named("address") private val address: String,
-    @Named("text") private val sharedText: String,
-    @Named("attachments") private val sharedAttachments: Attachments,
-    private val context: Context,
-    private val activeConversationManager: ActiveConversationManager,
-    private val addScheduledMessage: AddScheduledMessage,
-    private val billingManager: BillingManager,
-    private val cancelMessage: CancelDelayedMessage,
-    private val contactFilter: ContactFilter,
-    private val contactsRepo: ContactRepository,
-    private val conversationRepo: ConversationRepository,
-    private val deleteMessages: DeleteMessages,
-    private val markRead: MarkRead,
-    private val messageDetailsFormatter: MessageDetailsFormatter,
-    private val messageRepo: MessageRepository,
-    private val navigator: Navigator,
-    private val permissionManager: PermissionManager,
-    private val prefs: Preferences,
-    private val retrySending: RetrySending,
-    private val sendMessage: SendMessage,
-    private val subscriptionManager: SubscriptionManagerCompat,
-    private val syncContacts: ContactSync
+        @Named("query") private val query: String,
+        @Named("threadId") private val threadId: Long,
+        @Named("category") private val category: String,
+        @Named("address") private val address: String,
+        @Named("text") private val sharedText: String,
+        @Named("attachments") private val sharedAttachments: Attachments,
+        private val context: Context,
+        private val activeConversationManager: ActiveConversationManager,
+        private val addScheduledMessage: AddScheduledMessage,
+        private val billingManager: BillingManager,
+        private val cancelMessage: CancelDelayedMessage,
+        private val contactFilter: ContactFilter,
+        private val contactsRepo: ContactRepository,
+        private val conversationRepo: ConversationRepository,
+        private val deleteMessages: DeleteMessages,
+        private val markRead: MarkRead,
+        private val messageDetailsFormatter: MessageDetailsFormatter,
+        private val messageRepo: MessageRepository,
+        private val navigator: Navigator,
+        private val permissionManager: PermissionManager,
+        private val prefs: Preferences,
+        private val retrySending: RetrySending,
+        private val sendMessage: SendMessage,
+        private val subscriptionManager: SubscriptionManagerCompat,
+        private val syncContacts: ContactSync
 ) : QkViewModel<ComposeView, ComposeState>(ComposeState(
         editingMode = threadId == 0L && address.isBlank(),
         selectedConversation = threadId,

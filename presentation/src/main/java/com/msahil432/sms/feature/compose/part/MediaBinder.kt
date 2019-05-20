@@ -21,9 +21,9 @@ package com.msahil432.sms.feature.compose.part
 import android.content.Context
 import android.view.View
 import com.msahil432.sms.R
-import com.msahil432.sms.common.Navigator
-import com.msahil432.sms.common.util.extensions.setVisible
-import com.msahil432.sms.common.widget.BubbleImageView
+import com.moez.QKSMS.common.Navigator
+import com.moez.QKSMS.common.util.extensions.setVisible
+import com.moez.QKSMS.common.widget.BubbleImageView
 import com.msahil432.sms.extensions.isImage
 import com.msahil432.sms.extensions.isVideo
 import com.msahil432.sms.model.Message

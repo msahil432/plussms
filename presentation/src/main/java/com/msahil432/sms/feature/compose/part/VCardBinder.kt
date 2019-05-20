@@ -24,11 +24,11 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import com.msahil432.sms.R
-import com.msahil432.sms.common.Navigator
-import com.msahil432.sms.common.util.Colors
-import com.msahil432.sms.common.util.extensions.resolveThemeColor
-import com.msahil432.sms.common.util.extensions.setBackgroundTint
-import com.msahil432.sms.common.util.extensions.setTint
+import com.moez.QKSMS.common.Navigator
+import com.moez.QKSMS.common.util.Colors
+import com.moez.QKSMS.common.util.extensions.resolveThemeColor
+import com.moez.QKSMS.common.util.extensions.setBackgroundTint
+import com.moez.QKSMS.common.util.extensions.setTint
 import com.msahil432.sms.extensions.isVCard
 import com.msahil432.sms.extensions.mapNotNull
 import com.msahil432.sms.feature.compose.BubbleUtils
@@ -42,9 +42,9 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.mms_vcard_list_item.view.*
 
 class VCardBinder(
-    private val context: Context,
-    private val navigator: Navigator,
-    private val theme: Colors.Theme
+        private val context: Context,
+        private val navigator: Navigator,
+        private val theme: Colors.Theme
 ) : PartBinder {
 
     override val partLayout = R.layout.mms_vcard_list_item

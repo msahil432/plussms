@@ -13,14 +13,14 @@ android {
         applicationId "com.msahil432.sms"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1002
+        versionCode 1004
         versionName "0.10.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    signingConfigs {
-        release
-    }
+//    signingConfigs {
+//        release
+//    }
 
     buildTypes {
         release {
@@ -39,6 +39,7 @@ android {
     lintOptions {
         abortOnError true
     }
+    compileOptions.incremental = false
 
 //    splits {
 //        abi {
@@ -54,6 +55,7 @@ androidExtensions {
     experimental = true
 }
 
+//noinspection GradleDependency
 dependencies {
     // lifecycle
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
@@ -144,8 +146,4 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.14.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
 
-    // For Setup Activity
-    implementation 'com.github.transferwise:sequence-layout:1.0.7'
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0-alpha04'
 }

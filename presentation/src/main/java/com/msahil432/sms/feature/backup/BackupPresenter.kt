@@ -1,30 +1,12 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.msahil432.sms.feature.backup
 
 import android.content.Context
 import com.msahil432.sms.R
-import com.msahil432.sms.common.Navigator
-import com.msahil432.sms.common.base.QkPresenter
-import com.msahil432.sms.common.util.BillingManager
-import com.msahil432.sms.common.util.DateFormatter
-import com.msahil432.sms.common.util.extensions.makeToast
+import com.moez.QKSMS.common.Navigator
+import com.moez.QKSMS.common.base.QkPresenter
+import com.moez.QKSMS.common.util.BillingManager
+import com.moez.QKSMS.common.util.DateFormatter
+import com.moez.QKSMS.common.util.extensions.makeToast
 import com.msahil432.sms.interactor.PerformBackup
 import com.msahil432.sms.manager.PermissionManager
 import com.msahil432.sms.repository.BackupRepository
@@ -37,13 +19,13 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class BackupPresenter @Inject constructor(
-    private val backupRepo: BackupRepository,
-    private val billingManager: BillingManager,
-    private val context: Context,
-    private val dateFormatter: DateFormatter,
-    private val navigator: Navigator,
-    private val performBackup: PerformBackup,
-    private val permissionManager: PermissionManager
+        private val backupRepo: BackupRepository,
+        private val billingManager: BillingManager,
+        private val context: Context,
+        private val dateFormatter: DateFormatter,
+        private val navigator: Navigator,
+        private val performBackup: PerformBackup,
+        private val permissionManager: PermissionManager
 ) : QkPresenter<BackupView, BackupState>(BackupState()) {
 
     private val storagePermissionSubject: Subject<Boolean> = BehaviorSubject.createDefault(permissionManager.hasStorage())

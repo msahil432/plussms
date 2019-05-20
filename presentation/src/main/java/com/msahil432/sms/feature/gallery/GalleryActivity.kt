@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.msahil432.sms.feature.gallery
 
 import android.os.Bundle
@@ -27,9 +9,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.msahil432.sms.R
-import com.msahil432.sms.common.base.QkActivity
-import com.msahil432.sms.common.util.DateFormatter
-import com.msahil432.sms.common.util.extensions.setVisible
+import com.moez.QKSMS.common.base.QkActivity
+import com.moez.QKSMS.common.util.DateFormatter
+import com.moez.QKSMS.common.util.extensions.setVisible
 import com.msahil432.sms.model.MmsPart
 import dagger.android.AndroidInjection
 import io.reactivex.Observable

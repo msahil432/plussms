@@ -1,4 +1,4 @@
-package com.msahil432.sms.common
+package com.moez.QKSMS.common
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

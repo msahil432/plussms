@@ -23,7 +23,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.moez.QKSMS.feature.gallery.GalleryActivity">
+    tools:context="com.msahil432.sms.feature.gallery.GalleryActivity">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager"

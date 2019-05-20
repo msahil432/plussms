@@ -23,9 +23,9 @@ import android.view.View
 import android.view.animation.AlphaAnimation
 import android.widget.RelativeLayout
 import com.msahil432.sms.R
-import com.msahil432.sms.common.util.Colors
-import com.msahil432.sms.common.util.extensions.setBackgroundTint
-import com.msahil432.sms.common.util.extensions.setTint
+import com.moez.QKSMS.common.util.Colors
+import com.moez.QKSMS.common.util.extensions.setBackgroundTint
+import com.moez.QKSMS.common.util.extensions.setTint
 import com.msahil432.sms.injection.appComponent
 import com.msahil432.sms.model.Contact
 import kotlinx.android.synthetic.main.contact_chip_detailed.view.*

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="?attr/composeBackground"
     android:orientation="vertical"
-    tools:context="com.moez.QKSMS.feature.compose.ComposeActivity">
+    tools:context="com.msahil432.sms.feature.compose.ComposeActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messageList"

@@ -26,7 +26,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import com.msahil432.sms.R
-import com.msahil432.sms.common.Navigator
+import com.moez.QKSMS.common.Navigator
 import com.moez.QKSMS.common.util.Colors
 import com.moez.QKSMS.common.util.extensions.setBackgroundTint
 import com.moez.QKSMS.common.util.extensions.setTint

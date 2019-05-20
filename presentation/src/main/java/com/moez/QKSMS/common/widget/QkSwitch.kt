@@ -26,8 +26,8 @@ import com.msahil432.sms.R
 import com.moez.QKSMS.common.util.Colors
 import com.moez.QKSMS.common.util.extensions.getColorCompat
 import com.moez.QKSMS.common.util.extensions.withAlpha
-import com.moez.QKSMS.injection.appComponent
-import com.moez.QKSMS.util.Preferences
+import com.msahil432.sms.injection.appComponent
+import com.msahil432.sms.util.Preferences
 import javax.inject.Inject
 
 class QkSwitch @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : SwitchCompat(context, attrs) {

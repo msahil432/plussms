@@ -20,7 +20,7 @@ package com.moez.QKSMS.common.util.extensions
 
 import android.content.Context
 import com.msahil432.sms.R
-import com.moez.QKSMS.repository.BackupRepository
+import com.msahil432.sms.repository.BackupRepository
 
 fun BackupRepository.Progress.getLabel(context: Context): String? {
     return when (this) {

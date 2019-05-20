@@ -20,7 +20,7 @@ package com.moez.QKSMS.common.util
 
 import android.os.Environment
 import android.util.Log
-import com.moez.QKSMS.util.Preferences
+import com.msahil432.sms.util.Preferences
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.io.File

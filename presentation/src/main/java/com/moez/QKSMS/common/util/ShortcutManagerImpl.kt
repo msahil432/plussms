@@ -27,12 +27,12 @@ import android.graphics.drawable.Icon
 import android.os.Build
 import android.telephony.PhoneNumberUtils
 import com.msahil432.sms.R
-import com.moez.QKSMS.feature.compose.ComposeActivity
-import com.moez.QKSMS.model.Conversation
-import com.moez.QKSMS.repository.ConversationRepository
-import com.moez.QKSMS.repository.MessageRepository
-import com.moez.QKSMS.util.GlideApp
-import com.moez.QKSMS.util.tryOrNull
+import com.msahil432.sms.feature.compose.ComposeActivity
+import com.msahil432.sms.model.Conversation
+import com.msahil432.sms.repository.ConversationRepository
+import com.msahil432.sms.repository.MessageRepository
+import com.msahil432.sms.util.GlideApp
+import com.msahil432.sms.util.tryOrNull
 import me.leolin.shortcutbadger.ShortcutBadger
 import javax.inject.Inject
 
@@ -40,7 +40,7 @@ class ShortcutManagerImpl @Inject constructor(
     private val context: Context,
     private val conversationRepo: ConversationRepository,
     private val messageRepo: MessageRepository
-) : com.moez.QKSMS.manager.ShortcutManager {
+) : com.msahil432.sms.manager.ShortcutManager {
 
     override fun updateBadge() {
         val count = messageRepo.getUnreadCount().toInt()

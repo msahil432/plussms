@@ -28,12 +28,12 @@ import android.telephony.PhoneNumberUtils
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import com.msahil432.sms.R
-import com.moez.QKSMS.feature.compose.ComposeActivity
-import com.moez.QKSMS.injection.appComponent
-import com.moez.QKSMS.model.Conversation
-import com.moez.QKSMS.repository.ConversationRepository
-import com.moez.QKSMS.util.GlideApp
-import com.moez.QKSMS.util.tryOrNull
+import com.msahil432.sms.feature.compose.ComposeActivity
+import com.msahil432.sms.injection.appComponent
+import com.msahil432.sms.model.Conversation
+import com.msahil432.sms.repository.ConversationRepository
+import com.msahil432.sms.util.GlideApp
+import com.msahil432.sms.util.tryOrNull
 import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.M)

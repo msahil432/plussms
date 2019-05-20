@@ -22,7 +22,7 @@ import android.content.Context
 import android.graphics.Color
 import com.msahil432.sms.R
 import com.moez.QKSMS.common.util.extensions.getColorCompat
-import com.moez.QKSMS.util.Preferences
+import com.msahil432.sms.util.Preferences
 import io.reactivex.Observable
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -29,8 +29,7 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
-import com.moez.QKSMS.BuildConfig
-import com.moez.QKSMS.manager.AnalyticsManager
+import com.msahil432.sms.manager.AnalyticsManager
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers

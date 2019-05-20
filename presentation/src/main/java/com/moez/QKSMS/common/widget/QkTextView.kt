@@ -22,7 +22,7 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.emoji.widget.EmojiAppCompatTextView
 import com.moez.QKSMS.common.util.TextViewStyler
-import com.moez.QKSMS.injection.appComponent
+import com.msahil432.sms.injection.appComponent
 import javax.inject.Inject
 
 open class QkTextView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null)

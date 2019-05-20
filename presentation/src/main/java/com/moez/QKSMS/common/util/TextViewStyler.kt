@@ -30,7 +30,7 @@ import com.moez.QKSMS.common.util.extensions.getColorCompat
 import com.moez.QKSMS.common.util.extensions.resolveThemeColor
 import com.moez.QKSMS.common.widget.QkEditText
 import com.moez.QKSMS.common.widget.QkTextView
-import com.moez.QKSMS.util.Preferences
+import com.msahil432.sms.util.Preferences
 import javax.inject.Inject
 
 class TextViewStyler @Inject constructor(

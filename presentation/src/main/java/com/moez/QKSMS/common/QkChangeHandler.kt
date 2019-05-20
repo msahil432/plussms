@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.moez.QKSMS.common
+package com.msahil432.sms.common
 
 import android.animation.Animator
 import android.animation.AnimatorSet

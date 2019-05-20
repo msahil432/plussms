@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.moez.QKSMS.common
+package com.msahil432.sms.common
 
 import android.app.Activity
 import android.content.Context
@@ -26,7 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.moez.QKSMS.common.util.extensions.dpToPx
 import com.moez.QKSMS.common.util.extensions.setPadding
-import com.moez.QKSMS.injection.appComponent
+import com.msahil432.sms.injection.appComponent
 import javax.inject.Inject
 
 /**

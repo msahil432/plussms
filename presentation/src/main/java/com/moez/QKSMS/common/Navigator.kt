@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.moez.QKSMS.common
+package com.msahil432.sms.common
 
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -26,21 +26,20 @@ import android.os.Build
 import android.provider.ContactsContract
 import android.provider.Settings
 import android.provider.Telephony
-import android.util.Log
-import com.moez.QKSMS.BuildConfig
+import com.msahil432.sms.BuildConfig
 import com.moez.QKSMS.common.util.BillingManager
-import com.moez.QKSMS.feature.backup.BackupActivity
-import com.moez.QKSMS.feature.blocked.BlockedActivity
-import com.moez.QKSMS.feature.compose.ComposeActivity
-import com.moez.QKSMS.feature.conversationinfo.ConversationInfoActivity
-import com.moez.QKSMS.feature.gallery.GalleryActivity
-import com.moez.QKSMS.feature.notificationprefs.NotificationPrefsActivity
-import com.moez.QKSMS.feature.plus.PlusActivity
-import com.moez.QKSMS.feature.scheduled.ScheduledActivity
-import com.moez.QKSMS.feature.settings.SettingsActivity
-import com.moez.QKSMS.manager.AnalyticsManager
-import com.moez.QKSMS.manager.NotificationManager
-import com.moez.QKSMS.manager.PermissionManager
+import com.msahil432.sms.feature.backup.BackupActivity
+import com.msahil432.sms.feature.blocked.BlockedActivity
+import com.msahil432.sms.feature.compose.ComposeActivity
+import com.msahil432.sms.feature.conversationinfo.ConversationInfoActivity
+import com.msahil432.sms.feature.gallery.GalleryActivity
+import com.msahil432.sms.feature.notificationprefs.NotificationPrefsActivity
+import com.msahil432.sms.feature.plus.PlusActivity
+import com.msahil432.sms.feature.scheduled.ScheduledActivity
+import com.msahil432.sms.feature.settings.SettingsActivity
+import com.msahil432.sms.manager.AnalyticsManager
+import com.msahil432.sms.manager.NotificationManager
+import com.msahil432.sms.manager.PermissionManager
 import javax.inject.Inject
 import javax.inject.Singleton
 

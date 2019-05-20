@@ -39,22 +39,22 @@ import androidx.core.app.TaskStackBuilder
 import androidx.core.graphics.drawable.IconCompat
 import com.msahil432.sms.R
 import com.moez.QKSMS.common.util.extensions.dpToPx
-import com.moez.QKSMS.extensions.isImage
-import com.moez.QKSMS.feature.compose.ComposeActivity
-import com.moez.QKSMS.feature.qkreply.QkReplyActivity
-import com.moez.QKSMS.manager.ActiveConversationManager
-import com.moez.QKSMS.manager.PermissionManager
-import com.moez.QKSMS.mapper.CursorToPartImpl
-import com.moez.QKSMS.model.Conversation
-import com.moez.QKSMS.receiver.DeleteMessagesReceiver
-import com.moez.QKSMS.receiver.MarkReadReceiver
-import com.moez.QKSMS.receiver.MarkSeenReceiver
-import com.moez.QKSMS.receiver.RemoteMessagingReceiver
-import com.moez.QKSMS.repository.ConversationRepository
-import com.moez.QKSMS.repository.MessageRepository
-import com.moez.QKSMS.util.GlideApp
-import com.moez.QKSMS.util.Preferences
-import com.moez.QKSMS.util.tryOrNull
+import com.msahil432.sms.extensions.isImage
+import com.msahil432.sms.feature.compose.ComposeActivity
+import com.msahil432.sms.feature.qkreply.QkReplyActivity
+import com.msahil432.sms.manager.ActiveConversationManager
+import com.msahil432.sms.manager.PermissionManager
+import com.msahil432.sms.mapper.CursorToPartImpl
+import com.msahil432.sms.model.Conversation
+import com.msahil432.sms.receiver.DeleteMessagesReceiver
+import com.msahil432.sms.receiver.MarkReadReceiver
+import com.msahil432.sms.receiver.MarkSeenReceiver
+import com.msahil432.sms.receiver.RemoteMessagingReceiver
+import com.msahil432.sms.repository.ConversationRepository
+import com.msahil432.sms.repository.MessageRepository
+import com.msahil432.sms.util.GlideApp
+import com.msahil432.sms.util.Preferences
+import com.msahil432.sms.util.tryOrNull
 import com.msahil432.sms.SmsClassifier
 import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_ADS
 import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_FINANCE
@@ -77,7 +77,7 @@ class NotificationManagerImpl @Inject constructor(
     private val messageRepo: MessageRepository,
     private val permissions: PermissionManager,
     private val activeConversationManager: ActiveConversationManager
-) : com.moez.QKSMS.manager.NotificationManager {
+) : com.msahil432.sms.manager.NotificationManager {
 
     companion object {
         const val PERSONAL_CHANNEL_ID = "com.msahil432.sms.PERSONAL"
@@ -146,7 +146,7 @@ class NotificationManagerImpl @Inject constructor(
             return
         }
 
-        val messages = messageRepo.getUnreadUnseenMessages(threadId)
+        val messages = messageRepo.getUnreadUnseenMessages(threadId, category)
         // If there are no messages to be displayed, make sure that the notification is dismissed
         if (messages.isEmpty()) {
             notificationManager.cancel(threadId.toInt())
@@ -256,15 +256,25 @@ class NotificationManagerImpl @Inject constructor(
                 notification
                         .setLargeIcon(avatar)
                         .setContentTitle(conversation.getTitle())
-                        .setContentText(context.resources.getQuantityString(R.plurals.notification_new_messages, messages.size, messages.size))
             }
 
             Preferences.NOTIFICATION_PREVIEWS_NONE -> {
-                notification
-                        .setContentTitle(context.getString(R.string.app_name))
-                        .setContentText(context.resources.getQuantityString(R.plurals.notification_new_messages, messages.size, messages.size))
+                notification.setContentTitle(context.getString(R.string.app_name))
             }
         }
+
+        notification.setContentText(when(channel){
+            PERSONAL_CHANNEL_ID -> context.resources.getQuantityString(
+                        R.plurals.personal_notification_new_messages, messages.size, messages.size)
+            UPDATES_CHANNEL_ID -> context.resources.getQuantityString(
+                        R.plurals.update_notification_new_messages, messages.size, messages.size)
+            FINANCE_CHANNEL_ID -> context.resources.getQuantityString(
+                        R.plurals.finance_notification_new_messages, messages.size, messages.size)
+            ADS_CHANNEL_ID -> context.resources.getQuantityString(
+                        R.plurals.ads_notification_new_messages, messages.size, messages.size)
+            else ->
+                context.resources.getQuantityString(R.plurals.notification_new_messages, messages.size, messages.size)
+        })
 
         // Add all of the people from this conversation to the notification, so that the system can
         // appropriately bypass DND mode
@@ -277,11 +287,27 @@ class NotificationManagerImpl @Inject constructor(
         listOf(prefs.notifAction1, prefs.notifAction2, prefs.notifAction3)
                 .map { preference -> preference.get() }
                 .distinct()
-                .mapNotNull { action ->
+                .mapNotNull {
+                    action ->
+
+                    val otp = KtHelper.getOtp(messages[0]!!.body)
+                    if(otp!=""){
+                        val intent = Intent(context, MarkReadReceiver::class.java)
+                                .putExtra("threadId", threadId)
+                                .putExtra("otp", otp)
+                        val pi = PendingIntent.getBroadcast(context,
+                                threadId.toInt() + 80000, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                        NotificationCompat.Action
+                                .Builder(R.drawable.ic_check_white_24dp, actionLabels[action], pi)
+                                .setSemanticAction(
+                                        NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ).build()
+                    }
+
                     when (action) {
                         Preferences.NOTIFICATION_ACTION_READ -> {
                             val intent = Intent(context, MarkReadReceiver::class.java)
                                     .putExtra("threadId", threadId)
+                                    .putExtra("otp", "")
                             val pi = PendingIntent.getBroadcast(context,
                                     threadId.toInt() + 30000, intent, PendingIntent.FLAG_UPDATE_CURRENT)
                             NotificationCompat.Action
@@ -294,9 +320,12 @@ class NotificationManagerImpl @Inject constructor(
                             if (Build.VERSION.SDK_INT >= 24) {
                                 getReplyAction(threadId)
                             } else {
-                                val intent = Intent(context, QkReplyActivity::class.java).putExtra("threadId", threadId)
-                                val pi = PendingIntent.getActivity(context, threadId.toInt() + 40000, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-                                NotificationCompat.Action.Builder(R.drawable.ic_reply_white_24dp, actionLabels[action], pi)
+                                val intent = Intent(context, QkReplyActivity::class.java)
+                                        .putExtra("threadId", threadId)
+                                val pi = PendingIntent.getActivity(context,
+                                        threadId.toInt() + 40000, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                                NotificationCompat.Action.Builder(R.drawable.ic_reply_white_24dp,
+                                        actionLabels[action], pi)
                                         .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY).build()
                             }
                         }

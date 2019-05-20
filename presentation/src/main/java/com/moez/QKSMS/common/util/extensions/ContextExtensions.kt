@@ -26,7 +26,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import com.moez.QKSMS.util.tryOrNull
+import com.msahil432.sms.util.tryOrNull
 
 fun Context.getColorCompat(colorRes: Int): Int {
     //return black as a default color, in case an invalid color ID was passed in

@@ -23,8 +23,8 @@ import com.google.android.mms.pdu_alt.EncodedStringValue
 import com.google.android.mms.pdu_alt.MultimediaMessagePdu
 import com.google.android.mms.pdu_alt.PduPersister
 import com.msahil432.sms.R
-import com.moez.QKSMS.model.Message
-import com.moez.QKSMS.util.tryOrNull
+import com.msahil432.sms.model.Message
+import com.msahil432.sms.util.tryOrNull
 import javax.inject.Inject
 
 class MessageDetailsFormatter @Inject constructor(

@@ -14,7 +14,7 @@ import io.realm.Realm
  **/
 
 class ClassifierDataSet{
-    private val dataset= HashMap<String, String>()
+    public val dataset= HashMap<String, String>()
     init {
         dataset["Thank using Debit Card for purchase worth Rs on POS at Projekt txn"]=CATEGORY_FINANCE
         dataset["code can also tap on link verify phone"]=CATEGORY_UPDATES
@@ -832,7 +832,6 @@ class ClassifierDataSet{
             }
         }
         Log.e("ClassifierDataSet", "Data Added")
-        SmsClassifier.initializeClassifier()
     }
 
 }

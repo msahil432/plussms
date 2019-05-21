@@ -282,6 +282,20 @@ class NotificationManagerImpl @Inject constructor(
                 .mapNotNull { recipient -> recipient.contact?.lookupKey }
                 .forEach { uri -> notification.addPerson(uri) }
 
+        val otp = KtHelper.getOtp(messages[0]!!.body)
+        if(otp!=""){
+            val intent = Intent(context, MarkReadReceiver::class.java)
+                    .putExtra("threadId", threadId)
+                    .putExtra("otp", otp)
+            val pi = PendingIntent.getBroadcast(context,
+                    threadId.toInt() + 80000, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            NotificationCompat.Action
+                    .Builder(R.drawable.ic_content_copy_black_24dp, "Copy $otp", pi)
+                    .setSemanticAction(
+                            NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ).build()
+            Log.e("NotifMgr", "OTP Btn Added $otp")
+        }
+
         // Add the action buttons
         val actionLabels = context.resources.getStringArray(R.array.notification_actions)
         listOf(prefs.notifAction1, prefs.notifAction2, prefs.notifAction3)
@@ -289,20 +303,6 @@ class NotificationManagerImpl @Inject constructor(
                 .distinct()
                 .mapNotNull {
                     action ->
-
-                    val otp = KtHelper.getOtp(messages[0]!!.body)
-                    if(otp!=""){
-                        val intent = Intent(context, MarkReadReceiver::class.java)
-                                .putExtra("threadId", threadId)
-                                .putExtra("otp", otp)
-                        val pi = PendingIntent.getBroadcast(context,
-                                threadId.toInt() + 80000, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-                        NotificationCompat.Action
-                                .Builder(R.drawable.ic_check_white_24dp, actionLabels[action], pi)
-                                .setSemanticAction(
-                                        NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ).build()
-                    }
-
                     when (action) {
                         Preferences.NOTIFICATION_ACTION_READ -> {
                             val intent = Intent(context, MarkReadReceiver::class.java)

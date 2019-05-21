@@ -34,7 +34,7 @@ class KtHelper{
                 add.contains("dbs") || add.contains("digib")->
                     "DBS Bank"
                 add.contains("icici")-> "ICICI Bank"
-                add.contains("kotak")-> "Kotak Bank"
+                add.contains("kotakb")-> "Kotak Bank"
                 add.contains("hdfcbk") -> "HDFC Bank"
 
                 // DTH
@@ -131,7 +131,7 @@ class KtHelper{
                 "Axis Bank" -> glide.load(R.drawable.axis)
                 "State Bank of India" -> glide.load(baseUrl +"onlinesbi.com$imageSize")
                 "IDFC Bank" -> glide.load(baseUrl +"idfcbank.com$imageSize")
-                "DBS Bank" -> glide.load(baseUrl +"dbs.com$imageSize")
+                "DBS Bank" -> glide.load(R.drawable.dbs)
                 "ICICI Bank" -> glide.load(baseUrl +"icicibank.com$imageSize")
                 "Kotak Bank" -> glide.load(R.drawable.kotak)
                 "HDFC Bank" -> glide.load(baseUrl +"hadfcbank.com$imageSize")
@@ -173,7 +173,7 @@ class KtHelper{
                 "Delhivery" -> glide.load(baseUrl +"delhivery.com$imageSize")
 
                 // Mobile Operators
-                "Vodafone" -> glide.load(baseUrl +"vodafone.com$imageSize")
+                "Vodafone" -> glide.load(baseUrl +"vodafone.in$imageSize")
                 "Vodafone mPesa" -> glide.load(R.drawable.mpesa)
                 "Vodafone Play" -> glide.load(baseUrl +"vodafone.com$imageSize")
 
@@ -186,7 +186,9 @@ class KtHelper{
 
                 // Misc.
                 "Google" -> glide.load(baseUrl +"google.com$imageSize")
-                "Lybrate" -> glide.load(baseUrl +"lybrate.in$imageSize")
+
+//                "Lybrate" -> glide.load(baseUrl +"lybrate.in$imageSize")
+
                 "SnapChat" -> glide.load(baseUrl +"snapchat.com$imageSize")
                 "Whatsapp" -> glide.load(baseUrl +"whatsapp.com$imageSize")
                 "DROOM" -> glide.load(R.drawable.droom)
@@ -204,11 +206,11 @@ class KtHelper{
 
         public fun getOtp(text: String): String{
             val t = text.toLowerCase()
-            if (!(text.contains("code") || text.contains("one time password")
-                            || text.contains("otp")))
+            if (!(t.contains("code") || t.contains("one time password")
+                            || t.contains("otp")))
                 return ""
             val p = Pattern.compile("\\d{4,8}")
-            val m = p.matcher(text)
+            val m = p.matcher(t)
             if (!m.find())
                 return ""
             try {

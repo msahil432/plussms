@@ -31,56 +31,58 @@ class SmsClassifier{
                 Log.e("SmsClassifier", "Initialized!")
 //            }
         }
+        var count =0
+        var ads =0
+        var finance = 0
+        var updates =0
 
         fun initializeClassifier(){
-            var count =0
-            var ads =0
-            var finance = 0
-            var updates =0
             adClassifier.reset()
             updateClassifier.reset()
             financeClassifier.reset()
-            Realm.getDefaultInstance().where(ClassifierData::class.java)
-                    .findAll()
-                    .forEach {
-                        val text = it.text.split(" ")
-                        count++
-                        when(it.category){
-                            CATEGORY_ADS -> {
-                                adClassifier.learn(it.category, text)
-                                updateClassifier.learn(NONE_CATEGORY, text)
-                                financeClassifier.learn(NONE_CATEGORY, text)
-                                ads++
-                            }
-                            CATEGORY_FINANCE -> {
-                                adClassifier.learn(NONE_CATEGORY, text)
-                                updateClassifier.learn(NONE_CATEGORY, text)
-                                financeClassifier.learn(it.category, text)
-                                finance++
-                            }
-                            CATEGORY_UPDATES -> {
-                                adClassifier.learn(NONE_CATEGORY, text)
-                                updateClassifier.learn(NONE_CATEGORY, text)
-                                financeClassifier.learn(it.category, text)
-                                updates++
-                            }
-                            CATEGORY_PERSONAL,CATEGORY_OTHERS ->{
-                                adClassifier.learn(NONE_CATEGORY, text)
-                                updateClassifier.learn(NONE_CATEGORY, text)
-                                financeClassifier.learn(NONE_CATEGORY, text)
-                            }
-                        }
-                    }
-//            financeClassifier.features.forEach {
-//                Log.e("SMSClassifier", "finance:$it- ${financeClassifier.getFeatureCount(it)} - ${financeClassifier.getFeatureCount(it, CATEGORY_FINANCE)}")
-//            }
-//            adClassifier.features.forEach {
-//                Log.e("SMSClassifier", "ads:$it")
-//            }
-//            updateClassifier.features.forEach {
-//                Log.e("SMSClassifier", "update:$it")
-//            }
+            try {
+                Realm.getDefaultInstance().where(ClassifierData::class.java)
+                        .findAll()
+                        .forEach { trainForEach(it.text, it.category) }
+            }catch (e: Exception){
+                val t3 = ClassifierDataSet().dataset
+                t3.keys.forEach{
+                        trainForEach(it, t3[it])
+                }
+            }
             Log.e("SmsClassifier", "Trained for : $count = f$finance + u$updates + a$ads")
+        }
+
+        private fun trainForEach(message: String, category: String?){
+            if(category==null)
+                return
+            val text = message.split(" ")
+            count++
+            when (category) {
+                CATEGORY_ADS -> {
+                    adClassifier.learn(category, text)
+                    updateClassifier.learn(NONE_CATEGORY, text)
+                    financeClassifier.learn(NONE_CATEGORY, text)
+                    ads++
+                }
+                CATEGORY_FINANCE -> {
+                    adClassifier.learn(NONE_CATEGORY, text)
+                    updateClassifier.learn(NONE_CATEGORY, text)
+                    financeClassifier.learn(category, text)
+                    finance++
+                }
+                CATEGORY_UPDATES -> {
+                    adClassifier.learn(NONE_CATEGORY, text)
+                    updateClassifier.learn(NONE_CATEGORY, text)
+                    financeClassifier.learn(category, text)
+                    updates++
+                }
+                CATEGORY_PERSONAL, CATEGORY_OTHERS -> {
+                    adClassifier.learn(NONE_CATEGORY, text)
+                    updateClassifier.learn(NONE_CATEGORY, text)
+                    financeClassifier.learn(NONE_CATEGORY, text)
+                }
+            }
         }
 
 //        fun initializeClassifier(){

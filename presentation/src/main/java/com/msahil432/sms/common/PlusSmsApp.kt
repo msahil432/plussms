@@ -46,8 +46,6 @@ class PlusSmsApp : Application(), HasActivityInjector, HasBroadcastReceiverInjec
     @Inject lateinit var fileLoggingTree: FileLoggingTree
     @Inject lateinit var nightModeManager: NightModeManager
 
-    private var classifier : String? = null
-
     private val packages = arrayOf("com.msahil432.sms")
 
     override fun onCreate() {
@@ -70,7 +68,7 @@ class PlusSmsApp : Application(), HasActivityInjector, HasBroadcastReceiverInjec
                 .deleteRealmIfMigrationNeeded()
                 .build())
 
-        classifier = SmsClassifier.classify("test")
+        SmsClassifier.initializeClassifier()
 
         AppComponentManager.init(this)
         appComponent.inject(this)

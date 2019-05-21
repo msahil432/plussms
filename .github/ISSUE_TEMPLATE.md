@@ -1,6 +1,6 @@
 ### DESCRIPTION
 A short description of the issue. 
-Example: Conversations aren't marked as read when they are opened from a notification.
+Example: Conversations are not marked as read when they are opened from a notification.
 
 ### STEPS
 1. Steps

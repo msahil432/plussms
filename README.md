@@ -1,4 +1,4 @@
-![Plus Sms](https://raw.githubusercontent.com/msahil432/plussms/new_port/.github/icon.png)
+![Plus Sms](https://raw.githubusercontent.com/msahil432/plussms/master/.github/icon.png)
 
 # Plus Sms
 

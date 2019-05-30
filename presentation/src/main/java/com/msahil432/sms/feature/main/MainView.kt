@@ -26,6 +26,7 @@ interface MainView : QkView<MainState> {
     fun clearSearch()
     fun clearSelection()
     fun showDeleteDialog(conversations: List<Long>)
+    fun showReportDialog(conversations: List<Long>)
     fun showArchivedSnackbar()
 
 }

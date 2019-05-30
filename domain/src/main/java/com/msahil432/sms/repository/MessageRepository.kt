@@ -41,6 +41,8 @@ interface MessageRepository {
      * Retrieves the list of messages which should be shown in the notification
      * for a given conversation
      */
+    fun getUnreadUnseenMessages(threadId: Long): RealmResults<Message>
+
     fun getUnreadUnseenMessages(threadId: Long, category: String): RealmResults<Message>
 
     /**

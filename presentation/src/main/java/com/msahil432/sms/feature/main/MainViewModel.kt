@@ -7,17 +7,6 @@ import com.moez.QKSMS.common.androidxcompat.scope
 import com.moez.QKSMS.common.base.QkViewModel
 import com.moez.QKSMS.common.util.BillingManager
 import com.msahil432.sms.extensions.removeAccents
-import com.msahil432.sms.interactor.DeleteConversations
-import com.msahil432.sms.interactor.MarkAllSeen
-import com.msahil432.sms.interactor.MarkArchived
-import com.msahil432.sms.interactor.MarkBlocked
-import com.msahil432.sms.interactor.MarkPinned
-import com.msahil432.sms.interactor.MarkRead
-import com.msahil432.sms.interactor.MarkUnarchived
-import com.msahil432.sms.interactor.MarkUnpinned
-import com.msahil432.sms.interactor.MarkUnread
-import com.msahil432.sms.interactor.MigratePreferences
-import com.msahil432.sms.interactor.SyncMessages
 import com.msahil432.sms.manager.PermissionManager
 import com.msahil432.sms.manager.RatingManager
 import com.msahil432.sms.model.SyncLog
@@ -29,6 +18,7 @@ import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_FINANCE
 import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_OTHERS
 import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_PERSONAL
 import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_UPDATES
+import com.msahil432.sms.interactor.*
 import com.uber.autodispose.kotlin.autoDisposable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -249,6 +239,10 @@ class MainViewModel @Inject constructor(
                         R.id.block -> {
                             markBlocked.execute(conversations)
                             view.clearSelection()
+                        }
+
+                        R.id.report -> {
+                            view.showReportDialog(conversations)
                         }
                     }
                 }

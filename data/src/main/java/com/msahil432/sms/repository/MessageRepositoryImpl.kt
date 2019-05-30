@@ -108,6 +108,17 @@ class MessageRepositoryImpl @Inject constructor(
      * Retrieves the list of messages which should be shown in the notification
      * for a given conversation
      */
+    override fun getUnreadUnseenMessages(threadId: Long): RealmResults<Message> {
+        return Realm.getDefaultInstance()
+                .also { it.refresh() }
+                .where(Message::class.java)
+                .equalTo("seen", false)
+                .equalTo("read", false)
+                .equalTo("threadId", threadId)
+                .sort("date")
+                .findAll()
+    }
+
     override fun getUnreadUnseenMessages(threadId: Long, category: String): RealmResults<Message> {
         return Realm.getDefaultInstance()
                 .also { it.refresh() }
@@ -372,7 +383,7 @@ class MessageRepositoryImpl @Inject constructor(
             type = "sms"
             category = if (isMe() || JavaHelper.getContactName(address, context)!=address
                             || (previous!=null && previous[0]?.category == CATEGORY_PERSONAL))
-                        CATEGORY_PERSONAL
+                                CATEGORY_PERSONAL
                         else SmsClassifier.classify(body)
             read = activeConversationManager.getActiveConversation() == threadId
         }

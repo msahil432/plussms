@@ -36,6 +36,8 @@ dependencies {
     implementation "com.jakewharton.timber:timber:$timber_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation project(":common")
+
+    implementation 'com.github.ptnplanet:Java-Naive-Bayes-Classifier:1.0.7'
 }
 
 repositories {

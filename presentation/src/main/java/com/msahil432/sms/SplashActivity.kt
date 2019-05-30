@@ -35,11 +35,13 @@ class SplashActivity : QkThemedActivity() {
                 )
             )
         )
+    }
 
+    override fun onPostResume() {
+        super.onPostResume()
         Handler().postDelayed({
             startActivity(Intent(applicationContext, MainActivity::class.java))
             finish()
-        }, 800)
+        }, 100)
     }
-
 }

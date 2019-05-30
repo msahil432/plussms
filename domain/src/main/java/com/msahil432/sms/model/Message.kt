@@ -3,6 +3,9 @@ package com.msahil432.sms.model
 import android.content.ContentUris
 import android.net.Uri
 import android.provider.Telephony.*
+import com.msahil432.sms.SmsClassifier
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_PERSONAL
+import com.msahil432.sms.common.JavaHelper
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.Index
@@ -53,7 +56,28 @@ open class Message : RealmObject() {
     var subject: String = ""
     var textContentType: String = ""
     var parts: RealmList<MmsPart> = RealmList()
-    @Index var category: String = ""
+    @Index var category: String =""
+
+    /*init{
+        if(category=="") {
+            val previous = realm.where(Message::class.java)
+                    .equalTo("address", address).findAll()
+                    .takeIf { it.size > 0 }
+
+            val isNotContact = realm.where(Contact::class.java).findAll().any { c ->
+                var found = false
+                c.numbers.forEach { p ->
+                    found = p.address == address
+                }
+                found
+            }
+
+            category = if (isMe() || isNotContact || (previous != null &&
+                            previous[0]?.category == CATEGORY_PERSONAL))
+                CATEGORY_PERSONAL
+            else SmsClassifier.classify(body)
+        }
+    }*/
 
     fun getUri(): Uri {
         val baseUri = if (isMms()) Mms.CONTENT_URI else Sms.CONTENT_URI

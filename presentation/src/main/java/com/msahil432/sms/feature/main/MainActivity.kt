@@ -4,14 +4,17 @@ import android.Manifest
 import android.animation.ObjectAnimator
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewStub
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
@@ -30,8 +33,17 @@ import com.moez.QKSMS.common.base.QkThemedActivity
 import com.moez.QKSMS.common.androidxcompat.drawerOpen
 import com.moez.QKSMS.common.androidxcompat.scope
 import com.moez.QKSMS.common.util.extensions.*
+import com.msahil432.sms.SmsClassifier
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_ADS
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_FINANCE
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_PERSONAL
+import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_UPDATES
+import com.msahil432.sms.extensions.anyOf
 import com.msahil432.sms.feature.conversations.ConversationItemTouchCallback
 import com.msahil432.sms.feature.conversations.ConversationsAdapter
+import com.msahil432.sms.model.ClassifierData
+import com.msahil432.sms.model.Conversation
+import com.msahil432.sms.model.Message
 import com.msahil432.sms.repository.SyncRepository
 import com.uber.autodispose.kotlin.autoDisposable
 import dagger.android.AndroidInjection
@@ -39,6 +51,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import io.realm.Realm
 import kotlinx.android.synthetic.main.drawer_view.*
 import kotlinx.android.synthetic.main.main_activity.*
 import kotlinx.android.synthetic.main.main_permission_hint.*
@@ -225,10 +238,8 @@ class MainActivity : QkThemedActivity(), MainView {
         toolbar.menu.findItem(R.id.read)?.isVisible = markRead && selectedConversations != 0
         toolbar.menu.findItem(R.id.unread)?.isVisible = !markRead && selectedConversations != 0
         toolbar.menu.findItem(R.id.block)?.isVisible = selectedConversations != 0
+        toolbar.menu.findItem(R.id.report)?.isVisible = selectedConversations != 0
 
-//        listOf(plusBadge1, plusBadge2).forEach { badge ->
-//            badge.isVisible = false
-//        }
         plus.isVisible = false
         plusBanner.isVisible = false
         rateLayout.setVisible(false)
@@ -418,6 +429,47 @@ class MainActivity : QkThemedActivity(), MainView {
                 .setTitle(R.string.dialog_delete_title)
                 .setMessage(resources.getQuantityString(R.plurals.dialog_delete_message, count, count))
                 .setPositiveButton(R.string.button_delete) { _, _ -> confirmDeleteIntent.onNext(conversations) }
+                .setNegativeButton(R.string.button_cancel, null)
+                .show()
+    }
+
+    override fun showReportDialog(conversations: List<Long>) {
+        val cats = arrayOf( CATEGORY_PERSONAL, CATEGORY_FINANCE, CATEGORY_UPDATES, CATEGORY_ADS )
+        var selection : String = ""
+        AlertDialog.Builder(this)
+                .setTitle("Report wrong Category")
+                .setSingleChoiceItems(cats, -1) { dialog: DialogInterface, which: Int ->
+                    Log.e("MainAct", "Report Cats: ${cats[which]}")
+                    selection = cats[which]
+                }
+                .setPositiveButton("Report") { _, _->
+                    if(selection=="") {
+                        Toast.makeText(this@MainActivity,
+                                "Please select a category!", Toast.LENGTH_SHORT).show()
+                        showReportDialog(conversations)
+                    }else {
+                        Realm.getDefaultInstance().use { realm ->
+                            val conversation = realm.where(Conversation::class.java)
+                                    .anyOf("id",conversations.toLongArray()).findAll()
+                            val messages = realm.where(Message::class.java)
+                                    .anyOf("threadId", conversations.toLongArray()).findAll()
+
+                            realm.executeTransaction {r->
+                                conversation.forEach { it.category =  selection}
+                                var count = r.where(ClassifierData::class.java).count()
+                                messages.forEach {m->
+                                    m.category = selection
+                                    val cd = ClassifierData().apply {
+                                        id = ++count + 0L
+                                        text = SmsClassifier.cleanPrivacy(m.body)
+                                        category = selection
+                                    }
+                                    realm.insertOrUpdate(cd)
+                                }
+                            }
+                        }
+                    }
+                }
                 .setNegativeButton(R.string.button_cancel, null)
                 .show()
     }

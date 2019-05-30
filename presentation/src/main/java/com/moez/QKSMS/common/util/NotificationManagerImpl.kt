@@ -1,21 +1,4 @@
-/*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
- */
+
 package com.moez.QKSMS.common.util
 
 import android.annotation.SuppressLint
@@ -63,7 +46,9 @@ import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_PERSONAL
 import com.msahil432.sms.SmsClassifier.Companion.CATEGORY_UPDATES
 import com.msahil432.sms.SmsClassifier.Companion.NONE_CATEGORY
 import com.msahil432.sms.common.KtHelper
+import com.msahil432.sms.model.Message
 import io.realm.Realm
+import io.realm.RealmResults
 import io.realm.Sort
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -135,25 +120,42 @@ class NotificationManagerImpl @Inject constructor(
         }
     }
 
-    override fun update(threadId: Long) { update(threadId, "") }
-
     /**
      * Updates the notification for a particular conversation
      */
-    override fun update(threadId: Long, category: String) {
+    override fun update(threadId: Long) {
         // If notifications are disabled, don't do anything
         if (!prefs.notifications(threadId).get()) {
+            Log.e("NotifMgr", "exit1")
             return
         }
 
-        val messages = messageRepo.getUnreadUnseenMessages(threadId, category)
+        val messages = messageRepo.getUnreadUnseenMessages(threadId)
         // If there are no messages to be displayed, make sure that the notification is dismissed
         if (messages.isEmpty()) {
             notificationManager.cancel(threadId.toInt())
             return
         }
 
-        val conversation = conversationRepo.getConversation(threadId) ?: return
+        pushCategoryWiseNotifs(threadId, CATEGORY_PERSONAL)
+        pushCategoryWiseNotifs(threadId, CATEGORY_UPDATES)
+        pushCategoryWiseNotifs(threadId, CATEGORY_FINANCE)
+        pushCategoryWiseNotifs(threadId, CATEGORY_OTHERS)
+        pushCategoryWiseNotifs(threadId, CATEGORY_ADS)
+        pushCategoryWiseNotifs(threadId, "")
+    }
+
+    private fun pushCategoryWiseNotifs(tId: Long, category: String){
+        Log.e("NotifMgr", "$category notifs")
+        val messages = messageRepo.getUnreadUnseenMessages(tId, category)
+        if(messages.isEmpty()){
+            Log.e("NotifMgr", "$category notifs - no messages")
+            return
+        }
+        Log.e("NotifMgr", "$category notifs - maybe no convo?")
+        val conversation = conversationRepo.getConversation(tId, category) ?: return
+        Log.e("NotifMgr", "$category notifs - convo yes!!")
+        val threadId = conversation.vid
 
         val contentIntent = Intent(context, ComposeActivity::class.java).putExtra("threadId", threadId)
         val taskStackBuilder = TaskStackBuilder.create(context)
@@ -170,7 +172,7 @@ class NotificationManagerImpl @Inject constructor(
                 .takeIf { it.isNotEmpty() }
                 ?.let(Uri::parse)
 
-        val channel = getChannelIdForNotification(threadId, messages[0]!!.body)
+        val channel = getChannelIdForNotification(threadId, category)
 
         val notification = NotificationCompat.Builder(context, channel)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
@@ -191,7 +193,7 @@ class NotificationManagerImpl @Inject constructor(
                 .setDeleteIntent(seenPI)
 
         if(channel!= ADS_CHANNEL_ID)
-                notification.setSound(ringtone)
+            notification.setSound(ringtone)
         notification.setLights(Color.WHITE, 500, 2000)
                 .setVibrate(if (prefs.vibration(threadId).get()) VIBRATE_PATTERN else longArrayOf(0))
 
@@ -213,14 +215,15 @@ class NotificationManagerImpl @Inject constructor(
                 person.setName(recipient?.getDisplayName() ?: message.address)
 
                 person.setIcon(KtHelper.getLoadedGlide(
-                            PhoneNumberUtils.stripSeparators(message.address), context )
+                        PhoneNumberUtils.stripSeparators(message.address), context )
                         .circleCrop()
                         .submit(64.dpToPx(context), 64.dpToPx(context))
                         .let { futureGet -> tryOrNull(false) { futureGet.get() } }
                         ?.let(IconCompat::createWithBitmap))
 
                 recipient?.contact
-                        ?.let { contact -> "${ContactsContract.Contacts.CONTENT_LOOKUP_URI}/${contact.lookupKey}" }
+                        ?.let { contact ->
+                            "${ContactsContract.Contacts.CONTENT_LOOKUP_URI}/${contact.lookupKey}" }
                         ?.let(person::setUri)
             }
 
@@ -229,6 +232,7 @@ class NotificationManagerImpl @Inject constructor(
                     setData(part.type, ContentUris.withAppendedId(CursorToPartImpl.CONTENT_URI, part.id))
                 }
                 messagingStyle.addMessage(this)
+                Log.e("NotifMgr", "exit4 $this")
             }
         }
 
@@ -265,15 +269,16 @@ class NotificationManagerImpl @Inject constructor(
 
         notification.setContentText(when(channel){
             PERSONAL_CHANNEL_ID -> context.resources.getQuantityString(
-                        R.plurals.personal_notification_new_messages, messages.size, messages.size)
+                    R.plurals.personal_notification_new_messages, messages.size, messages.size)
             UPDATES_CHANNEL_ID -> context.resources.getQuantityString(
-                        R.plurals.update_notification_new_messages, messages.size, messages.size)
+                    R.plurals.update_notification_new_messages, messages.size, messages.size)
             FINANCE_CHANNEL_ID -> context.resources.getQuantityString(
-                        R.plurals.finance_notification_new_messages, messages.size, messages.size)
+                    R.plurals.finance_notification_new_messages, messages.size, messages.size)
             ADS_CHANNEL_ID -> context.resources.getQuantityString(
-                        R.plurals.ads_notification_new_messages, messages.size, messages.size)
+                    R.plurals.ads_notification_new_messages, messages.size, messages.size)
             else ->
-                context.resources.getQuantityString(R.plurals.notification_new_messages, messages.size, messages.size)
+                context.resources.getQuantityString(R.plurals.notification_new_messages,
+                        messages.size, messages.size)
         })
 
         // Add all of the people from this conversation to the notification, so that the system can
@@ -291,9 +296,7 @@ class NotificationManagerImpl @Inject constructor(
                     threadId.toInt() + 80000, intent, PendingIntent.FLAG_UPDATE_CURRENT)
             NotificationCompat.Action
                     .Builder(R.drawable.ic_content_copy_black_24dp, "Copy $otp", pi)
-                    .setSemanticAction(
-                            NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ).build()
-            Log.e("NotifMgr", "OTP Btn Added $otp")
+                    .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ).build()
         }
 
         // Add the action buttons
@@ -302,53 +305,7 @@ class NotificationManagerImpl @Inject constructor(
                 .map { preference -> preference.get() }
                 .distinct()
                 .mapNotNull {
-                    action ->
-                    when (action) {
-                        Preferences.NOTIFICATION_ACTION_READ -> {
-                            val intent = Intent(context, MarkReadReceiver::class.java)
-                                    .putExtra("threadId", threadId)
-                                    .putExtra("otp", "")
-                            val pi = PendingIntent.getBroadcast(context,
-                                    threadId.toInt() + 30000, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-                            NotificationCompat.Action
-                                    .Builder(R.drawable.ic_check_white_24dp, actionLabels[action], pi)
-                                    .setSemanticAction(
-                                            NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ).build()
-                        }
-
-                        Preferences.NOTIFICATION_ACTION_REPLY -> {
-                            if (Build.VERSION.SDK_INT >= 24) {
-                                getReplyAction(threadId)
-                            } else {
-                                val intent = Intent(context, QkReplyActivity::class.java)
-                                        .putExtra("threadId", threadId)
-                                val pi = PendingIntent.getActivity(context,
-                                        threadId.toInt() + 40000, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-                                NotificationCompat.Action.Builder(R.drawable.ic_reply_white_24dp,
-                                        actionLabels[action], pi)
-                                        .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY).build()
-                            }
-                        }
-
-                        Preferences.NOTIFICATION_ACTION_CALL -> {
-                            val address = conversation.recipients[0]?.address
-                            val intentAction = if (permissions.hasCalling()) Intent.ACTION_CALL else Intent.ACTION_DIAL
-                            val intent = Intent(intentAction, Uri.parse("tel:$address"))
-                            val pi = PendingIntent.getActivity(context, threadId.toInt() + 50000, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-                            NotificationCompat.Action.Builder(R.drawable.ic_call_white_24dp, actionLabels[action], pi)
-                                    .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_CALL).build()
-                        }
-
-                        Preferences.NOTIFICATION_ACTION_DELETE -> {
-                            val messageIds = messages.map { it.id }.toLongArray()
-                            val intent = Intent(context, DeleteMessagesReceiver::class.java).putExtra("threadId", threadId).putExtra("messageIds", messageIds)
-                            val pi = PendingIntent.getBroadcast(context, threadId.toInt() + 60000, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-                            NotificationCompat.Action.Builder(R.drawable.ic_delete_white_24dp, actionLabels[action], pi)
-                                    .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_DELETE).build()
-                        }
-
-                        else -> null
-                    }
+                    action -> createActions(action, actionLabels, threadId, messages, conversation)
                 }
                 .forEach { notification.addAction(it) }
 
@@ -363,6 +320,7 @@ class NotificationManagerImpl @Inject constructor(
         }
 
         notificationManager.notify(threadId.toInt(), notification.build())
+        Log.e("NotifMgr", "exit6 - notif pushed")
     }
 
     override fun notifyFailed(msgId: Long) {
@@ -379,9 +337,11 @@ class NotificationManagerImpl @Inject constructor(
         val taskStackBuilder = TaskStackBuilder.create(context)
         taskStackBuilder.addParentStack(ComposeActivity::class.java)
         taskStackBuilder.addNextIntent(contentIntent)
-        val contentPI = taskStackBuilder.getPendingIntent(threadId.toInt() + 40000, PendingIntent.FLAG_UPDATE_CURRENT)
+        val contentPI = taskStackBuilder.getPendingIntent(threadId.toInt() + 40000,
+                PendingIntent.FLAG_UPDATE_CURRENT)
 
-        val notification = NotificationCompat.Builder(context, getChannelIdForNotification(threadId, message.body))
+        val notification = NotificationCompat.Builder(context, getChannelIdForNotification(threadId,
+                    message.category))
                 .setContentTitle(context.getString(R.string.notification_message_failed_title))
                 .setContentText(context.getString(R.string.notification_message_failed_text)
                         .format( conversation.getTitle()))
@@ -460,42 +420,15 @@ class NotificationManagerImpl @Inject constructor(
      * If a notification channel for the conversation exists, use the id for that. Otherwise return
      * the default channel id
      */
-    private fun getChannelIdForNotification(threadId: Long, body: String): String {
+    private fun getChannelIdForNotification(threadId: Long, category: String): String {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            try {
-                val cat = SmsClassifier.classify(body)
-                if(cat!= NONE_CATEGORY)
-                    return when (cat){
-                        CATEGORY_PERSONAL -> PERSONAL_CHANNEL_ID
-                        CATEGORY_UPDATES -> UPDATES_CHANNEL_ID
-                        CATEGORY_FINANCE -> FINANCE_CHANNEL_ID
-                        CATEGORY_ADS -> ADS_CHANNEL_ID
-                        CATEGORY_OTHERS -> OTHERS_CHANNEL_ID
-                        else -> DEFAULT_CHANNEL_ID
-                    }
-
-                val convo = Realm.getDefaultInstance()
-                        .where(Conversation::class.java).equalTo("id", threadId)
-                        .sort("date", Sort.DESCENDING).findFirst()!!
-
-                return when (convo.category){
-                    CATEGORY_PERSONAL -> PERSONAL_CHANNEL_ID
-                    CATEGORY_UPDATES -> UPDATES_CHANNEL_ID
-                    CATEGORY_FINANCE -> FINANCE_CHANNEL_ID
-                    CATEGORY_ADS -> ADS_CHANNEL_ID
-                    CATEGORY_OTHERS -> OTHERS_CHANNEL_ID
-                    else -> DEFAULT_CHANNEL_ID
-                }
-
-//                val channelId = buildNotificationChannelId(threadId)
-//
-//                return notificationManager
-//                        .notificationChannels
-//                        .map { channel -> channel.id }
-//                        .firstOrNull { id -> id == channelId }
-//                        ?: DEFAULT_CHANNEL_ID
-            }catch (e: Exception){
-                Log.e("NotificationMgrImp", e.message, e)
+            return when (category) {
+                CATEGORY_PERSONAL -> PERSONAL_CHANNEL_ID
+                CATEGORY_UPDATES -> UPDATES_CHANNEL_ID
+                CATEGORY_FINANCE -> FINANCE_CHANNEL_ID
+                CATEGORY_ADS -> ADS_CHANNEL_ID
+                CATEGORY_OTHERS -> OTHERS_CHANNEL_ID
+                else -> DEFAULT_CHANNEL_ID
             }
         }
         return DEFAULT_CHANNEL_ID
@@ -530,6 +463,71 @@ class NotificationManagerImpl @Inject constructor(
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setProgress(0, 0, true)
                 .setOngoing(true)
+    }
+
+    private fun createActions(action: Int, actionLabels: Array<String>, threadId: Long,
+                              messages: RealmResults<Message>, conversation: Conversation)
+            : NotificationCompat.Action?{
+
+        return when (action) {
+            Preferences.NOTIFICATION_ACTION_READ -> {
+                val intent = Intent(context, MarkReadReceiver::class.java)
+                        .putExtra("threadId", threadId)
+                        .putExtra("otp", "")
+                val pi = PendingIntent.getBroadcast(context,
+                        threadId.toInt() + 30000, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT)
+                NotificationCompat.Action
+                        .Builder(R.drawable.ic_check_white_24dp, actionLabels[action], pi)
+                        .setSemanticAction(
+                                NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ).build()
+            }
+
+            Preferences.NOTIFICATION_ACTION_REPLY -> {
+                if (Build.VERSION.SDK_INT >= 24) {
+                    getReplyAction(threadId)
+                } else {
+                    val intent = Intent(context, QkReplyActivity::class.java)
+                            .putExtra("threadId", threadId)
+                    val pi = PendingIntent.getActivity(context,
+                            threadId.toInt() + 40000, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT)
+                    NotificationCompat.Action.Builder(R.drawable.ic_reply_white_24dp,
+                            actionLabels[action], pi)
+                            .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)
+                            .build()
+                }
+            }
+
+            Preferences.NOTIFICATION_ACTION_CALL -> {
+                val address = conversation.recipients[0]?.address
+                val intentAction =
+                        if (permissions.hasCalling()) Intent.ACTION_CALL
+                        else Intent.ACTION_DIAL
+                val intent = Intent(intentAction, Uri.parse("tel:$address"))
+                val pi = PendingIntent.getActivity(context, threadId.toInt() + 50000,
+                        intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                NotificationCompat.Action.Builder(R.drawable.ic_call_white_24dp,
+                        actionLabels[action], pi)
+                        .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_CALL)
+                        .build()
+            }
+
+            Preferences.NOTIFICATION_ACTION_DELETE -> {
+                val messageIds = messages.map { it.id }.toLongArray()
+                val intent = Intent(context, DeleteMessagesReceiver::class.java)
+                        .putExtra("threadId", threadId)
+                        .putExtra("messageIds", messageIds)
+                val pi = PendingIntent.getBroadcast(context, threadId.toInt() + 60000,
+                        intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                NotificationCompat.Action.Builder(R.drawable.ic_delete_white_24dp,
+                        actionLabels[action], pi)
+                        .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_DELETE)
+                        .build()
+            }
+
+            else -> null
+        }
     }
 
 }

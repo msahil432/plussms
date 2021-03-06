@@ -28,10 +28,10 @@ jobs:
           java-version: 1.8
 
       - name: Install deps & build
-        run: ./build.sh
+        run: sh build.sh
 
       - name: Signing APK and Bundle
-        run: ./prepare-for-publish.sh ${{secrets.API_TOKEN_GITHUB}} ${{secrets.KEYSTORE_REPO}} ${{secrets.KEYSTORE_ZIP_PASSWORD}} ${{secrets.KEYSTORE_KEY_VALUE}} ${{secrets.KEYSTORE_PASSWORD}}
+        run: sh prepare-for-publish.sh ${{secrets.API_TOKEN_GITHUB}} ${{secrets.KEYSTORE_REPO}} ${{secrets.KEYSTORE_ZIP_PASSWORD}} ${{secrets.KEYSTORE_KEY_VALUE}} ${{secrets.KEYSTORE_PASSWORD}}
 
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:

@@ -28,4 +28,4 @@ jobs:
           java-version: 1.8
 
       - name: Build AAB Bundle
-        run: ./build.sh
+        run: sh build.sh
